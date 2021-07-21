@@ -49,7 +49,7 @@ TriggerActivityMakerADCSimpleWindow::operator()(const TriggerPrimitive& input_tp
     m_current_window.move(input_tp, m_window_length);
   }
   
-  TLOG_DEBUG(TRACE_NAME) << m_current_window;
+  //TLOG_DEBUG(TRACE_NAME) << m_current_window;
 
   m_primitive_count++;
 
@@ -75,7 +75,7 @@ TriggerActivity
 TriggerActivityMakerADCSimpleWindow::construct_ta() const
 {
   TLOG_DEBUG(TRACE_NAME) << "I am constructing a trigger activity!";
-  TLOG_DEBUG(TRACE_NAME) << m_current_window;
+  //TLOG_DEBUG(TRACE_NAME) << m_current_window;
 
   TriggerPrimitive latest_tp_in_window = m_current_window.tp_list.back();
   // The time_peak, time_activity, channel_* and adc_peak fields of this TA are irrelevent
