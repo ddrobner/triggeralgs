@@ -23,6 +23,8 @@ find_package(TRACE REQUIRED)
 # which uses triggeralgs (eg, for dunedaq plugins, the plugin will be
 # provided by the trigger package)
 add_library(triggeralgs SHARED
+  src/TriggerActivityMakerADCSimpleWindow.cpp
+  src/TriggerCandidateMakerADCSimpleWindow.cpp
   src/TriggerActivityMakerPrescale.cpp
   src/TriggerCandidateMakerPrescale.cpp
   src/TriggerActivityMakerSupernova.cpp

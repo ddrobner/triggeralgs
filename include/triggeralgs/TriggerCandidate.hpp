@@ -25,6 +25,7 @@ struct TriggerCandidate
     kSupernova = 3,
     kRandom = 4,
     kPrescale = 5,
+    kADCSimpleWindow = 6,
   };
 
   enum class Algorithm {
@@ -32,6 +33,7 @@ struct TriggerCandidate
     kSupernova = 1,
     kHSIEventToTriggerCandidate = 2,
     kPrescale = 3,
+    kADCSimpleWindow = 4
   };
 
   timestamp_t time_start = INVALID_TIMESTAMP;
