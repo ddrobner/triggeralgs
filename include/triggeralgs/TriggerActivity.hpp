@@ -29,7 +29,8 @@ struct TriggerActivity
     kUnknown = 0,
     kSupernova = 1,
     kPrescale = 2,
-    kADCSimpleWindow = 3
+    kADCSimpleWindow = 3,
+    kDBSCAN = 4,
   };
 
   timestamp_t time_start = INVALID_TIMESTAMP;
