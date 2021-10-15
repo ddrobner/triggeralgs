@@ -38,6 +38,9 @@ private:
       void clear(){
         tp_list.clear();
       };
+      uint8_t n_channels_hit(){
+        return channel_states.size();
+      };
       void move(TriggerPrimitive const &input_tp, timestamp_t const &window_length){
         // Find all of the TPs in the window that need to be removed
         // if the input_tp is to be added and the size of the window
@@ -103,9 +106,12 @@ private:
   uint64_t m_primitive_count = 0;
 
   // Configurable parameters.
+  bool m_trigger_on_adc = true;
+  bool m_trigger_on_n_channels = false;
   uint32_t m_adc_threshold = 1200000;
+  uint8_t m_n_channels_threshold = 55;
   timestamp_t m_window_length = 100000;
-  std::map<channel_t,channel_t> m_channel_map;
+  std::unordered_map<channel_t,channel_t> m_channel_map;
 
 };
 } // namespace triggeralgs
