@@ -96,3 +96,10 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
                      m_current_window.tp_list}; 
   return ta;
 }
+
+bool
+TriggerActivityMakerHorizontalMuon::check_adjacency() const
+{
+  return true;
+}
+
