@@ -25,6 +25,8 @@ find_package(TRACE REQUIRED)
 add_library(triggeralgs SHARED
   src/TriggerActivityMakerADCSimpleWindow.cpp
   src/TriggerCandidateMakerADCSimpleWindow.cpp
+  src/TriggerActivityMakerHorizontalMuon.cpp
+  src/TriggerCandidateMakerHorizontalMuon.cpp
   src/TriggerActivityMakerPrescale.cpp
   src/TriggerCandidateMakerPrescale.cpp
   src/TriggerActivityMakerSupernova.cpp
