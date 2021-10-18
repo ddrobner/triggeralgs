@@ -27,6 +27,9 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     return;
   } 
 
+  // FIX ME: Only want to call this if running in debug mode.
+  add_window_to_record(m_current_window);
+
   // If the difference between the current TP's start time and the start of the window
   // is less than the specified window size, add the TP to the window.
   if((input_tp.time_start - m_current_window.time_start) < m_window_length){
@@ -67,13 +70,15 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
 
   m_primitive_count++;
 
+  if(m_primitive_count % 500 == 0) dump_window_record();
+
   return;
 }
 
 void
 TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json &config)
 {
-  //FIXME use some schema here.
+  //FIX ME: Use some schema here. Also can't work out how to pass booleans.
   if (config.is_object()){
     if (config.contains("trigger_on_adc")) m_trigger_on_adc = config["trigger_on_adc"];
     if (config.contains("trigger_on_n_channels")) m_trigger_on_n_channels = config["trigger_on_n_channels"];
@@ -93,7 +98,7 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json &config)
   else if (m_trigger_on_adc && m_trigger_on_n_channels) {
     /*TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
            << "unfortunately this is not yet supported. Exiting.";*/
-    // FIX ME logic to throw an exception here.
+    // FIX ME: Logic to throw an exception here.
   }
   
   //m_conf = config.get<dunedaq::triggeralgs::triggeractivitymakerhorizontalmuon::ConfParams>();
@@ -132,3 +137,33 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
   return true;
 }
 
+// Functions below this line are for debugging purposes.
+void 
+TriggerActivityMakerHorizontalMuon::add_window_to_record(Window window)
+{
+  m_window_record.push_back(window);
+  return;
+}
+
+void 
+TriggerActivityMakerHorizontalMuon::dump_window_record()
+{
+  // FIX ME: Need to index this outfile in the name by detid or something similar.
+  std::ofstream outfile; 
+  outfile.open("window_record.csv", std::ios_base::app);
+
+  for(auto window : m_window_record){
+    outfile << window.time_start << ",";
+    outfile << window.tp_list.back().time_start << ",";
+    outfile << window.tp_list.back().time_start-window.time_start << ",";
+    outfile << window.adc_integral << ",";
+    outfile << window.n_channels_hit() << ",";
+    outfile << window.tp_list.size() << std::endl;
+  }
+
+  outfile.close();
+
+  m_window_record.clear();
+
+  return;
+}

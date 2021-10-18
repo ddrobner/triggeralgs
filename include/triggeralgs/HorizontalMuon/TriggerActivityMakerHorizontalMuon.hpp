@@ -13,6 +13,7 @@
 
 //#include "triggeralgs/triggeractivitymakerhorizontalmuon/Nljs.hpp"
 
+#include <fstream>
 #include <vector>
 
 namespace triggeralgs {
@@ -40,7 +41,7 @@ private:
       void clear(){
         tp_list.clear();
       };
-      uint8_t n_channels_hit(){
+      uint16_t n_channels_hit(){
         return channel_states.size();
       };
       void move(TriggerPrimitive const &input_tp, timestamp_t const &window_length){
@@ -73,7 +74,8 @@ private:
         else reset(input_tp);
       };
       void reset(TriggerPrimitive const &input_tp){
-        // Empty the TP list.
+        // Empty the channel and TP lists.
+        channel_states.clear();
         tp_list.clear();
         // Set the start time of the window to be the start time of the 
         // input_tp.
@@ -97,7 +99,7 @@ private:
 
       timestamp_t time_start;
       uint32_t adc_integral;
-      std::unordered_map<channel_t,uint8_t> channel_states;
+      std::unordered_map<channel_t,uint16_t> channel_states;
       std::vector<TriggerPrimitive> tp_list;
   };
 
@@ -109,12 +111,17 @@ private:
 
   // Configurable parameters.
   //triggeractivitymakerhorizontalmuon::ConfParams m_conf;
-  bool m_trigger_on_adc = true;
-  bool m_trigger_on_n_channels = false;
+  bool m_trigger_on_adc = false;
+  bool m_trigger_on_n_channels = true;
   uint32_t m_adc_threshold = 1200000;
-  uint8_t m_n_channels_threshold = 55;
+  uint16_t m_n_channels_threshold = 967;
   timestamp_t m_window_length = 100000;
   std::unordered_map<channel_t,channel_t> m_channel_map;
+
+  // For debugging purposes.
+  void add_window_to_record(Window window);
+  void dump_window_record();
+  std::vector<Window> m_window_record;
 
 };
 } // namespace triggeralgs
