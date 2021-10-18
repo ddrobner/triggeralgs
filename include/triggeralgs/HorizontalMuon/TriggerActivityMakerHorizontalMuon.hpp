@@ -11,6 +11,8 @@
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
 
+//#include "triggeralgs/triggeractivitymakerhorizontalmuon/Nljs.hpp"
+
 #include <vector>
 
 namespace triggeralgs {
@@ -106,6 +108,7 @@ private:
   uint64_t m_primitive_count = 0;
 
   // Configurable parameters.
+  //triggeractivitymakerhorizontalmuon::ConfParams m_conf;
   bool m_trigger_on_adc = true;
   bool m_trigger_on_n_channels = false;
   uint32_t m_adc_threshold = 1200000;

@@ -30,6 +30,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // If the difference between the current TP's start time and the start of the window
   // is less than the specified window size, add the TP to the window.
   if((input_tp.time_start - m_current_window.time_start) < m_window_length){
+  //if((input_tp.time_start - m_current_window.time_start) < m_conf.window_length){
     //TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the input_tp to the window.";
     m_current_window.add(input_tp);
   }
@@ -38,6 +39,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // the existing window is above the specified threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
   else if(m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc){
+  //else if(m_current_window.adc_integral > m_conf.adc_threshold && m_conf.trigger_on_adc){
     //TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
     output_ta.push_back(construct_ta());
     //TLOG_DEBUG(TRACE_NAME) << "Resetting window with input_tp.";
@@ -47,7 +49,8 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // than the specified window length, don't add it but check whether the number of hit channels in
   // the existing window is above the specified threshold. If it is, and we are triggering on channels,
   // make a TA and start a fresh window with the current TP.
-  else if(m_current_window.n_channels_hit() > m_adc_threshold && m_trigger_on_n_channels){
+  else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
+  //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
     //TLOG_DEBUG(TRACE_NAME) << "Number of channels hit in the window is greater than specified threshold.";
     output_ta.push_back(construct_ta());
     //TLOG_DEBUG(TRACE_NAME) << "Resetting window with input_tp.";
@@ -57,6 +60,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   else{
     //TLOG_DEBUG(TRACE_NAME) << "Window is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(input_tp, m_window_length);
+    //m_current_window.move(input_tp, m_conf.window_length);
   }
   
   //TLOG_DEBUG(TRACE_NAME) << m_current_window;
@@ -69,7 +73,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
 void
 TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json &config)
 {
-  //FIXME use some schema here
+  //FIXME use some schema here.
   if (config.is_object()){
     if (config.contains("trigger_on_adc")) m_trigger_on_adc = config["trigger_on_adc"];
     if (config.contains("trigger_on_n_channels")) m_trigger_on_n_channels = config["trigger_on_n_channels"];
@@ -78,11 +82,21 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json &config)
     if (config.contains("window_length")) m_window_length = config["window_length"];
     //if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
-  else{
-    TLOG_DEBUG(TRACE_NAME) << "The DEFAULT values of all configurables are being used.";
+  if(m_trigger_on_adc) {
+    TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger primitives with times within a "
+                           << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger will be issued.";
   }
-  TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger primitives with times within a "
-                         << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger will be issued.";
+  else if(m_trigger_on_n_channels) {
+    TLOG_DEBUG(TRACE_NAME) << "If the total number of channels with hits within a "
+                           << m_window_length << " tick time window is above " << m_n_channels_threshold << " channels, a trigger will be issued.";
+  }
+  else if (m_trigger_on_adc && m_trigger_on_n_channels) {
+    /*TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
+           << "unfortunately this is not yet supported. Exiting.";*/
+    // FIX ME logic to throw an exception here.
+  }
+  
+  //m_conf = config.get<dunedaq::triggeralgs::triggeractivitymakerhorizontalmuon::ConfParams>();
 }
 
 TriggerActivity
