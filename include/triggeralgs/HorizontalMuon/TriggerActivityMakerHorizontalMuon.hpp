@@ -25,6 +25,8 @@ public:
   
   void configure(const nlohmann::json &config);
 
+  //void flush(timestamp_t, std::vector<TriggerActivity>& output_ta);
+
 private:  
   class Window {
     public:
@@ -116,7 +118,8 @@ private:
   uint32_t m_adc_threshold = 1200000;
   uint16_t m_n_channels_threshold = 967;
   timestamp_t m_window_length = 100000;
-  std::unordered_map<channel_t,channel_t> m_channel_map;
+  // Might not be the best type for this map.
+  //std::unordered_map<std::pair<detid_t,channel_t>,channel_t> m_channel_map;
 
   // For debugging purposes.
   void add_window_to_record(Window window);
