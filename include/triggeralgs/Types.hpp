@@ -16,7 +16,7 @@ namespace triggeralgs {
 
 // A data timestamp in timing system clock ticks (50 MHz for
 // ProtoDUNE-I, 62.5 MHz for ProtoDUNE-II and DUNE FD). If/when we
-// depend on dataformats, we can get these from there
+// depend on daqdataformats, we can get these from there
 using timestamp_t = uint64_t; // NOLINT
 
 constexpr timestamp_t INVALID_TIMESTAMP = std::numeric_limits<timestamp_t>::max();
@@ -27,7 +27,7 @@ using timestamp_diff_t = int64_t;
 // formed, eg an APA or a module
 //
 // TODO P. Rodrigues 2021-06-01: it would be nice to have this be just
-// dataformats::GeoID, if/when we can depend on the dataformats
+// daqdataformats::GeoID, if/when we can depend on the daqdataformats
 // package
 using detid_t = uint16_t;
 
@@ -38,7 +38,7 @@ constexpr detid_t WHOLE_DETECTOR = INVALID_DETID-1;
 
 // A trigger number
 // TODO P. Rodrigues 2021-06-14: it would be nice to have this be just
-// dataformats::trigger_number_t, if/when we can depend on the dataformats
+// daqdataformats::trigger_number_t, if/when we can depend on the daqdataformats
 // package
 using trigger_number_t = uint64_t;
 
