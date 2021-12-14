@@ -18,9 +18,12 @@ using namespace triggeralgs;
 void
 TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
-  
-  // The first time operator is called, reset
-  // window object.
+  // We only want to form TAs based on Collection Channels (channelID > 1600)
+  if (input_tp.channel > 1600){
+
+
+  // 0) N CHANNELS EXCEEDED ===============================================================================
+  // The first time operator is called, reset window object.
   if(m_current_window.is_empty()){
     m_current_window.reset(input_tp);
     m_primitive_count++;
@@ -28,7 +31,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   } 
 
   // FIX ME: Only want to call this if running in debug mode.
-  add_window_to_record(m_current_window);
+  //  add_window_to_record(m_current_window);
 
   // If the difference between the current TP's start time and the start of the window
   // is less than the specified window size, add the TP to the window.
@@ -37,41 +40,39 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     //TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the input_tp to the window.";
     m_current_window.add(input_tp);
   }
+
+  // 1) ADC THRESHOLD EXCEEDED ===============================================================================
   // If the addition of the current TP to the window would make it longer
   // than the specified window length, don't add it but check whether the sum of all adc in
   // the existing window is above the specified threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
   else if(m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc){
   //else if(m_current_window.adc_integral > m_conf.adc_threshold && m_conf.trigger_on_adc){
-    //TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    output_ta.push_back(construct_ta());
-    //TLOG_DEBUG(TRACE_NAME) << "Resetting window with input_tp.";
-    m_current_window.reset(input_tp);
+   output_ta.push_back(construct_ta());
+   m_current_window.reset(input_tp);
   }
+  
+  // 2) N CHANNELS EXCEEDED =============================================================================== 
   // If the addition of the current TP to the window would make it longer
   // than the specified window length, don't add it but check whether the number of hit channels in
   // the existing window is above the specified threshold. If it is, and we are triggering on channels,
   // make a TA and start a fresh window with the current TP.
   else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
   //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
-    //TLOG_DEBUG(TRACE_NAME) << "Number of channels hit in the window is greater than specified threshold.";
-    output_ta.push_back(construct_ta());
-    //TLOG_DEBUG(TRACE_NAME) << "Resetting window with input_tp.";
-    m_current_window.reset(input_tp);
+   add_window_to_record(m_current_window); // Can remove these after
+   dump_window_record(); // Use this here to get simpler window_record_tam files - Just windows where TAs are made 
+   ta_channels++;
+   output_ta.push_back(construct_ta());
+   m_current_window.reset(input_tp); 
   }
+
   // If it is not, move the window along.
   else{
-    //TLOG_DEBUG(TRACE_NAME) << "Window is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(input_tp, m_window_length);
-    //m_current_window.move(input_tp, m_conf.window_length);
   }
   
-  //TLOG_DEBUG(TRACE_NAME) << m_current_window;
-
   m_primitive_count++;
-
-  if(m_primitive_count % 500 == 0) dump_window_record();
-
+  }
   return;
 }
 
@@ -85,6 +86,7 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json &config)
     if (config.contains("adc_threshold")) m_adc_threshold = config["adc_threshold"];
     if (config.contains("n_channels_threshold")) m_n_channels_threshold = config["n_channels_threshold"];
     if (config.contains("window_length")) m_window_length = config["window_length"];
+    if (config.contains("adj_tolerance")) m_adj_tolerance = config["adj_tolerance"];
     //if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
   if(m_trigger_on_adc) {
@@ -107,7 +109,7 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json &config)
 TriggerActivity
 TriggerActivityMakerHorizontalMuon::construct_ta() const
 {
-  TLOG_DEBUG(TRACE_NAME) << "I am constructing a trigger activity!";
+  // TLOG(1) << "I am constructing a trigger activity!";
   //TLOG_DEBUG(TRACE_NAME) << m_current_window;
 
   TriggerPrimitive latest_tp_in_window = m_current_window.tp_list.back();
@@ -130,11 +132,75 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
   return ta;
 }
 
-bool
+int
 TriggerActivityMakerHorizontalMuon::check_adjacency() const
-{
-  // FIX ME: An adjacency check on the channels which have hits. 
-  return true;
+{ 
+  // This function returns the adjacency value for the current window, where adjacency
+  // is defined as the maximum number of consecutive wires containing hits. It accepts
+  // a configurable tolerance paramter, which allows up to adj_tolerance hit misses on
+  // wires before restarting the adj count.
+
+  int adj = 1;
+  int max = 0; // Maximum adjacency of window - which this function returns
+  unsigned int channel = 0;
+  unsigned int next_channel = 0;
+  unsigned int next = 0; 
+  unsigned int tolerance_count = 0; 
+
+  // Sort tp_list by increasing value so we can loop through them checking for adjacent hits
+  std::vector<int> chanList;
+  for (auto tp : m_current_window.tp_list){
+      if((tp.channel > 1600) && (tp.channel < 2140)){ // Avoid wires facing wall/little signal
+	chanList.push_back(tp.channel);
+      }
+  }
+  std::sort(chanList.begin(), chanList.end()); // Sort in ascending order to apply adjacency check
+
+ // Output the channel list to log - for debugging
+ /* for (auto chan : chanList){
+	TLOG(1) << chan;
+   }*/
+
+  // Checking Adjacency - Maximum number of consecutive collection 
+  // channels with hits above channel 1600 ( channelID > 1600 = collection)
+  for (unsigned int i=0; i < chanList.size(); ++i){
+	
+	next = (i+1)%chanList.size(); // Loops back when outside of collection range
+	channel = chanList.at(i);
+	next_channel = chanList.at(next);
+
+        // End of vector condition
+        if (next_channel == 0){
+	   next_channel = channel-1;
+	}
+        
+	// Skip same channel hits
+	if (next_channel == channel){ continue; }
+      
+        // If next hit is on next channel increase adjacency
+        else if (next_channel == channel+1) { ++adj; }
+        
+	//If next channel is not on the next hit, increase adjacency but also tally up with
+	//the tolerance counter.
+	else if ((next_channel == channel+2) && (tolerance_count < m_adj_tolerance)){
+	++adj;
+	++tolerance_count;
+	} 
+	
+	// If next hit is definitely not part of cluster, end adj count and check for max
+	else {
+	  if (adj > max){
+		max = adj;
+	  }
+	// Resets
+	adj = 1;
+        tolerance_count = 0;
+	}
+     }	
+      
+  TLOG(1) << "Adacency reached: " << max; // output the adjacency reached to the log file     
+  // Return the value of adjacency for this window - maximum number of consecutive channels with hits
+  return max;
 }
 
 // Functions below this line are for debugging purposes.
@@ -152,13 +218,16 @@ TriggerActivityMakerHorizontalMuon::dump_window_record()
   std::ofstream outfile; 
   outfile.open("window_record_tam.csv", std::ios_base::app);
 
-  for(auto window : m_window_record){
+   for(auto window : m_window_record){
     outfile << window.time_start << ",";
     outfile << window.tp_list.back().time_start << ",";
     outfile << window.tp_list.back().time_start-window.time_start << ",";
-    outfile << window.adc_integral << ",";
-    outfile << window.n_channels_hit() << ",";
-    outfile << window.tp_list.size() << std::endl;
+    outfile << window.adc_integral << ","; 	    
+    outfile << window.n_channels_hit() << ",";       // Number of unique channels with hits
+    outfile << window.tp_list.size() << ",";         // Number of TPs in Window
+    outfile << window.tp_list.back().channel<< ",";  // Last TP Channel ID
+    outfile << window.tp_list.front().channel<< ","; // First TP Channel ID
+    outfile << check_adjacency() << std::endl;       // New adjacency value for the window
   }
 
   outfile.close();
@@ -167,6 +236,7 @@ TriggerActivityMakerHorizontalMuon::dump_window_record()
 
   return;
 }
+
 
 /*
 void

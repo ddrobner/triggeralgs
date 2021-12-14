@@ -16,6 +16,7 @@
 #include <fstream>
 #include <vector>
 
+// Include detchannelmaps for adjacency checking
 namespace triggeralgs {
 class TriggerActivityMakerHorizontalMuon : public TriggerActivityMaker
 {
@@ -34,8 +35,7 @@ private:
         return tp_list.empty();
       };
       void add(TriggerPrimitive const &input_tp){
-        // Add the input TP's contribution to the total ADC, increase hit channel's hit count and add it to
-        // the TP list.
+        // Add the input TP's contribution to the total ADC, increase hit channel's hit count and add it to the TP list.
         adc_integral += input_tp.adc_integral;
         channel_states[input_tp.channel]++;
         tp_list.push_back(input_tp);
@@ -67,20 +67,24 @@ private:
         }
         // Erase the TPs from the window.
         tp_list.erase(tp_list.begin(), tp_list.begin()+n_tps_to_erase);
-        // Make the window start time the start time of what is now the
-        // first TP.
-        if(tp_list.size()!=0){
+        // Make the window start time the start time of what is now the first TP.
+ 
+	  if(!(tp_list.size()==0)){
           time_start = tp_list.front().time_start;
           add(input_tp);
-        }
-        else reset(input_tp);
+          }
+          else{
+          std::cout << "Resetting window." << std::endl;
+	  reset(input_tp);
+          }
+	
       };
       void reset(TriggerPrimitive const &input_tp){
+
         // Empty the channel and TP lists.
         channel_states.clear();
         tp_list.clear();
-        // Set the start time of the window to be the start time of the 
-        // input_tp.
+        // Set the start time of the window to be the start time of theinput_tp.
         time_start = input_tp.time_start;
         // Start the total ADC integral.
         adc_integral = input_tp.adc_integral;
@@ -88,6 +92,7 @@ private:
         channel_states[input_tp.channel]++;
         // Add the input TP to the TP list.
         tp_list.push_back(input_tp);
+        //std::cout << "Number of channels hit: " << n_channels_hit() << std::endl; 
       };
       friend std::ostream& operator<<(std::ostream& os, const Window& window){
         if(window.is_empty()) os << "Window is empty!\n";
@@ -106,7 +111,7 @@ private:
   };
 
   TriggerActivity construct_ta() const;
-  bool check_adjacency() const;
+  int check_adjacency() const;
 
   Window m_current_window;
   uint64_t m_primitive_count = 0;
@@ -115,8 +120,12 @@ private:
   //triggeractivitymakerhorizontalmuon::ConfParams m_conf;
   bool m_trigger_on_adc = false;
   bool m_trigger_on_n_channels = true;
-  uint32_t m_adc_threshold = 1200000;
-  uint16_t m_n_channels_threshold = 967;
+  uint32_t m_adc_threshold = 3000000; // Not currently triggering on this
+  uint16_t m_n_channels_threshold = 400; // Set this to ~80 for frames.bin, ~150-300 for tps_link_11.txt
+  int m_adj_tolerance = 2; // Adjacency tolerance - default is 2.
+  int index = 0;
+  int ta_adc = 0;
+  int ta_channels = 0;
   timestamp_t m_window_length = 100000;
   // Might not be the best type for this map.
   //std::unordered_map<std::pair<detid_t,channel_t>,channel_t> m_channel_map;

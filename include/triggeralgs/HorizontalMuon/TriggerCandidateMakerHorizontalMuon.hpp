@@ -34,7 +34,7 @@ private:
       bool is_empty() const{
         return ta_list.empty();
       };
-      void add(TriggerActivity const &input_ta){
+      void add(const TriggerActivity &input_ta){
         // Add the input TA's contribution to the total ADC, increase the hit count
         // of all of the channels which feature and add it to the TA list keeping the TA
         // list time ordered by time_start. Preserving time order makes moving easier.
@@ -132,10 +132,11 @@ private:
   // Use any other combination of m_trigger_on_adc and m_trigger_on_n_channels with caution,
   // they have not been tested.
   bool m_trigger_on_adc = false;
-  bool m_trigger_on_n_channels = false;
+  bool m_trigger_on_n_channels = true;
   uint32_t m_adc_threshold = 1200000;
-  uint16_t m_n_channels_threshold = 967;
-  timestamp_t m_window_length = 100000;
+  uint16_t m_n_channels_threshold = 600; // 80ish for frames, O(200 - 600) for tpslink
+  timestamp_t m_window_length = 80000;
+  int tc_number = 0;
   // Might not be the best type for this map.
   //std::unordered_map<std::pair<detid_t,channel_t>,channel_t> m_channel_map;
 

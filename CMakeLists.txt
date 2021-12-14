@@ -7,6 +7,7 @@ set(CMAKE_INSTALL_CMAKEDIR   ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/cmake )
 
 find_package(nlohmann_json REQUIRED)
 find_package(TRACE REQUIRED)
+find_package(detchannelmaps REQUIRED)
 
 # We follow the daq-cmake convention of building one main library for
 # the package. In our case, we include all of the available trigger
@@ -32,6 +33,8 @@ add_library(triggeralgs SHARED
   src/TriggerActivityMakerSupernova.cpp
   src/TriggerCandidateMakerSupernova.cpp
   src/TriggerDecisionMakerSupernova.cpp)
+
+
 target_include_directories(triggeralgs PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>

@@ -18,11 +18,11 @@ using namespace triggeralgs;
 void
 TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta, std::vector<TriggerCandidate>& output_tc)
 { 
-  // The first time operator is called, reset
-  // window object.
+  // The first time operator is called, reset window object.
   if(m_current_window.is_empty()){
     m_current_window.reset(input_ta);
     m_activity_count++;
+    // Trivial TC Logic:
     // If the request has been made to not trigger on number of channels or
     // total adc, simply construct a trigger candidate from any single activity.
     if((!m_trigger_on_adc) && (!m_trigger_on_n_channels)){
@@ -34,10 +34,10 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
   }
 
   // FIX ME: Only want to call this if running in debug mode.
-  add_window_to_record(m_current_window);
+  //add_window_to_record(m_current_window);
 
-  // If the difference between the current TP's start time and the start of the window
-  // is less than the specified window size, add the TP to the window.
+  // If the difference between the current TA's start time and the start of the window
+  // is less than the specified window size, add the TA to the window.
   if((input_ta.time_start - m_current_window.time_start) < m_window_length){
     //TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the input_ta to the window.";
     m_current_window.add(input_ta);
@@ -57,9 +57,8 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
   // the existing window is above the specified threshold. If it is, and we are triggering on channels,
   // make a TC and start a fresh window with the current TA.
   else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
-    //TLOG_DEBUG(TRACE_NAME) << "Number of channels hit in the window is greater than specified threshold.";
+    tc_number++;
     output_tc.push_back(construct_tc());
-    //TLOG_DEBUG(TRACE_NAME) << "Resetting window with input_ta.";
     m_current_window.reset(input_ta);
   }
   // If it is not, move the window along.
@@ -119,7 +118,7 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
   std::vector<detid_t> detids;
   for(TriggerActivity ta : m_current_window.ta_list) detids.push_back(ta.detid);
 
-  //TLOG_DEBUG(TRACE_NAME) << "Emitting an HorizontalMuon TriggerCandidate " << (m_activity_count-1);
+  TLOG_DEBUG(TRACE_NAME) << "Emitting an HorizontalMuon TriggerCandidate " << (m_activity_count-1);
 
   // Set the time of the candidate equal to the time_start of the window.
   TriggerCandidate tc {
