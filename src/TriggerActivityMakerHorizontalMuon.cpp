@@ -60,7 +60,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   else if(check_adjacency() > m_n_channels_threshold && m_trigger_on_n_channels){
   //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
    add_window_to_record(m_current_window); // Can remove these after
-   dump_window_record(); // Use this here to get simpler window_record_tam files - Just windows where TAs are made 
+  // dump_window_record(); // Use this here to get simpler window_record_tam files - Just windows where TAs are made 
    ta_channels++;
    output_ta.push_back(construct_ta());
    m_current_window.reset(input_tp); 
