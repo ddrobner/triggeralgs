@@ -71,7 +71,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
 
   m_activity_count++;
 
-  if(m_activity_count % 500 == 0) dump_window_record();
+//  if(m_activity_count % 500 == 0) dump_window_record();
 
   return;
 }
@@ -88,7 +88,7 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json &config)
     if (config.contains("window_length")) m_window_length = config["window_length"];
     //if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
-  if(m_trigger_on_adc) {
+  /*if(m_trigger_on_adc) {
     TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger activities with times within a "
                            << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger will be issued.";
   }
@@ -100,10 +100,10 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json &config)
     TLOG_DEBUG(TRACE_NAME) << "The candidate maker will construct candidates 1 for 1 from trigger activities.";
   }
   else if (m_trigger_on_adc && m_trigger_on_n_channels) {
-    /*TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
-           << "unfortunately this is not yet supported. Exiting.";*/
+    TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
+           << "unfortunately this is not yet supported. Exiting.";
     // FIX ME: Logic to throw an exception here.
-  }
+  }*/
   
   return;
 }
@@ -118,7 +118,7 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
   std::vector<detid_t> detids;
   for(TriggerActivity ta : m_current_window.ta_list) detids.push_back(ta.detid);
 
-  TLOG_DEBUG(TRACE_NAME) << "Emitting an HorizontalMuon TriggerCandidate " << (m_activity_count-1);
+  //TLOG_DEBUG(TRACE_NAME) << "Emitting an HorizontalMuon TriggerCandidate " << (m_activity_count-1);
 
   // Set the time of the candidate equal to the time_start of the window.
   TriggerCandidate tc {

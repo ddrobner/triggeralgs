@@ -103,13 +103,13 @@ private:
         // Add the input TA to the TA list.
         ta_list.push_back(input_ta);
       }
-      friend std::ostream& operator<<(std::ostream& os, const Window& window){
+     friend std::ostream& operator<<(std::ostream& os, const Window& window){
         if(window.is_empty()) os << "Window is empty!\n";
-        else{
-          os << "Window start: " << window.time_start << ", end: " << window.ta_list.back().time_start;
-          os << ". Total of: " << window.adc_integral << " ADC counts with " << window.ta_list.size() << " TPs.\n"; 
-          os << window.channel_states.size() << " independent channels have hits.\n"; 
-        }
+  //      else{
+  //        os << "Window start: " << window.time_start << ", end: " << window.ta_list.back().time_start;
+  //        os << ". Total of: " << window.adc_integral << " ADC counts with " << window.ta_list.size() << " TPs.\n"; 
+  //        os << window.channel_states.size() << " independent channels have hits.\n"; 
+  //      }
         return os;
       };
     

@@ -89,22 +89,22 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json &config)
     if (config.contains("adj_tolerance")) m_adj_tolerance = config["adj_tolerance"];
     //if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
-  if(m_trigger_on_adc) {
-    TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger primitives with times within a "
-                           << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger will be issued.";
+ // if(m_trigger_on_adc) {
+  //  TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger primitives with times within a "
+   //                        << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger will be issued.";
   }
-  else if(m_trigger_on_n_channels) {
-    TLOG_DEBUG(TRACE_NAME) << "If the total number of channels with hits within a "
-                           << m_window_length << " tick time window is above " << m_n_channels_threshold << " channels, a trigger will be issued.";
-  }
-  else if (m_trigger_on_adc && m_trigger_on_n_channels) {
+ // else if(m_trigger_on_n_channels) {
+  //  TLOG_DEBUG(TRACE_NAME) << "If the total number of channels with hits within a "
+   //                        << m_window_length << " tick time window is above " << m_n_channels_threshold << " channels, a trigger will be issued.";
+ // }
+ // else if (m_trigger_on_adc && m_trigger_on_n_channels) {
     /*TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
            << "unfortunately this is not yet supported. Exiting.";*/
     // FIX ME: Logic to throw an exception here.
-  }
+ // }
   
   //m_conf = config.get<dunedaq::triggeralgs::triggeractivitymakerhorizontalmuon::ConfParams>();
-}
+//}
 
 TriggerActivity
 TriggerActivityMakerHorizontalMuon::construct_ta() const
@@ -164,6 +164,9 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 
   // Checking Adjacency - Maximum number of consecutive collection 
   // channels with hits above channel 1600 ( channelID > 1600 = collection)
+  
+  // Adjcancency Tolerance = Number of times willing to skip a single missed wire before
+  // resetting the adjacency count.
   for (unsigned int i=0; i < chanList.size(); ++i){
 	
 	next = (i+1)%chanList.size(); // Loops back when outside of collection range
@@ -198,8 +201,34 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
         tol_count = 0;
 	}
      }	
-      
-  TLOG(1) << "Adacency reached: " << max; // output the adjacency reached to the log file     
+   
+
+   // Adjacency Tolerance = Number of consecutive missed wires you're willing to skip
+   // before resetting the adjacency count.   
+ /* for (unsigned int i=0; i < chanList.size(); ++i){
+        
+        next = (i+1)%chanList.size();
+        channel = chanList.at(i);
+        next_channel = chanList.at(next);
+        
+        if (next_channel == 0){
+           next_channel=channel-1;
+        }
+  
+	if (next_channel == channel){ continue; }
+
+	else if ((next_channel - channel) < m_adj_tolerance) { ++adj; }
+
+        else {
+          if (adj > max){
+                max = adj;
+        }
+        adj = 1;
+        tol_count = 0;
+        }
+     }*/
+
+ // TLOG(1) << "Adacency reached: " << max; // output the adjacency reached to the log file     
   // Return the value of adjacency for this window - maximum number of consecutive channels with hits
   return max;
 }

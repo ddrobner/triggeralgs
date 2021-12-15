@@ -74,7 +74,7 @@ private:
           add(input_tp);
           }
           else{
-          std::cout << "Resetting window." << std::endl;
+         // std::cout << "Resetting window." << std::endl;
 	  reset(input_tp);
           }
 	
@@ -94,13 +94,13 @@ private:
         tp_list.push_back(input_tp);
         //std::cout << "Number of channels hit: " << n_channels_hit() << std::endl; 
       };
-      friend std::ostream& operator<<(std::ostream& os, const Window& window){
-        if(window.is_empty()) os << "Window is empty!\n";
-        else{
-          os << "Window start: " << window.time_start << ", end: " << window.tp_list.back().time_start;
-          os << ". Total of: " << window.adc_integral << " ADC counts with " << window.tp_list.size() << " TPs.\n"; 
-          os << window.channel_states.size() << " independent channels have hits.\n"; 
-        }
+       friend std::ostream& operator<<(std::ostream& os, const Window& window){
+  //      if(window.is_empty()) os << "Window is empty!\n";
+  //      else{
+  //       os << "Window start: " << window.time_start << ", end: " << window.tp_list.back().time_start;
+  //       os << ". Total of: " << window.adc_integral << " ADC counts with " << window.tp_list.size() << " TPs.\n"; 
+  //       os << window.channel_states.size() << " independent channels have hits.\n"; 
+  //      }
         return os;
       };
 
