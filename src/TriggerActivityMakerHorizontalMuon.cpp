@@ -52,12 +52,12 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
    m_current_window.reset(input_tp);
   }
   
-  // 2) N CHANNELS EXCEEDED =============================================================================== 
+  // 2) N ADJACENT CHANNELS EXCEEDED =============================================================================== 
   // If the addition of the current TP to the window would make it longer
   // than the specified window length, don't add it but check whether the number of hit channels in
   // the existing window is above the specified threshold. If it is, and we are triggering on channels,
   // make a TA and start a fresh window with the current TP.
-  else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
+  else if(check_adjacency() > m_n_channels_threshold && m_trigger_on_n_channels){
   //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
    add_window_to_record(m_current_window); // Can remove these after
    dump_window_record(); // Use this here to get simpler window_record_tam files - Just windows where TAs are made 
@@ -135,6 +135,7 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
 int
 TriggerActivityMakerHorizontalMuon::check_adjacency() const
 { 
+
   // This function returns the adjacency value for the current window, where adjacency
   // is defined as the maximum number of consecutive wires containing hits. It accepts
   // a configurable tolerance paramter, which allows up to adj_tolerance hit misses on
@@ -145,7 +146,7 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
   unsigned int channel = 0;
   unsigned int next_channel = 0;
   unsigned int next = 0; 
-  unsigned int tolerance_count = 0; 
+  unsigned int tol_count = 0; 
 
   // Sort tp_list by increasing value so we can loop through them checking for adjacent hits
   std::vector<int> chanList;
@@ -171,7 +172,7 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 
         // End of vector condition
         if (next_channel == 0){
-	   next_channel = channel-1;
+	   next_channel=channel-1;
 	}
         
 	// Skip same channel hits
@@ -182,9 +183,9 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
         
 	//If next channel is not on the next hit, increase adjacency but also tally up with
 	//the tolerance counter.
-	else if ((next_channel == channel+2) && (tolerance_count < m_adj_tolerance)){
+	else if ((next_channel == channel+2) && (tol_count < m_adj_tolerance)){
 	++adj;
-	++tolerance_count;
+	++tol_count;
 	} 
 	
 	// If next hit is definitely not part of cluster, end adj count and check for max
@@ -194,7 +195,7 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 	  }
 	// Resets
 	adj = 1;
-        tolerance_count = 0;
+        tol_count = 0;
 	}
      }	
       
