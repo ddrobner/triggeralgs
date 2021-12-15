@@ -19,7 +19,7 @@ void
 TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
   // We only want to form TAs based on Collection Channels (channelID > 1600)
-  if (input_tp.channel > 1600){
+  if (input_tp.channel > 2623){ // Change to 1600 for ProtoDUNESP1ChannelMap
 
 
   // 0) N CHANNELS EXCEEDED ===============================================================================
@@ -151,7 +151,7 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
   // Sort tp_list by increasing value so we can loop through them checking for adjacent hits
   std::vector<int> chanList;
   for (auto tp : m_current_window.tp_list){
-      if((tp.channel > 1600) && (tp.channel < 2140)){ // Avoid wires facing wall/little signal
+      if((tp.channel > 2623) /*&& (tp.channel < 2140)*/){ // Avoid wires facing wall/little signal for ProtoDUNESP1ChannelMap
 	chanList.push_back(tp.channel);
       }
   }
