@@ -57,7 +57,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // than the specified window length, don't add it but check whether the number of hit channels in
   // the existing window is above the specified threshold. If it is, and we are triggering on channels,
   // make a TA and start a fresh window with the current TP.
-  else if(check_adjacency() > m_n_channels_threshold && m_trigger_on_n_channels){
+  else if(m_current_window.n_channels_hit()  > m_n_channels_threshold && m_trigger_on_n_channels){
   //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
    add_window_to_record(m_current_window); // Can remove these after
   // dump_window_record(); // Use this here to get simpler window_record_tam files - Just windows where TAs are made 
