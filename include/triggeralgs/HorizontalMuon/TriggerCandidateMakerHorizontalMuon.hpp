@@ -132,7 +132,7 @@ private:
   // Use any other combination of m_trigger_on_adc and m_trigger_on_n_channels with caution,
   // they have not been tested.
   bool m_trigger_on_adc = false;
-  bool m_trigger_on_n_channels = true;
+  bool m_trigger_on_n_channels = false;
   uint32_t m_adc_threshold = 1200000;
   uint16_t m_n_channels_threshold = 600; // 80ish for frames, O(200 - 600) for tpslink
   timestamp_t m_window_length = 80000;

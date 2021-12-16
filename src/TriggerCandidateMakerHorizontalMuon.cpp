@@ -26,10 +26,13 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
     // If the request has been made to not trigger on number of channels or
     // total adc, simply construct a trigger candidate from any single activity.
     if((!m_trigger_on_adc) && (!m_trigger_on_n_channels)){
+      //add_window_to_record(m_current_window);
+      //dump_window_record();
+      TLOG(1) << "Constructing trivial TC.";
       output_tc.push_back(construct_tc());
       // Clear the current window (only has a single TA in it)
       m_current_window.clear();
-    }
+     }    
     return;
   }
 
@@ -60,6 +63,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
     tc_number++;
     output_tc.push_back(construct_tc());
     m_current_window.reset(input_ta);
+    TLOG(1) << "Should not see this!";
   }
   // If it is not, move the window along.
   else{

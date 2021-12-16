@@ -19,7 +19,7 @@ void
 TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
   // We only want to form TAs based on Collection Channels (channelID > 1600)
-  if (input_tp.channel > 2623){ // Change to 1600 for ProtoDUNESP1ChannelMap
+  if (input_tp.channel > 2623){ // Change to 1600 for ProtoDUNESP1ChannelMap, 2623 for VDColdboxMap
 
 
   // 0) N CHANNELS EXCEEDED ===============================================================================
@@ -59,9 +59,10 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // make a TA and start a fresh window with the current TP.
   else if(m_current_window.n_channels_hit()  > m_n_channels_threshold && m_trigger_on_n_channels){
   //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
-   add_window_to_record(m_current_window); // Can remove these after
-  // dump_window_record(); // Use this here to get simpler window_record_tam files - Just windows where TAs are made 
-   ta_channels++;
+   //add_window_to_record(m_current_window); // Can remove these after
+   //dump_window_record(); // Use this here to get simpler window_record_tam files - Just windows where TAs are made 
+   //ta_channels++;
+   TLOG(1) << "Constructing TA.";
    output_ta.push_back(construct_ta());
    m_current_window.reset(input_tp); 
   }
@@ -89,22 +90,22 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json &config)
     if (config.contains("adj_tolerance")) m_adj_tolerance = config["adj_tolerance"];
     //if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
- // if(m_trigger_on_adc) {
-  //  TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger primitives with times within a "
-   //                        << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger will be issued.";
+ /* if(m_trigger_on_adc) {
+    TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger primitives with times within a "
+                        << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger will be issued.";
   }
- // else if(m_trigger_on_n_channels) {
-  //  TLOG_DEBUG(TRACE_NAME) << "If the total number of channels with hits within a "
-   //                        << m_window_length << " tick time window is above " << m_n_channels_threshold << " channels, a trigger will be issued.";
- // }
- // else if (m_trigger_on_adc && m_trigger_on_n_channels) {
-    /*TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
-           << "unfortunately this is not yet supported. Exiting.";*/
+  else if(m_trigger_on_n_channels) {
+    TLOG_DEBUG(TRACE_NAME) << "If the total number of channels with hits within a "
+                           << m_window_length << " tick time window is above " << m_n_channels_threshold << " channels, a trigger will be issued.";
+  }
+  else if (m_trigger_on_adc && m_trigger_on_n_channels) {
+    TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
+           << "unfortunately this is not yet supported. Exiting.";
     // FIX ME: Logic to throw an exception here.
- // }
+  }*/
   
   //m_conf = config.get<dunedaq::triggeralgs::triggeractivitymakerhorizontalmuon::ConfParams>();
-//}
+}
 
 TriggerActivity
 TriggerActivityMakerHorizontalMuon::construct_ta() const
