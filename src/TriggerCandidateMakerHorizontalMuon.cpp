@@ -126,8 +126,8 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
 
   // Set the time of the candidate equal to the time_start of the window.
   TriggerCandidate tc {
-      m_current_window.time_start, 
-      latest_ta_in_window.tp_list.back().time_start+latest_ta_in_window.tp_list.back().time_over_threshold,  
+      m_current_window.time_start - 30000, 
+      latest_ta_in_window.tp_list.back().time_start+latest_ta_in_window.tp_list.back().time_over_threshold + 30000,  
       m_current_window.time_start,
       detids,
       TriggerCandidate::Type::kHorizontalMuon,
