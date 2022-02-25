@@ -37,7 +37,7 @@ TriggerActivityMakerPrescale::operator()(const TriggerPrimitive& input_tp, std::
     ta.detid = input_tp.detid;
     ta.type = TriggerActivity::Type::kTPC;
     ta.algorithm = TriggerActivity::Algorithm::kPrescale;
-    ta.version = 0;
+
     ta.inputs = tp_list;
 
     output_ta.push_back(ta);

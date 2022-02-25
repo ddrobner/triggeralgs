@@ -32,7 +32,7 @@ TriggerCandidateMakerPrescale::operator()(const TriggerActivity& activity, std::
     tc.detid = activity.detid;
     tc.type = TriggerCandidate::Type::kPrescale;
     tc.algorithm = TriggerCandidate::Algorithm::kPrescale;
-    tc.version = 0;
+
     tc.inputs = ta_list;
 
     cand.push_back(tc);

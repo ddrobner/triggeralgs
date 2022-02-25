@@ -75,7 +75,6 @@ private:
 
     ta.type = m_type;
     ta.algorithm = m_algorithm;
-    ta.version = m_version;
     ta.inputs = m_tp_list;
     return ta;
   }
@@ -92,7 +91,6 @@ private:
   detid_t m_detid = 0;         // NOLINT(build/unsigned)
   TriggerActivity::Type m_type = TriggerActivity::Type::kTPC;
   TriggerActivity::Algorithm m_algorithm = TriggerActivity::Algorithm::kSupernova;
-  version_t m_version = 0;
 
   std::vector<TriggerPrimitive> m_tp_list;
 };

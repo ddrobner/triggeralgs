@@ -32,7 +32,7 @@ TriggerCandidateMakerADCSimpleWindow::operator()(const TriggerActivity& activity
   tc.detid = activity.detid;
   tc.type = TriggerCandidate::Type::kADCSimpleWindow;
   tc.algorithm = TriggerCandidate::Algorithm::kADCSimpleWindow;
-  tc.version = 0;
+
   tc.inputs = ta_list;
 
   cand.push_back(tc);

@@ -30,7 +30,6 @@ TriggerCandidateMakerSupernova::operator()(const TriggerActivity& activity, std:
     tc.detid = detid;
     tc.type = TriggerCandidate::Type::kSupernova; // type ( flag that says what type of trigger might be (e.g. SN/Muon/Beam) )
     tc.algorithm = TriggerCandidate::Algorithm::kSupernova; // algorithm ( flag that says which algorithm created the trigger (e.g. SN/HE/Solar) )
-    tc.version =  0;         // version of the above
     tc.inputs =  m_activity;
 
     m_activity.clear();
