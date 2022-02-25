@@ -20,12 +20,12 @@
 namespace triggeralgs {
 
 // TypeToOverlayType acts as a "map" from a type to its overlay type
-// (eg from TriggerCandidate to TriggerCandidateOverlay). The point of
+// (eg from TriggerCandidate to dunedaq::detdataformats::trigger::TriggerCandidate). The point of
 // having this is so that we can call the various overlay conversion
 // functions below without having to explicitly specify the template
 // arguments. An alternative way to do this would be to have
 // TriggerActivity and TriggerCandidate each contain a using declaration
-// like `using overlay_t = Trigger(Activity|Candidate)Overlay;`, but I
+// like `using overlay_t = dunedaq::detdataformats::trigger::Trigger(Activity|Candidate);`, but I
 // couldn't figure out the right forward declaration for the overlay
 // types in the TriggerCandidate/TriggerActivity header files
 template<class T>
@@ -34,14 +34,14 @@ struct TypeToOverlayType;
 template<>
 struct TypeToOverlayType<TriggerActivity>
 {
-  using overlay_t = dunedaq::detdataformats::trigger::TriggerActivityOverlay;
+  using overlay_t = dunedaq::detdataformats::trigger::TriggerActivity;
   using data_t = dunedaq::detdataformats::trigger::TriggerActivityData;
 };
 
 template<>
 struct TypeToOverlayType<TriggerCandidate>
 {
-  using overlay_t = dunedaq::detdataformats::trigger::TriggerCandidateOverlay;
+  using overlay_t = dunedaq::detdataformats::trigger::TriggerCandidate;
   using data_t = dunedaq::detdataformats::trigger::TriggerCandidateData;
 };
 
@@ -73,9 +73,9 @@ get_overlay_nbytes(const Object& object)
   return sizeof(Overlay) + object.inputs.size() * sizeof(typename Overlay::input_t);
 }
 
-// Given an overlay object (TriggerActivityOverlay or
-// TriggerCandidateOverlay), create a corresponding non-overlay object
-// (TriggerActivity or TriggerCandidate) with the same contents, and return it
+// Given an overlay object (dunedaq::detdataformats::trigger::TriggerActivity or
+// dunedaq::detdataformats::trigger::TriggerCandidate), create a corresponding non-overlay object
+// (triggeralgs::TriggerActivity or triggeralgs::TriggerCandidate) with the same contents, and return it
 template<class Object, class Overlay = typename TypeToOverlayType<Object>::overlay_t,
          class Data = typename TypeToOverlayType<Object>::data_t>
 Object
@@ -95,9 +95,9 @@ read_overlay(const Overlay& overlay)
   return ret;
 }
 
-// Given a buffer containing an overlay object (TriggerActivityOverlay
-// or TriggerCandidateOverlay), create a corresponding non-overlay
-// object (TriggerActivity or TriggerCandidate) with the same
+// Given a buffer containing an overlay object (dunedaq::detdataformats::trigger::TriggerActivity
+// or dunedaq::detdataformats::trigger::TriggerCandidate), create a corresponding non-overlay
+// object (triggeralgs::TriggerActivity or triggeralgs::TriggerCandidate) with the same
 // contents, and return it. This function requires the return type to
 // be explicitly specified as a template argument, unlike the other
 // functions in this file. Eg
