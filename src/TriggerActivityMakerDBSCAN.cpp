@@ -35,41 +35,8 @@ TriggerActivityMakerDBSCAN::operator()(const TriggerPrimitive& input_tp, std::ve
   m_dbscan_clusters.clear();
   m_dbscan->add_primitive(input_tp, &m_dbscan_clusters);
 
-  // if(!m_dbscan_clusters.empty()){
-  //   TLOG(TLVL_DEBUG) << "Got " << m_dbscan_clusters.size() << " clusters";
-  // }
-
   uint64_t t0=m_dbscan->get_first_prim_time();
   
-  // for(auto const& cluster : m_dbscan_clusters){
-  //   auto& ta=output_ta.emplace_back();
-
-  //   ta.time_start = std::numeric_limits<timestamp_t>::max();
-  //   ta.time_end = 0;
-  //   ta.channel_start = std::numeric_limits<channel_t>::max();
-  //   ta.channel_end = 0;
-  //   ta.adc_integral =  0;
-    
-  //   for(auto const& hit : cluster.hits){
-  //     timestamp_t hit_timestamp=t0+static_cast<timestamp_t>(hit->time);
-  //     ta.time_start = std::min(hit_timestamp, ta.time_start);
-  //     ta.time_end = std::max(hit_timestamp, ta.time_end);
-
-  //     ta.channel_start = std::min(hit->chan, ta.channel_start);
-  //     ta.channel_end = std::max(hit->chan, ta.channel_end);
-  //   }
-    
-  //   ta.time_peak = (ta.time_start+ta.time_end)/2;
-  //   ta.time_activity = ta.time_peak;
-
-  //   ta.channel_peak = (ta.channel_start+ta.channel_end)/2;
-
-  //   ta.type = TriggerActivity::Type::kTPC;
-  //   ta.algorithm = TriggerActivity::Algorithm::kDBSCAN;
-  //   ta.version = 1;
-
-  // }
-
   for(auto const& cluster : m_dbscan_clusters){
     auto& ta=output_ta.emplace_back();
 
