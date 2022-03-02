@@ -82,7 +82,7 @@ TriggerActivityMakerDBSCAN::operator()(const TriggerPrimitive& input_tp, std::ve
     for(auto const& hit : cluster.hits){
       auto const& prim=hit->primitive;
 
-      ta.tp_list.push_back(prim);
+      ta.inputs.push_back(prim);
       
       ta.time_start = std::min(prim.time_start, ta.time_start);
       ta.time_end = std::max(prim.time_start + prim.time_over_threshold, ta.time_end);
