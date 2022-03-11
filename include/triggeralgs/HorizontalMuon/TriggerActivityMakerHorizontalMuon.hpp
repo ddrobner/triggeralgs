@@ -10,13 +10,9 @@
 #define TRIGGERALGS_HORIZONTALMUON_TRIGGERACTIVITYMAKERHORIZONTALMUON_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
-
-//#include "triggeralgs/triggeractivitymakerhorizontalmuon/Nljs.hpp"
-
 #include <fstream>
 #include <vector>
 
-// Include detchannelmaps for adjacency checking
 namespace triggeralgs {
 class TriggerActivityMakerHorizontalMuon : public TriggerActivityMaker
 {
@@ -25,8 +21,6 @@ public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
   
   void configure(const nlohmann::json &config);
-
-  //void flush(timestamp_t, std::vector<TriggerActivity>& output_ta);
 
 private:  
   class Window {
@@ -95,12 +89,12 @@ private:
         //std::cout << "Number of channels hit: " << n_channels_hit() << std::endl; 
       };
        friend std::ostream& operator<<(std::ostream& os, const Window& window){
-  //      if(window.is_empty()) os << "Window is empty!\n";
-  //      else{
-  //       os << "Window start: " << window.time_start << ", end: " << window.tp_list.back().time_start;
-  //       os << ". Total of: " << window.adc_integral << " ADC counts with " << window.tp_list.size() << " TPs.\n"; 
-  //       os << window.channel_states.size() << " independent channels have hits.\n"; 
-  //      }
+        if(window.is_empty()) os << "Window is empty!\n";
+        else{
+         os << "Window start: " << window.time_start << ", end: " << window.tp_list.back().time_start;
+         os << ". Total of: " << window.adc_integral << " ADC counts with " << window.tp_list.size() << " TPs.\n"; 
+         os << window.channel_states.size() << " independent channels have hits.\n"; 
+        }
         return os;
       };
 
@@ -116,17 +110,22 @@ private:
   Window m_current_window;
   uint64_t m_primitive_count = 0;
 
+  int check_tot() const;
+
   // Configurable parameters.
   //triggeractivitymakerhorizontalmuon::ConfParams m_conf;
   bool m_trigger_on_adc = false;
-  bool m_trigger_on_n_channels = true;
+  bool m_trigger_on_n_channels = false;
+  bool m_trigger_on_adjacency = true;  // Default use of the horizontal muon triggering
+  uint16_t m_adjacency_threshold = 15; // Default is 15 for trigger
   uint32_t m_adc_threshold = 3000000; // Not currently triggering on this
   uint16_t m_n_channels_threshold = 400; // Set this to ~80 for frames.bin, ~150-300 for tps_link_11.txt
-  int m_adj_tolerance = 2; // Adjacency tolerance - default is 2.
+  uint16_t m_adj_tolerance = 3; // Adjacency tolerance - default is 3 from coldbox testing.
   int index = 0;
-  int ta_adc = 0;
-  int ta_channels = 0;
+  uint16_t ta_adc = 0;
+  uint16_t ta_channels = 0;
   timestamp_t m_window_length = 100000;
+  
   // Might not be the best type for this map.
   //std::unordered_map<std::pair<detid_t,channel_t>,channel_t> m_channel_map;
 
