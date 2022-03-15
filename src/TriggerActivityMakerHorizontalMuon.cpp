@@ -55,9 +55,10 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // triggering on channel multiplicity, make a TA and start a fresh window with the current TP.
   else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
  
-   // add_window_to_record(m_current_window); // For debugging
-   // dump_window_record(); // For debugging
- 
+    add_window_to_record(m_current_window); // For debugging
+    dump_window_record(); // For debugging
+    TLOG(1) << "Triggering on multiplicity!"; // For debugging
+  
    output_ta.push_back(construct_ta());
    m_current_window.reset(input_tp); 
   }
@@ -69,7 +70,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // on adjacency, then create a TA and reset the window with the new/current TP.
   else if(check_adjacency() > m_adjacency_threshold &&  m_trigger_on_adjacency){
    
-   // TLOG(1) << "Triggering on adjacency!"; // For debugging
+   TLOG(1) << "Triggering on adjacency!"; // For debugging
 
    output_ta.push_back(construct_ta());
    m_current_window.reset(input_tp);
@@ -107,8 +108,24 @@ TriggerActivity
 TriggerActivityMakerHorizontalMuon::construct_ta() const
 {
   
-  TriggerPrimitive latest_tp_in_window = m_current_window.tp_list.back();
-  TriggerActivity ta{m_current_window.time_start, 
+  TriggerPrimitive latest_tp_in_window = m_current_window.inputs.back();
+
+  TriggerActivity ta;
+  ta.time_start = m_current_window.time_start;
+  ta.time_end = latest_tp_in_window.time_start + latest_tp_in_window.time_over_threshold;
+  ta.time_peak = latest_tp_in_window.time_peak;
+  ta.time_activity = latest_tp_in_window.time_peak;
+  ta.channel_start = latest_tp_in_window.channel;
+  ta.channel_end = latest_tp_in_window.channel;
+  ta.channel_peak = latest_tp_in_window.channel;
+  ta.adc_integral = m_current_window.adc_integral;
+  ta.adc_peak = latest_tp_in_window.adc_peak;
+  ta.detid = latest_tp_in_window.detid;
+  ta.type = TriggerActivity::Type::kTPC;
+  ta.algorithm = TriggerActivity::Algorithm::kADCSimpleWindow;
+  ta.inputs = m_current_window.inputs;
+
+/*  TriggerActivity ta{m_current_window.time_start, 
                      latest_tp_in_window.time_start+latest_tp_in_window.time_over_threshold,
                      latest_tp_in_window.time_peak,
                      latest_tp_in_window.time_peak,
@@ -121,7 +138,7 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
                      TriggerActivity::Type::kTPC,
                      TriggerActivity::Algorithm::kHorizontalMuon, 
                      0,
-                     m_current_window.tp_list}; 
+                     m_current_window.inputs};*/ 
   return ta;
 }
 
@@ -142,7 +159,7 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 
   // Generate a channelID ordered list of hit channels for this window
   std::vector<int> chanList;
-  for (auto tp : m_current_window.tp_list){
+  for (auto tp : m_current_window.inputs){
 	chanList.push_back(tp.channel);
   }
   std::sort(chanList.begin(), chanList.end());
@@ -228,13 +245,13 @@ TriggerActivityMakerHorizontalMuon::dump_window_record()
 
    for(auto window : m_window_record){
     outfile << window.time_start << ",";
-    outfile << window.tp_list.back().time_start << ",";
-    outfile << window.tp_list.back().time_start - window.time_start << ","; // window_length - from TP start times
+    outfile << window.inputs.back().time_start << ",";
+    outfile << window.inputs.back().time_start - window.time_start << ","; // window_length - from TP start times
     outfile << window.adc_integral << ","; 	    
     outfile << window.n_channels_hit() << ",";       // Number of unique channels with hits
-    outfile << window.tp_list.size() << ",";         // Number of TPs in Window
-    outfile << window.tp_list.back().channel<< ",";  // Last TP Channel ID
-    outfile << window.tp_list.front().channel<< ","; // First TP Channel ID
+    outfile << window.inputs.size() << ",";         // Number of TPs in Window
+    outfile << window.inputs.back().channel<< ",";  // Last TP Channel ID
+    outfile << window.inputs.front().channel<< ","; // First TP Channel ID
     outfile << check_adjacency() << ",";             // New adjacency value for the window
     outfile << check_tot() << std::endl;             // Summed window TOT
   }
@@ -274,7 +291,7 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
   // Here, we just want to sum up all the tot values for each TP within window, and return this tot of the window.
   int window_tot = 0; // The window TOT, which this function returns
 
-  for(auto tp : m_current_window.tp_list){
+  for(auto tp : m_current_window.inputs){
    window_tot += tp.time_over_threshold;
   }  
 

@@ -26,16 +26,16 @@ private:
   class Window {
     public:
       bool is_empty() const{
-        return tp_list.empty();
+        return inputs.empty();
       };
       void add(TriggerPrimitive const &input_tp){
         // Add the input TP's contribution to the total ADC, increase hit channel's hit count and add it to the TP list.
         adc_integral += input_tp.adc_integral;
         channel_states[input_tp.channel]++;
-        tp_list.push_back(input_tp);
+        inputs.push_back(input_tp);
       };
       void clear(){
-        tp_list.clear();
+        inputs.clear();
       };
       uint16_t n_channels_hit(){
         return channel_states.size();
@@ -47,7 +47,7 @@ private:
         // Substract those TPs' contribution from the total window ADC and remove their
         // contributions to the hit counts.
         uint32_t n_tps_to_erase = 0;
-        for(auto tp : tp_list){
+        for(auto tp : inputs){
           if(!(input_tp.time_start-tp.time_start < window_length)){
             n_tps_to_erase++;
             adc_integral -= tp.adc_integral;
@@ -60,11 +60,11 @@ private:
           else break;
         }
         // Erase the TPs from the window.
-        tp_list.erase(tp_list.begin(), tp_list.begin()+n_tps_to_erase);
+        inputs.erase(inputs.begin(), inputs.begin()+n_tps_to_erase);
         // Make the window start time the start time of what is now the first TP.
  
-	  if(!(tp_list.size()==0)){
-          time_start = tp_list.front().time_start;
+	  if(!(inputs.size()==0)){
+          time_start = inputs.front().time_start;
           add(input_tp);
           }
           else{
@@ -77,7 +77,7 @@ private:
 
         // Empty the channel and TP lists.
         channel_states.clear();
-        tp_list.clear();
+        inputs.clear();
         // Set the start time of the window to be the start time of theinput_tp.
         time_start = input_tp.time_start;
         // Start the total ADC integral.
@@ -85,14 +85,14 @@ private:
         // Start hit count for the hit channel.
         channel_states[input_tp.channel]++;
         // Add the input TP to the TP list.
-        tp_list.push_back(input_tp);
+        inputs.push_back(input_tp);
         //std::cout << "Number of channels hit: " << n_channels_hit() << std::endl; 
       };
        friend std::ostream& operator<<(std::ostream& os, const Window& window){
         if(window.is_empty()) os << "Window is empty!\n";
         else{
-         os << "Window start: " << window.time_start << ", end: " << window.tp_list.back().time_start;
-         os << ". Total of: " << window.adc_integral << " ADC counts with " << window.tp_list.size() << " TPs.\n"; 
+         os << "Window start: " << window.time_start << ", end: " << window.inputs.back().time_start;
+         os << ". Total of: " << window.adc_integral << " ADC counts with " << window.inputs.size() << " TPs.\n"; 
          os << window.channel_states.size() << " independent channels have hits.\n"; 
         }
         return os;
@@ -101,7 +101,7 @@ private:
       timestamp_t time_start;
       uint32_t adc_integral;
       std::unordered_map<channel_t,uint16_t> channel_states;
-      std::vector<TriggerPrimitive> tp_list;
+      std::vector<TriggerPrimitive> inputs;
   };
 
   TriggerActivity construct_ta() const;
@@ -115,7 +115,7 @@ private:
   // Configurable parameters.
   //triggeractivitymakerhorizontalmuon::ConfParams m_conf;
   bool m_trigger_on_adc = false;
-  bool m_trigger_on_n_channels = false;
+  bool m_trigger_on_n_channels = true;
   bool m_trigger_on_adjacency = true;  // Default use of the horizontal muon triggering
   uint16_t m_adjacency_threshold = 15; // Default is 15 for trigger
   uint32_t m_adc_threshold = 3000000; // Not currently triggering on this

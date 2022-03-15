@@ -16,11 +16,14 @@
 using namespace triggeralgs;
 
 void
-TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta, std::vector<TriggerCandidate>& output_tc)
-{ 
+TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity, std::vector<TriggerCandidate>& output_tc)
+{
+
+  std::vector<TriggerActivity::TriggerActivityData> ta_list = {static_cast<TriggerActivity::TriggerActivityData>(activity)};
+ 
   // The first time operator is called, reset window object.
   if(m_current_window.is_empty()){
-    m_current_window.reset(input_ta);
+    m_current_window.reset(activity);
     m_activity_count++;
     // Trivial TC Logic:
     // If the request has been made to not trigger on number of channels or
@@ -29,7 +32,19 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
       //add_window_to_record(m_current_window);
       //dump_window_record();
       TLOG(1) << "Constructing trivial TC.";
-      output_tc.push_back(construct_tc());
+      
+      TriggerCandidate tc;
+      tc.time_start = activity.time_start;
+      tc.time_end = activity.time_end;
+      tc.time_candidate = activity.time_activity;
+      tc.detid = activity.detid;
+      tc.type = TriggerCandidate::Type::kADCSimpleWindow;
+      tc.algorithm = TriggerCandidate::Algorithm::kADCSimpleWindow;
+
+      tc.inputs = ta_list;
+
+      output_tc.push_back(tc);
+
       // Clear the current window (only has a single TA in it)
       m_current_window.clear();
      }    
@@ -41,9 +56,9 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
 
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
-  if((input_ta.time_start - m_current_window.time_start) < m_window_length){
-    //TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the input_ta to the window.";
-    m_current_window.add(input_ta);
+  if((activity.time_start - m_current_window.time_start) < m_window_length){
+    //TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the activity to the window.";
+    m_current_window.add(activity);
   }
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the sum of all adc in
@@ -51,9 +66,19 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
   // make a TA and start a fresh window with the current TP.
   else if(m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc){
     //TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    output_tc.push_back(construct_tc());
-    //TLOG_DEBUG(TRACE_NAME) << "Resetting window with input_ta.";
-    m_current_window.reset(input_ta);
+    TriggerCandidate tc;
+    tc.time_start = activity.time_start;
+    tc.time_end = activity.time_end;
+    tc.time_candidate = activity.time_activity;
+    tc.detid = activity.detid;
+    tc.type = TriggerCandidate::Type::kADCSimpleWindow;
+    tc.algorithm = TriggerCandidate::Algorithm::kADCSimpleWindow;
+
+    tc.inputs = ta_list;
+
+    output_tc.push_back(tc);
+    //TLOG_DEBUG(TRACE_NAME) << "Resetting window with activity.";
+    m_current_window.reset(activity);
   }
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the number of hit channels in
@@ -61,14 +86,14 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& input_ta,
   // make a TC and start a fresh window with the current TA.
   else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
     tc_number++;
-    output_tc.push_back(construct_tc());
-    m_current_window.reset(input_ta);
+   //   output_tc.push_back(construct_tc());
+    m_current_window.reset(activity);
     TLOG(1) << "Should not see this!";
   }
   // If it is not, move the window along.
   else{
     //TLOG_DEBUG(TRACE_NAME) << "Window is at required length but specified threshold not met, shifting window along.";
-    m_current_window.move(input_ta, m_window_length);
+    m_current_window.move(activity, m_window_length);
   }
   
   //TLOG_DEBUG(TRACE_NAME) << m_current_window;
@@ -117,14 +142,24 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
 {
   //TLOG_DEBUG(TRACE_NAME) << "I am constructing a trigger candidate!";
 
-  TriggerActivity latest_ta_in_window = m_current_window.ta_list.back();
+  TriggerActivity latest_ta_in_window = m_current_window.inputs.back();
 
   std::vector<detid_t> detids;
-  for(TriggerActivity ta : m_current_window.ta_list) detids.push_back(ta.detid);
+  for(TriggerActivity ta : m_current_window.inputs) detids.push_back(ta.detid);
 
   //TLOG_DEBUG(TRACE_NAME) << "Emitting an HorizontalMuon TriggerCandidate " << (m_activity_count-1);
 
-  // Set the time of the candidate equal to the time_start of the window.
+  TriggerCandidate tc;
+ /* tc.time_start = activity.time_start;
+  tc.time_end = activity.time_end;
+  tc.time_candidate = activity.time_activity;
+  tc.detid = activity.detid;
+  tc.type = TriggerCandidate::Type::kADCSimpleWindow;
+  tc.algorithm = TriggerCandidate::Algorithm::kADCSimpleWindow;
+
+  tc.inputs = inputs;  
+
+// Set the time of the candidate equal to the time_start of the window.
   TriggerCandidate tc {
       m_current_window.time_start - 30000, 
       latest_ta_in_window.tp_list.back().time_start+latest_ta_in_window.tp_list.back().time_over_threshold + 30000,  
@@ -133,8 +168,8 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
       TriggerCandidate::Type::kHorizontalMuon,
       TriggerCandidate::Algorithm::kHorizontalMuon,
       0,
-      m_current_window.ta_list
-  };
+      m_current_window.inputs
+  };*/
 
   return tc;
 }
@@ -163,11 +198,11 @@ TriggerCandidateMakerHorizontalMuon::dump_window_record()
 
   for(auto window : m_window_record){
     outfile << window.time_start << ",";
-    outfile << window.ta_list.back().time_start << ",";
-    outfile << window.ta_list.back().time_start-window.time_start << ",";
+    outfile << window.inputs.back().time_start << ",";
+    outfile << window.inputs.back().time_start-window.time_start << ",";
     outfile << window.adc_integral << ",";
     outfile << window.n_channels_hit() << ",";
-    outfile << window.ta_list.size() << std::endl;
+    outfile << window.inputs.size() << std::endl;
   }
 
   outfile.close();
