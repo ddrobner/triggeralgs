@@ -55,9 +55,9 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // triggering on channel multiplicity, make a TA and start a fresh window with the current TP.
   else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
  
-    add_window_to_record(m_current_window); // For debugging
-    dump_window_record(); // For debugging
-    TLOG(1) << "Triggering on multiplicity!"; // For debugging
+   // add_window_to_record(m_current_window); // For debugging
+   // dump_window_record(); // For debugging
+   // TLOG(1) << "Emitting multiplicity trigger."; // For debugging
   
    output_ta.push_back(construct_ta());
    m_current_window.reset(input_tp); 
@@ -70,7 +70,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // on adjacency, then create a TA and reset the window with the new/current TP.
   else if(check_adjacency() > m_adjacency_threshold &&  m_trigger_on_adjacency){
    
-   TLOG(1) << "Triggering on adjacency!"; // For debugging
+  // TLOG(1) << "Emitting adjacency trigger."; // For debugging
 
    output_ta.push_back(construct_ta());
    m_current_window.reset(input_tp);
