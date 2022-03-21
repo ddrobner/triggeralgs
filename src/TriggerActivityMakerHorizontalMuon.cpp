@@ -122,7 +122,7 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
   ta.adc_peak = latest_tp_in_window.adc_peak;
   ta.detid = latest_tp_in_window.detid;
   ta.type = TriggerActivity::Type::kTPC;
-  ta.algorithm = TriggerActivity::Algorithm::kADCSimpleWindow;
+  ta.algorithm = TriggerActivity::Algorithm::kHorizontalMuon;
   ta.inputs = m_current_window.inputs;
 
 /*  TriggerActivity ta{m_current_window.time_start, 
