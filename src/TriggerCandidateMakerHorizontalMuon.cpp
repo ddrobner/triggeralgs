@@ -38,8 +38,8 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
       tc.time_end = activity.time_end;
       tc.time_candidate = activity.time_activity;
       tc.detid = activity.detid;
-      tc.type = TriggerCandidate::Type::kADCSimpleWindow;
-      tc.algorithm = TriggerCandidate::Algorithm::kADCSimpleWindow;
+      tc.type = TriggerCandidate::Type::kHorizontalMuon;
+      tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;
 
       tc.inputs = ta_list;
 
@@ -71,8 +71,8 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
     tc.time_end = activity.time_end;
     tc.time_candidate = activity.time_activity;
     tc.detid = activity.detid;
-    tc.type = TriggerCandidate::Type::kADCSimpleWindow;
-    tc.algorithm = TriggerCandidate::Algorithm::kADCSimpleWindow;
+    tc.type = TriggerCandidate::Type::kHorizontalMuon;
+    tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;
 
     tc.inputs = ta_list;
 
