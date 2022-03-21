@@ -17,74 +17,70 @@ void
 TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
                                                std::vector<TriggerActivity>& output_ta)
 {
-  // We only want to form TAs based on Collection Channels (channelID > 1600 for ProtoDUNE, or 2623 < channelID < 3200
-  // for coldBox)
-  if (input_tp.channel > 2623 && input_tp.channel < 3200) {
+  // dump_tp(input_tp); // For debugging
 
-    // dump_tp(input_tp); // For debugging
-
-    // 0) FIRST TP =============================================================================================
-    // The first time operator() is called, reset the window object.
-    if (m_current_window.is_empty()) {
-      m_current_window.reset(input_tp);
-      m_primitive_count++;
-      return;
-    }
-
-    // FIX ME: Only want to call this if running in debug mode.
-    // add_window_to_record(m_current_window);
-
-    // If the difference between the current TP's start time and the start of the window
-    // is less than the specified window size, add the TP to the window.
-    if ((input_tp.time_start - m_current_window.time_start) < m_window_length) {
-      m_current_window.add(input_tp);
-    }
-
-    // 1) ADC THRESHOLD EXCEEDED ===============================================================================
-    // If the addition of the current TP to the window would make it longer specified
-    // window length, don't add it but check whether the ADC integral if the existing
-    // window is above the configured threshold. If it is, and we are triggering on ADC,
-    // make a TA and start a fresh window with the current TP.
-    else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
-      output_ta.push_back(construct_ta());
-      m_current_window.reset(input_tp);
-    }
-
-    // 2) N UNQIUE CHANNELS EXCEEDED ===========================================================================
-    // If the addition of the current TP to the window would make it longer than the
-    // specified window length, don't add it but check whether the number of hit channels
-    // in the existing window is above the specified threshold. If it is, and we are
-    // triggering on channel multiplicity, make a TA and start a fresh window with the current TP.
-    else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
-
-      // add_window_to_record(m_current_window); // For debugging
-      // dump_window_record(); // For debugging
-      // TLOG(1) << "Emitting multiplicity trigger."; // For debugging
-
-      output_ta.push_back(construct_ta());
-      m_current_window.reset(input_tp);
-    }
-
-    // 3) ADJACENCY THRESHOLD EXCEEDED =========================================================================
-    // If the addition of the current TP to the window would make it longer than the
-    // specified window length, don't add it but check whether the adjacency of the
-    // current window exceeds the configured threshold. If it does, and we are triggering
-    // on adjacency, then create a TA and reset the window with the new/current TP.
-    else if (check_adjacency() > m_adjacency_threshold && m_trigger_on_adjacency) {
-
-      // TLOG(1) << "Emitting adjacency trigger."; // For debugging
-
-      output_ta.push_back(construct_ta());
-      m_current_window.reset(input_tp);
-    }
-
-    // Otherwise, slide the window along using the current TP.
-    else {
-      m_current_window.move(input_tp, m_window_length);
-    }
-
+  // 0) FIRST TP =============================================================================================
+  // The first time operator() is called, reset the window object.
+  if (m_current_window.is_empty()) {
+    m_current_window.reset(input_tp);
     m_primitive_count++;
-  } // Collection channel condition
+    return;
+  }
+
+  // FIX ME: Only want to call this if running in debug mode.
+  // add_window_to_record(m_current_window);
+
+  // If the difference between the current TP's start time and the start of the window
+  // is less than the specified window size, add the TP to the window.
+  if ((input_tp.time_start - m_current_window.time_start) < m_window_length) {
+    m_current_window.add(input_tp);
+  }
+
+  // 1) ADC THRESHOLD EXCEEDED ===============================================================================
+  // If the addition of the current TP to the window would make it longer specified
+  // window length, don't add it but check whether the ADC integral if the existing
+  // window is above the configured threshold. If it is, and we are triggering on ADC,
+  // make a TA and start a fresh window with the current TP.
+  else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
+    output_ta.push_back(construct_ta());
+    m_current_window.reset(input_tp);
+  }
+
+  // 2) N UNQIUE CHANNELS EXCEEDED ===========================================================================
+  // If the addition of the current TP to the window would make it longer than the
+  // specified window length, don't add it but check whether the number of hit channels
+  // in the existing window is above the specified threshold. If it is, and we are
+  // triggering on channel multiplicity, make a TA and start a fresh window with the current TP.
+  else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
+
+    // add_window_to_record(m_current_window); // For debugging
+    // dump_window_record(); // For debugging
+    // TLOG(1) << "Emitting multiplicity trigger."; // For debugging
+
+    output_ta.push_back(construct_ta());
+    m_current_window.reset(input_tp);
+  }
+
+  // 3) ADJACENCY THRESHOLD EXCEEDED =========================================================================
+  // If the addition of the current TP to the window would make it longer than the
+  // specified window length, don't add it but check whether the adjacency of the
+  // current window exceeds the configured threshold. If it does, and we are triggering
+  // on adjacency, then create a TA and reset the window with the new/current TP.
+  else if (check_adjacency() > m_adjacency_threshold && m_trigger_on_adjacency) {
+
+    // TLOG(1) << "Emitting adjacency trigger."; // For debugging
+
+    output_ta.push_back(construct_ta());
+    m_current_window.reset(input_tp);
+  }
+
+  // Otherwise, slide the window along using the current TP.
+  else {
+    m_current_window.move(input_tp, m_window_length);
+  }
+
+  m_primitive_count++;
+
   return;
 }
 
