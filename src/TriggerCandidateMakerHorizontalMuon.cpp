@@ -147,13 +147,18 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
 
   TriggerCandidate tc;
   tc.time_start = m_current_window.time_start - 30000;
-  tc.time_end = latest_ta_in_window.tp_list.back().time_start+latest_ta_in_window.tp_list.back().time_over_threshold + 30000;
+  tc.time_end = latest_ta_in_window.inputs.back().time_start+latest_ta_in_window.inputs.back().time_over_threshold + 30000;
   tc.time_candidate = m_current_window.time_start,
-  tc.detid = activity.detid;
+  tc.detid = latest_ta_in_window.detid;
   tc.type = TriggerCandidate::Type::kHorizontalMuon,
   tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;
 
-  tc.inputs = m_current_window.inputs;  
+  // Take the list of triggeralgs::TriggerActivity in the current
+  // window and convert them (implicitly) to detdataformats'
+  // TriggerActivityData, which is the base class of TriggerActivity
+  for (auto& ta : m_current_window.inputs) {
+    tc.inputs.push_back(ta);
+  }
 
   return tc;
 }
