@@ -140,36 +140,20 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json &config)
 TriggerCandidate
 TriggerCandidateMakerHorizontalMuon::construct_tc() const
 {
-  //TLOG_DEBUG(TRACE_NAME) << "I am constructing a trigger candidate!";
-
   TriggerActivity latest_ta_in_window = m_current_window.inputs.back();
 
   std::vector<detid_t> detids;
   for(TriggerActivity ta : m_current_window.inputs) detids.push_back(ta.detid);
 
-  //TLOG_DEBUG(TRACE_NAME) << "Emitting an HorizontalMuon TriggerCandidate " << (m_activity_count-1);
-
   TriggerCandidate tc;
- /* tc.time_start = activity.time_start;
-  tc.time_end = activity.time_end;
-  tc.time_candidate = activity.time_activity;
+  tc.time_start = m_current_window.time_start - 30000;
+  tc.time_end = latest_ta_in_window.tp_list.back().time_start+latest_ta_in_window.tp_list.back().time_over_threshold + 30000;
+  tc.time_candidate = m_current_window.time_start,
   tc.detid = activity.detid;
-  tc.type = TriggerCandidate::Type::kADCSimpleWindow;
-  tc.algorithm = TriggerCandidate::Algorithm::kADCSimpleWindow;
+  tc.type = TriggerCandidate::Type::kHorizontalMuon,
+  tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;
 
-  tc.inputs = inputs;  
-
-// Set the time of the candidate equal to the time_start of the window.
-  TriggerCandidate tc {
-      m_current_window.time_start - 30000, 
-      latest_ta_in_window.tp_list.back().time_start+latest_ta_in_window.tp_list.back().time_over_threshold + 30000,  
-      m_current_window.time_start,
-      detids,
-      TriggerCandidate::Type::kHorizontalMuon,
-      TriggerCandidate::Algorithm::kHorizontalMuon,
-      0,
-      m_current_window.inputs
-  };*/
+  tc.inputs = m_current_window.inputs;  
 
   return tc;
 }
