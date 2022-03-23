@@ -117,6 +117,7 @@ private:
   bool m_trigger_on_n_channels = true;
   bool m_trigger_on_adjacency = true;    // Default use of the horizontal muon triggering
   uint16_t m_adjacency_threshold = 15;   // Default is 15 for trigger
+  int m_max_adjacency = 0;               // The maximum adjacency seen so far in any window
   uint32_t m_adc_threshold = 3000000;    // Not currently triggering on this
   uint16_t m_n_channels_threshold = 400; // Set this to ~80 for frames.bin, ~150-300 for tps_link_11.txt
   uint16_t m_adj_tolerance = 3;          // Adjacency tolerance - default is 3 from coldbox testing.
