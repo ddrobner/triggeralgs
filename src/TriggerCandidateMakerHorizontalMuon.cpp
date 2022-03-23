@@ -105,6 +105,11 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
       m_n_channels_threshold = config["n_channels_threshold"];
     if (config.contains("window_length"))
       m_window_length = config["window_length"];
+    if (config.contains("readout_window_ticks_before"))
+      m_readout_window_ticks_before = config["readout_window_ticks_before"];
+    if (config.contains("readout_window_ticks_after"))
+      m_readout_window_ticks_after = config["readout_window_ticks_after"];
+
     // if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
   /*if(m_trigger_on_adc) {
@@ -135,9 +140,9 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
   TriggerActivity latest_ta_in_window = m_current_window.inputs.back();
 
   TriggerCandidate tc;
-  tc.time_start = m_current_window.time_start - 30000;
+  tc.time_start = m_current_window.time_start - m_readout_window_ticks_before;
   tc.time_end =
-    latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold + 30000;
+    latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold + m_readout_window_ticks_after;
   tc.time_candidate = m_current_window.time_start;
   tc.detid = latest_ta_in_window.detid;
   tc.type = TriggerCandidate::Type::kHorizontalMuon;
