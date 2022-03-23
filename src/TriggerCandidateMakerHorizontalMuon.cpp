@@ -35,16 +35,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
       // dump_window_record();
       TLOG(1) << "Constructing trivial TC.";
 
-      TriggerCandidate tc;
-      tc.time_start = activity.time_start;
-      tc.time_end = activity.time_end;
-      tc.time_candidate = activity.time_activity;
-      tc.detid = activity.detid;
-      tc.type = TriggerCandidate::Type::kHorizontalMuon;
-      tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;
-
-      tc.inputs = ta_list;
-
+      TriggerCandidate tc = construct_tc();
       output_tc.push_back(tc);
 
       // Clear the current window (only has a single TA in it)
@@ -68,15 +59,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   // make a TA and start a fresh window with the current TP.
   else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
     // TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    TriggerCandidate tc;
-    tc.time_start = activity.time_start;
-    tc.time_end = activity.time_end;
-    tc.time_candidate = activity.time_activity;
-    tc.detid = activity.detid;
-    tc.type = TriggerCandidate::Type::kHorizontalMuon;
-    tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;
-
-    tc.inputs = ta_list;
+    TriggerCandidate tc = construct_tc();
 
     output_tc.push_back(tc);
     // TLOG_DEBUG(TRACE_NAME) << "Resetting window with activity.";
