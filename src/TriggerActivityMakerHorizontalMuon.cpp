@@ -66,7 +66,8 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // specified window length, don't add it but check whether the adjacency of the
   // current window exceeds the configured threshold. If it does, and we are triggering
   // on adjacency, then create a TA and reset the window with the new/current TP.
-  else if (m_trigger_on_adjacency) {
+  else if (check_adjacency() > m_adjacency_threshold &&  m_trigger_on_adjacency) {
+    
     auto adjacency = check_adjacency();
     if (adjacency > m_max_adjacency) {
       TLOG(TLVL_DEBUG) << "New max adjacency: previous was " << m_max_adjacency << ", new " << adjacency;
