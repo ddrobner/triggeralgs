@@ -114,7 +114,7 @@ private:
   // Configurable parameters.
   // triggeractivitymakerhorizontalmuon::ConfParams m_conf;
   bool m_trigger_on_adc = false;
-  bool m_trigger_on_n_channels = true;
+  bool m_trigger_on_n_channels = false;
   bool m_trigger_on_adjacency = true;    // Default use of the horizontal muon triggering
   uint16_t m_adjacency_threshold = 15;   // Default is 15 for trigger
   int m_max_adjacency = 0;               // The maximum adjacency seen so far in any window

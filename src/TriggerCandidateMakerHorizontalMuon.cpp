@@ -31,9 +31,10 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
     // If the request has been made to not trigger on number of channels or
     // total adc, simply construct a trigger candidate from any single activity.
     if ((!m_trigger_on_adc) && (!m_trigger_on_n_channels)) {
+
       // add_window_to_record(m_current_window);
       // dump_window_record();
-      TLOG(1) << "Constructing trivial TC.";
+      // TLOG(1) << "Constructing trivial TC.";
 
       TriggerCandidate tc = construct_tc();
       output_tc.push_back(tc);

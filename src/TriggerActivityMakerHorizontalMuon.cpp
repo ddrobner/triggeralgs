@@ -77,6 +77,10 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     if (adjacency > m_adjacency_threshold) {
       TLOG(TLVL_DEBUG) << "Emitting adjacency TA with adjacency " << adjacency;
 
+     // Testing Functions
+     //add_window_to_record(m_current_window); // For debugging
+     //dump_window_record(); // For debugging
+
       output_ta.push_back(construct_ta());
       m_current_window.reset(input_tp);
     }
