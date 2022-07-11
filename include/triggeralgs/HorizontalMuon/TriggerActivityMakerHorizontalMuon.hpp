@@ -29,7 +29,8 @@ private:
     bool is_empty() const { return inputs.empty(); };
     void add(TriggerPrimitive const& input_tp)
     {
-      // Add the input TP's contribution to the total ADC, increase hit channel's hit count and add it to the TP list.
+      // Add the input TP's contribution to the total ADC, increase hit 
+      // channel's hit count and add it to the TP list.
       adc_integral += input_tp.adc_integral;
       channel_states[input_tp.channel]++;
       inputs.push_back(input_tp);
@@ -65,7 +66,6 @@ private:
         time_start = inputs.front().time_start;
         add(input_tp);
       } else {
-        // std::cout << "Resetting window." << std::endl;
         reset(input_tp);
       }
     };
@@ -87,8 +87,7 @@ private:
     };
     friend std::ostream& operator<<(std::ostream& os, const Window& window)
     {
-      if (window.is_empty())
-        os << "Window is empty!\n";
+      if (window.is_empty()) {os << "Window is empty!\n";}
       else {
         os << "Window start: " << window.time_start << ", end: " << window.inputs.back().time_start;
         os << ". Total of: " << window.adc_integral << " ADC counts with " << window.inputs.size() << " TPs.\n";
@@ -104,19 +103,17 @@ private:
   };
 
   TriggerActivity construct_ta() const;
-  int check_adjacency() const;
+  uint16_t check_adjacency() const; // Returns longest string of adjacent collection hits in window
 
   Window m_current_window;
   uint64_t m_primitive_count = 0;
-
   int check_tot() const;
 
   // Configurable parameters.
-  // triggeractivitymakerhorizontalmuon::ConfParams m_conf;
   bool m_trigger_on_adc = false;
   bool m_trigger_on_n_channels = false;
   bool m_trigger_on_adjacency = true;    // Default use of the horizontal muon triggering
-  uint16_t m_adjacency_threshold = 15;   // Default is 15 for trigger
+  uint16_t m_adjacency_threshold = 15;   // Default is 15 wire track for testing
   int m_max_adjacency = 0;               // The maximum adjacency seen so far in any window
   uint32_t m_adc_threshold = 3000000;    // Not currently triggering on this
   uint16_t m_n_channels_threshold = 400; // Set this to ~80 for frames.bin, ~150-300 for tps_link_11.txt
@@ -124,10 +121,7 @@ private:
   int index = 0;
   uint16_t ta_adc = 0;
   uint16_t ta_channels = 0;
-  timestamp_t m_window_length = 100000;
-
-  // Might not be the best type for this map.
-  // std::unordered_map<std::pair<detid_t,channel_t>,channel_t> m_channel_map;
+  timestamp_t m_window_length = 8000;    // Shouldn't exceed the max drift
 
   // For debugging purposes.
   void add_window_to_record(Window window);
