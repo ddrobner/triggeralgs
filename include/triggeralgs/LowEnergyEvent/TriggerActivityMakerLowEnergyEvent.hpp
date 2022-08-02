@@ -14,6 +14,13 @@
 #include <fstream>
 #include <vector>
 
+#include <chrono>
+#include <map>
+#include <memory>
+#include <string>
+#include <unordered_set>
+#include <utility>
+
 namespace triggeralgs {
 class TriggerActivityMakerLowEnergyEvent : public TriggerActivityMaker
 {
@@ -27,6 +34,9 @@ private:
   class Window
   {
   public:
+    // Channel map object, for separating TPs by the plane view they come from
+    std::shared_ptr<detchannelmaps::TPCChannelMap> channelMap;
+    
     bool is_empty() const { return inputs.empty(); };
     void add(TriggerPrimitive const& input_tp)
     {
@@ -102,6 +112,9 @@ private:
     std::unordered_map<channel_t, uint16_t> channel_states;
     std::vector<TriggerPrimitive> inputs;
   };
+
+  // Channel map object, for separating TPs by the plane view they come from
+  // std::shared_ptr<detchannelmaps::TPCChannelMap> channelMap;
 
   TriggerActivity construct_ta(Window m_current_window) const;
   uint16_t check_adjacency(Window window) const; // Returns longest string of adjacent collection hits in window
