@@ -16,15 +16,25 @@ using namespace triggeralgs;
 void
 TriggerActivityMakerLowEnergyEvent::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
-  // The first time operator() is called, reset the window object(s).
-  bool isCollectionHit = input_tp.channel > 2623;
-  if (m_collection_window.is_empty() && isCollectionHit) { m_collection_window.reset(input_tp); m_primitive_count++; return; }
-  if (m_induction_window.is_empty() && !isCollectionHit) { m_induction_window.reset(input_tp); m_primitive_count++; return; }
+  dump_tp(input_tp); 
 
+  // Get the plane from which this hit arrived: 
+  // U (induction) = 0, Y (induction) = 1, Z (collection) = 2, unconnected channel = 9999  
+  uint plane = channelMap->get_plane_from_offline_channel(input_tp.channel);
+  bool isU = plane == 0;  // Induction1 = U
+  bool isY = plane == 1;  // Induction2 = Y
+  bool isZ = plane == 2;  // Collection = Z
+ 
+  // The first time operator() is called, reset the window object(s).
+  if (m_induction1_window.is_empty() && isU) { m_induction1_window.reset(input_tp); m_primitive_count++; return; }
+  if (m_induction2_window.is_empty() && isY) { m_induction2_window.reset(input_tp); m_primitive_count++; return; }
+  if (m_collection_window.is_empty() && isZ) { m_collection_window.reset(input_tp); m_primitive_count++; return; }
+  
   // If the difference between the current TP's start time and the start of the window
   // is less than the specified window size, add the TP to the corresponding window.
-  if ( isCollectionHit && (input_tp.time_start - m_collection_window.time_start) < m_window_length) m_collection_window.add(input_tp);
-  if ( !isCollectionHit && (input_tp.time_start - m_induction_window.time_start) < m_window_length) m_induction_window.add(input_tp); 
+  if (isU && (input_tp.time_start - m_induction1_window.time_start) < m_window_length) m_induction1_window.add(input_tp);
+  if (isY && (input_tp.time_start - m_induction2_window.time_start) < m_window_length) m_induction2_window.add(input_tp);
+  if (isZ && (input_tp.time_start - m_collection_window.time_start) < m_window_length) m_collection_window.add(input_tp); 
 
   // ===================================================================================
   // Below this line, we begin our hierarchy of checks for a low energy event,
@@ -34,31 +44,33 @@ TriggerActivityMakerLowEnergyEvent::operator()(const TriggerPrimitive& input_tp,
   // 1) BASIC CHECKS ===================================================================
   // Our windows have ADC Sum, Time Over Threshold, Multiplicity & Adjacency properties.
   // Take advantage of these to screen the activities passed to more involved checks.
- /* bool collectionMultiplicity = m_collection_window.n_channels_hit() > m_n_channels_threshold;
-  bool collectionADC = m_collection_window.adc_integral > m_adc_threshold;
-  bool collectionTOT = check_tot(m_collection_window) > m_tot_threshold;
-  bool inductionMultiplcity = m_induction_window.n_channels_hit() > m_n_channels_threshold;
-  bool inductionADC = m_induction_window.adc_integral > m_adc_threshold; // Probably want this to be lower for induction
-  bool inductionTOT = check_tot(m_induction_window) > m_tot_threshold; 
-  */
 
   // 2) REQUIRE ADC SPIKE FROM INDUCTION AND CHECK ADJACENCY ===========================
   // We're looking for a localised spike of ADC (short time window) and then a short
-  // adjacency corresponding to an electron track/shower
-  else if (m_induction_window.adc_integral > m_adc_threshold && check_adjacency(m_collection_window) > m_adjacency_threshold) {
+  // adjacency corresponding to an electron track/shower.
+  else if ((m_induction1_window.adc_integral > m_adc_threshold || m_induction2_window.adc_integral > m_adc_threshold) 
+	    && check_adjacency(m_collection_window) > m_adjacency_threshold) {
 
-   TLOG(1) << "Emitting low energy trigger with " << m_induction_window.adc_integral <<
-              " induction ADC and " << check_adjacency(m_collection_window) << " adjacent collection hits.";
+   TLOG(1) << "Emitting low energy trigger with " << m_induction1_window.adc_integral << " U "
+           << m_induction2_window.adc_integral << " Y induction ADC and "
+           << check_adjacency(m_collection_window) << " adjacent collection hits.";
+   
+   // We have fulfilled our trigger condition, construct a TA and reset/flush the windows
+   // to ensure they're all in the same "time zone"!
    output_ta.push_back(construct_ta(m_collection_window));
-   if (isCollectionHit) { m_collection_window.reset(input_tp); }
-   if (!isCollectionHit) { m_induction_window.reset(input_tp); }  
-
+   if (isZ) m_collection_window.reset(input_tp);
+   else m_collection_window.clear();
+   if (isU) m_induction1_window.reset(input_tp); 
+   else m_induction1_window.clear();
+   if (isY) m_induction2_window.reset(input_tp);   
+   else m_induction2_window.clear();
   }
 
-  // Otherwise, slide the windows along using the current TP.
+  // Otherwise, slide the relevant window along using the current TP.
   else {
-    if (isCollectionHit) m_collection_window.move(input_tp, m_window_length);
-    if (!isCollectionHit) m_induction_window.move(input_tp, m_window_length);
+    if (isU) m_induction1_window.move(input_tp, m_window_length);
+    else if (isY) m_induction2_window.move(input_tp, m_window_length);
+    else if (isZ) m_collection_window.move(input_tp, m_window_length);
   }
   m_primitive_count++;
 
@@ -159,9 +171,9 @@ TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
 
     // If next channel is not on the next hit, but the 'second next', increase adjacency 
     // but also tally up with the tolerance counter.
-    else if ((next_channel == channel + 2) || (next_channel == channel + 3) && (tol_count < m_adj_tolerance)) { 
+    else if ((next_channel == channel + 2 || next_channel == channel + 3) && (tol_count < m_adj_tolerance)) { 
 	++adj;
-        for (int i = 0 ; i < next_channel-channel ; ++i){ ++tol_count; }
+        for (int i = 0 ; i < next_channel-channel ; ++i) ++tol_count;
     }
 
     // If next hit isn't within reach, end the adjacency count and check for a new max.
@@ -219,6 +231,11 @@ TriggerActivityMakerLowEnergyEvent::dump_tp(TriggerPrimitive const& input_tp)
   std::ofstream outfile;
   outfile.open("coldbox_tps.txt", std::ios_base::app);
 
+  // Temporary function to output channel -> plane map
+  for (int i = 1600 ; i < 3201 ; i++){
+  outfile << i << " " << channelMap->get_plane_from_offline_channel(i) << std::endl; 
+  }
+  /*
   // Output relevant TP information to file
   outfile << input_tp.time_start << " ";          
   outfile << input_tp.time_over_threshold << " "; // 50MHz ticks
@@ -228,6 +245,7 @@ TriggerActivityMakerLowEnergyEvent::dump_tp(TriggerPrimitive const& input_tp)
   outfile << input_tp.adc_peak << " ";            
   outfile << input_tp.detid << " ";               // Det ID - Identifies detector element
   outfile << input_tp.type << std::endl;        
+  */
   outfile.close();
 
   return;

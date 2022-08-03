@@ -34,8 +34,6 @@ private:
   class Window
   {
   public:
-    // Channel map object, for separating TPs by the plane view they come from
-    std::shared_ptr<detchannelmaps::TPCChannelMap> channelMap;
     
     bool is_empty() const { return inputs.empty(); };
     void add(TriggerPrimitive const& input_tp)
@@ -113,22 +111,21 @@ private:
     std::vector<TriggerPrimitive> inputs;
   };
 
-  // Channel map object, for separating TPs by the plane view they come from
-  // std::shared_ptr<detchannelmaps::TPCChannelMap> channelMap;
-
   TriggerActivity construct_ta(Window m_current_window) const;
   uint16_t check_adjacency(Window window) const; // Returns longest string of adjacent collection hits in window
 
   Window m_current_window;
   uint64_t m_primitive_count = 0;
   int check_tot(Window m_current_window) const;
-  
+  //void clearWindows(TriggerPrimitive const input_tp); // Function to clear or reset all windows, according to TP channel 
+ 
   // Make 3 extra instances of the embedded Window class. One for each view.
-  Window m_collection_window;
-  Window m_induction_window;
-  // Window m_induction2_window();
+  Window m_collection_window; // Z
+  Window m_induction1_window; // U
+  Window m_induction2_window; // Y
 
   // Configurable parameters.
+  std::string m_channel_map_name = "VDColdboxChannelMap";  // Default is coldbox
   bool m_trigger_on_adc = true;
   bool m_trigger_on_n_channels = true;
   bool m_trigger_on_adjacency = true;   // Default use of the triggering
@@ -142,6 +139,9 @@ private:
   uint16_t ta_adc = 0;
   uint16_t ta_channels = 0;
   timestamp_t m_window_length = 3000;    // Shouldn't exceed the max drift
+
+  // Channel map object, for separating TPs by the plane view they come from
+  std::shared_ptr<dunedaq::detchannelmaps::TPCChannelMap> channelMap = dunedaq::detchannelmaps::make_map(m_channel_map_name);
 
   // For debugging purposes.
   void add_window_to_record(Window window);
