@@ -16,7 +16,6 @@ using namespace triggeralgs;
 void
 TriggerActivityMakerLowEnergyEvent::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
-  dump_tp(input_tp); 
 
   // Get the plane from which this hit arrived: 
   // U (induction) = 0, Y (induction) = 1, Z (collection) = 2, unconnected channel = 9999  
@@ -231,11 +230,6 @@ TriggerActivityMakerLowEnergyEvent::dump_tp(TriggerPrimitive const& input_tp)
   std::ofstream outfile;
   outfile.open("coldbox_tps.txt", std::ios_base::app);
 
-  // Temporary function to output channel -> plane map
-  for (int i = 1600 ; i < 3201 ; i++){
-  outfile << i << " " << channelMap->get_plane_from_offline_channel(i) << std::endl; 
-  }
-  /*
   // Output relevant TP information to file
   outfile << input_tp.time_start << " ";          
   outfile << input_tp.time_over_threshold << " "; // 50MHz ticks
@@ -245,7 +239,6 @@ TriggerActivityMakerLowEnergyEvent::dump_tp(TriggerPrimitive const& input_tp)
   outfile << input_tp.adc_peak << " ";            
   outfile << input_tp.detid << " ";               // Det ID - Identifies detector element
   outfile << input_tp.type << std::endl;        
-  */
   outfile.close();
 
   return;
