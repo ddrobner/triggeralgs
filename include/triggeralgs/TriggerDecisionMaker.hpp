@@ -20,6 +20,7 @@ namespace triggeralgs {
 class TriggerDecisionMaker
 {
 public:
+  virtual ~TriggerDecisionMaker() = default;
   virtual void operator()(const TriggerCandidate& input_tc, std::vector<TriggerDecision>& output_tds) = 0;
   virtual void flush(std::vector<TriggerDecision>&) {}
   virtual void configure(const nlohmann::json&) {}
