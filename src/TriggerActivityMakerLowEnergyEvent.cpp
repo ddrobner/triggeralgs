@@ -40,29 +40,36 @@ TriggerActivityMakerLowEnergyEvent::operator()(const TriggerPrimitive& input_tp,
   // taking advantage of the newly gained induction hits window.
   // ===================================================================================
 
-  // 1) BASIC CHECKS ===================================================================
   // Our windows have ADC Sum, Time Over Threshold, Multiplicity & Adjacency properties.
   // Take advantage of these to screen the activities passed to more involved checks.
 
-  // 2) REQUIRE ADC SPIKE FROM INDUCTION AND CHECK ADJACENCY ===========================
+  // 1) REQUIRE ADC SPIKE FROM INDUCTION AND CHECK ADJACENCY ===========================
   // We're looking for a localised spike of ADC (short time window) and then a short
   // adjacency corresponding to an electron track/shower.
-  else if ((m_induction1_window.adc_integral > m_adc_threshold || m_induction2_window.adc_integral > m_adc_threshold) 
-	    && check_adjacency(m_collection_window) > m_adjacency_threshold) {
+  else if ((m_induction1_window.adc_integral + m_induction2_window.adc_integral + m_collection_window.adc_integral )
+            > m_adc_threshold && check_adjacency(m_collection_window) > m_adjacency_threshold){
 
-   TLOG(1) << "Emitting low energy trigger with " << m_induction1_window.adc_integral << " U "
-           << m_induction2_window.adc_integral << " Y induction ADC and "
-           << check_adjacency(m_collection_window) << " adjacent collection hits.";
+          TLOG(1) << "Emitting low energy trigger with " << m_induction1_window.adc_integral << " U "
+                  << m_induction2_window.adc_integral << " Y induction ADC sums and "
+                  << check_adjacency(m_collection_window) << " adjacent collection hits.";
    
-   // We have fulfilled our trigger condition, construct a TA and reset/flush the windows
-   // to ensure they're all in the same "time zone"!
-   output_ta.push_back(construct_ta(m_collection_window));
-   if (isZ) m_collection_window.reset(input_tp);
-   else m_collection_window.clear();
-   if (isU) m_induction1_window.reset(input_tp); 
-   else m_induction1_window.clear();
-   if (isY) m_induction2_window.reset(input_tp);   
-   else m_induction2_window.clear();
+          // Initial studies - output the TPs of the collection plane window that caused this trigger
+          //add_window_to_record(m_collection_window);
+          //dump_window_record();
+          //m_window_record.clear();     
+
+          // Initial studies - Also dump the TPs that have contributed to this TA decision
+          //for(auto tp : m_collection_window.inputs) dump_tp(tp);
+ 
+          // We have fulfilled our trigger condition, construct a TA and reset/flush the windows
+          // to ensure they're all in the same "time zone"!
+          output_ta.push_back(construct_ta(m_collection_window));
+          if (isZ) m_collection_window.reset(input_tp);
+          else m_collection_window.clear();
+          if (isU) m_induction1_window.reset(input_tp); 
+          else m_induction1_window.clear();
+          if (isY) m_induction2_window.reset(input_tp);   
+          else m_induction2_window.clear();
   }
 
   // Otherwise, slide the relevant window along using the current TP.
@@ -199,7 +206,7 @@ TriggerActivityMakerLowEnergyEvent::add_window_to_record(Window window)
 
 // Function to dump the details of the TA window currently on record
 void
-TriggerActivityMakerLowEnergyEvent::dump_window_record(Window window)
+TriggerActivityMakerLowEnergyEvent::dump_window_record()
 {
   std::ofstream outfile;
   outfile.open("window_record_tam.csv", std::ios_base::app);
@@ -212,7 +219,9 @@ TriggerActivityMakerLowEnergyEvent::dump_window_record(Window window)
     outfile << window.n_channels_hit() << ",";       // Number of unique channels with hits
     outfile << window.inputs.size() << ",";          // Number of TPs in Window
     outfile << window.inputs.back().channel << ",";  // Last TP Channel ID
+    outfile << window.inputs.back().time_start << ",";  // Last TP start time
     outfile << window.inputs.front().channel << ","; // First TP Channel ID
+    outfile << window.inputs.front().time_start << ","; // First TP start time 
     outfile << check_adjacency(window) << ",";             // New adjacency value for the window
     outfile << check_tot(window) << std::endl;             // Summed window TOT
   }

@@ -145,7 +145,7 @@ private:
 
   // For debugging purposes.
   void add_window_to_record(Window window);
-  void dump_window_record(Window window);
+  void dump_window_record();
   void dump_tp(TriggerPrimitive const& input_tp);
   std::vector<Window> m_window_record;
 };
