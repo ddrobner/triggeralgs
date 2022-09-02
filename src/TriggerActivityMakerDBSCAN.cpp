@@ -84,5 +84,5 @@ TriggerActivityMakerDBSCAN::configure(const nlohmann::json &config)
     m_min_pts = config["min_pts"];
   }
 
-  m_dbscan=std::make_unique<dbscan::IncrementalDBSCAN>(10, m_min_pts);
+  m_dbscan=std::make_unique<dbscan::IncrementalDBSCAN>(10, m_min_pts, 10000);
 }
