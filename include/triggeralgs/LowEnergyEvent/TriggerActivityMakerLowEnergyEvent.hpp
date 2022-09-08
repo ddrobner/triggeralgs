@@ -1,20 +1,28 @@
 /**
- * @file TriggerActivityMakerHorizontalMuon.hpp
+ * @file TriggerActivityMakerLowEnergyEvent.hpp
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2021.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#ifndef TRIGGERALGS_HORIZONTALMUON_TRIGGERACTIVITYMAKERHORIZONTALMUON_HPP_
-#define TRIGGERALGS_HORIZONTALMUON_TRIGGERACTIVITYMAKERHORIZONTALMUON_HPP_
+#ifndef TRIGGERALGS_LOWENERGYEVENT_TRIGGERACTIVITYMAKERLOWENERGYEVENT_HPP_
+#define TRIGGERALGS_LOWENERGYEVENT_TRIGGERACTIVITYMAKERLOWENERGYEVENT_HPP_
 
+#include "detchannelmaps/TPCChannelMap.hpp"
 #include "triggeralgs/TriggerActivityMaker.hpp"
 #include <fstream>
 #include <vector>
 
+#include <chrono>
+#include <map>
+#include <memory>
+#include <string>
+#include <unordered_set>
+#include <utility>
+
 namespace triggeralgs {
-class TriggerActivityMakerHorizontalMuon : public TriggerActivityMaker
+class TriggerActivityMakerLowEnergyEvent : public TriggerActivityMaker
 {
 
 public:
@@ -26,6 +34,7 @@ private:
   class Window
   {
   public:
+    
     bool is_empty() const { return inputs.empty(); };
     void add(TriggerPrimitive const& input_tp)
     {
@@ -102,26 +111,37 @@ private:
     std::vector<TriggerPrimitive> inputs;
   };
 
-  TriggerActivity construct_ta() const;
-  uint16_t check_adjacency() const; // Returns longest string of adjacent collection hits in window
+  TriggerActivity construct_ta(Window m_current_window) const;
+  uint16_t check_adjacency(Window window) const; // Returns longest string of adjacent collection hits in window
 
   Window m_current_window;
   uint64_t m_primitive_count = 0;
-  int check_tot() const;
+  int check_tot(Window m_current_window) const;
+  //void clearWindows(TriggerPrimitive const input_tp); // Function to clear or reset all windows, according to TP channel 
+ 
+  // Make 3 extra instances of the embedded Window class. One for each view.
+  Window m_collection_window; // Z
+  Window m_induction1_window; // U
+  Window m_induction2_window; // Y
 
   // Configurable parameters.
-  bool m_trigger_on_adc = false;
-  bool m_trigger_on_n_channels = false;
-  bool m_trigger_on_adjacency = true;    // Default use of the horizontal muon triggering
+  std::string m_channel_map_name = "VDColdboxChannelMap";  // Default is coldbox
+  bool m_trigger_on_adc = true;
+  bool m_trigger_on_n_channels = true;
+  bool m_trigger_on_adjacency = true;   // Default use of the triggering
   uint16_t m_adjacency_threshold = 15;   // Default is 15 wire track for testing
   int m_max_adjacency = 0;               // The maximum adjacency seen so far in any window
-  uint32_t m_adc_threshold = 3000000;    // Not currently triggering on this
-  uint16_t m_n_channels_threshold = 400; // Set this to ~80 for frames.bin, ~150-300 for tps_link_11.txt
-  uint16_t m_adj_tolerance = 3;          // Adjacency tolerance - default is 3 from coldbox testing.
+  uint32_t m_tot_threshold = 2000;       // Work out good values for this
+  uint32_t m_adc_threshold = 300000;    // Not currently triggering on this
+  uint16_t m_n_channels_threshold = 20;  // Set this to ~80 for frames.bin, ~150-300 for tps_link_11.txt
+  uint16_t m_adj_tolerance = 5;          // Adjacency tolerance - default is 3 from coldbox testing.
   int index = 0;
   uint16_t ta_adc = 0;
   uint16_t ta_channels = 0;
-  timestamp_t m_window_length = 8000;    // Shouldn't exceed the max drift
+  timestamp_t m_window_length = 3000;    // Shouldn't exceed the max drift
+
+  // Channel map object, for separating TPs by the plane view they come from
+  std::shared_ptr<dunedaq::detchannelmaps::TPCChannelMap> channelMap = dunedaq::detchannelmaps::make_map(m_channel_map_name);
 
   // For debugging purposes.
   void add_window_to_record(Window window);
@@ -131,4 +151,4 @@ private:
 };
 } // namespace triggeralgs
 
-#endif // TRIGGERALGS_HORIZONTALMUON_TRIGGERACTIVITYMAKERHORIZONTALMUON_HPP_
+#endif // TRIGGERALGS_LOWENERGYEVENT_TRIGGERACTIVITYMAKERLOWENERGYEVENT_HPP_

@@ -1,22 +1,22 @@
 /**
- * @file TriggerCandidateMakerHorizontalMuon.cpp
+ * @file TriggerCandidateMakerLowEnergyEvent.cpp
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2021.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#include "triggeralgs/HorizontalMuon/TriggerCandidateMakerHorizontalMuon.hpp"
+#include "triggeralgs/LowEnergyEvent/TriggerCandidateMakerLowEnergyEvent.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerCandidateMakerHorizontalMuon"
+#define TRACE_NAME "TriggerCandidateMakerLowEnergyEvent"
 
 #include <vector>
 
 using namespace triggeralgs;
 
 void
-TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
+TriggerCandidateMakerLowEnergyEvent::operator()(const TriggerActivity& activity,
                                                 std::vector<TriggerCandidate>& output_tc)
 {
 
@@ -92,7 +92,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
 }
 
 void
-TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
+TriggerCandidateMakerLowEnergyEvent::configure(const nlohmann::json& config)
 {
   // FIX ME: Use some schema here. Also can't work out how to pass booleans.
   if (config.is_object()) {
@@ -136,7 +136,7 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
 }
 
 TriggerCandidate
-TriggerCandidateMakerHorizontalMuon::construct_tc() const
+TriggerCandidateMakerLowEnergyEvent::construct_tc() const
 {
   TriggerActivity latest_ta_in_window = m_current_window.inputs.back();
 
@@ -146,8 +146,8 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
     latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold + m_readout_window_ticks_after;
   tc.time_candidate = m_current_window.time_start;
   tc.detid = latest_ta_in_window.detid;
-  tc.type = TriggerCandidate::Type::kHorizontalMuon;
-  tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;
+  tc.type = TriggerCandidate::Type::kLowEnergyEvent;
+  tc.algorithm = TriggerCandidate::Algorithm::kLowEnergyEvent;
 
   // Take the list of triggeralgs::TriggerActivity in the current
   // window and convert them (implicitly) to detdataformats'
@@ -160,7 +160,7 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
 }
 
 bool
-TriggerCandidateMakerHorizontalMuon::check_adjacency() const
+TriggerCandidateMakerLowEnergyEvent::check_adjacency() const
 {
   // FIX ME: An adjacency check on the channels which have hits.
   return true;
@@ -168,14 +168,14 @@ TriggerCandidateMakerHorizontalMuon::check_adjacency() const
 
 // Functions below this line are for debugging purposes.
 void
-TriggerCandidateMakerHorizontalMuon::add_window_to_record(Window window)
+TriggerCandidateMakerLowEnergyEvent::add_window_to_record(Window window)
 {
   m_window_record.push_back(window);
   return;
 }
 
 void
-TriggerCandidateMakerHorizontalMuon::dump_window_record()
+TriggerCandidateMakerLowEnergyEvent::dump_window_record()
 {
   // FIX ME: Need to index this outfile in the name by detid or something similar.
   std::ofstream outfile;
@@ -199,7 +199,7 @@ TriggerCandidateMakerHorizontalMuon::dump_window_record()
 
 /*
 void
-TriggerCandidateMakerHorizontalMuon::flush(timestamp_t, std::vector<TriggerCandidate>& output_tc)
+TriggerCandidateMakerLowEnergyEvent::flush(timestamp_t, std::vector<TriggerCandidate>& output_tc)
 {
   // Check the status of the current window, construct TC if conditions are met. Regardless
   // of whether the conditions are met, reset the window.

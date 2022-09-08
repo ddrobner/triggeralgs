@@ -10,6 +10,8 @@ include(CMakeFindDependencyMacro)
 find_dependency(nlohmann_json)
 find_dependency(TRACE)
 find_dependency(detdataformats)
+find_dependency(cetlib)
+find_dependency(detchannelmaps)
 
 if (EXISTS ${CMAKE_SOURCE_DIR}/@PROJECT_NAME@)
 

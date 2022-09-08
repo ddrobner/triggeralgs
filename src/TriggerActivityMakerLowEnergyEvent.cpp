@@ -1,80 +1,82 @@
 /**
- * @file TriggerActivityMakerHorizontalMuon.cpp
+ * @file TriggerActivityMakerLowEnergyEvent.cpp
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2021.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#include "triggeralgs/HorizontalMuon/TriggerActivityMakerHorizontalMuon.hpp"
+#include "triggeralgs/LowEnergyEvent/TriggerActivityMakerLowEnergyEvent.hpp"
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerHorizontalMuon"
+#define TRACE_NAME "TriggerActivityMakerLowEnergyEvent"
 #include <vector>
 
 using namespace triggeralgs;
 
 void
-TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
-                                               std::vector<TriggerActivity>& output_ta)
+TriggerActivityMakerLowEnergyEvent::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
-  // 0) FIRST TP =====================================================================
-  // The first time operator() is called, reset the window object.
-  if (m_current_window.is_empty()) {
-    m_current_window.reset(input_tp);
-    m_primitive_count++;
-    return;
-  }
 
+  // Get the plane from which this hit arrived: 
+  // U (induction) = 0, Y (induction) = 1, Z (collection) = 2, unconnected channel = 9999  
+  uint plane = channelMap->get_plane_from_offline_channel(input_tp.channel);
+  bool isU = plane == 0;  // Induction1 = U
+  bool isY = plane == 1;  // Induction2 = Y
+  bool isZ = plane == 2;  // Collection = Z
+ 
+  // The first time operator() is called, reset the window object(s).
+  if (m_induction1_window.is_empty() && isU) { m_induction1_window.reset(input_tp); m_primitive_count++; return; }
+  if (m_induction2_window.is_empty() && isY) { m_induction2_window.reset(input_tp); m_primitive_count++; return; }
+  if (m_collection_window.is_empty() && isZ) { m_collection_window.reset(input_tp); m_primitive_count++; return; }
+  
   // If the difference between the current TP's start time and the start of the window
-  // is less than the specified window size, add the TP to the window.
-  if ((input_tp.time_start - m_current_window.time_start) < m_window_length) {
-    m_current_window.add(input_tp);
+  // is less than the specified window size, add the TP to the corresponding window.
+  if (isU && (input_tp.time_start - m_induction1_window.time_start) < m_window_length) m_induction1_window.add(input_tp);
+  if (isY && (input_tp.time_start - m_induction2_window.time_start) < m_window_length) m_induction2_window.add(input_tp);
+  if (isZ && (input_tp.time_start - m_collection_window.time_start) < m_window_length) m_collection_window.add(input_tp); 
+
+  // ===================================================================================
+  // Below this line, we begin our hierarchy of checks for a low energy event,
+  // taking advantage of the newly gained induction hits window.
+  // ===================================================================================
+
+  // Our windows have ADC Sum, Time Over Threshold, Multiplicity & Adjacency properties.
+  // Take advantage of these to screen the activities passed to more involved checks.
+
+  // 1) REQUIRE ADC SPIKE FROM INDUCTION AND CHECK ADJACENCY ===========================
+  // We're looking for a localised spike of ADC (short time window) and then a short
+  // adjacency corresponding to an electron track/shower.
+  else if ((m_induction1_window.adc_integral + m_induction2_window.adc_integral + m_collection_window.adc_integral )
+            > m_adc_threshold && check_adjacency(m_collection_window) > m_adjacency_threshold){
+
+          TLOG(1) << "Emitting low energy trigger with " << m_induction1_window.adc_integral << " U "
+                  << m_induction2_window.adc_integral << " Y induction ADC sums and "
+                  << check_adjacency(m_collection_window) << " adjacent collection hits.";
+   
+          // Initial studies - output the TPs of the collection plane window that caused this trigger
+          //add_window_to_record(m_collection_window);
+          //dump_window_record();
+          //m_window_record.clear();     
+
+          // Initial studies - Also dump the TPs that have contributed to this TA decision
+          //for(auto tp : m_collection_window.inputs) dump_tp(tp);
+ 
+          // We have fulfilled our trigger condition, construct a TA and reset/flush the windows
+          // to ensure they're all in the same "time zone"!
+          output_ta.push_back(construct_ta(m_collection_window));
+          if (isZ) m_collection_window.reset(input_tp);
+          else m_collection_window.clear();
+          if (isU) m_induction1_window.reset(input_tp); 
+          else m_induction1_window.clear();
+          if (isY) m_induction2_window.reset(input_tp);   
+          else m_induction2_window.clear();
   }
 
-  // 1) ADC THRESHOLD EXCEEDED =======================================================
-  // If the addition of the current TP to the window would make it longer specified
-  // window length, don't add it but check whether the ADC integral if the existing
-  // window is above the configured threshold. If it is, and we are triggering on ADC,
-  // make a TA and start a fresh window with the current TP.
-  else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
-    output_ta.push_back(construct_ta());
-    m_current_window.reset(input_tp);
-  }
-
-  // 2) MULTIPLICITY - N UNQIUE CHANNELS EXCEEDED =====================================
-  // If the addition of the current TP to the window would make it longer than the
-  // specified window length, don't add it but check whether the number of hit channels
-  // in the existing window is above the specified threshold. If it is, and we are triggering
-  // on channel multiplicity, make a TA and start a fresh window with the current TP.
-  else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
-
-    TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
-               " unique channels hit.";
-
-    output_ta.push_back(construct_ta());
-    m_current_window.reset(input_tp);
-  }
-
-  // 3) ADJACENCY THRESHOLD EXCEEDED ==================================================
-  // If the addition of the current TP to the window would make it longer than the
-  // specified window length, don't add it but check whether the adjacency of the
-  // current window exceeds the configured threshold. If it does, and we are triggering
-  // on adjacency, then create a TA and reset the window with the new/current TP.
-  else if (check_adjacency() > m_adjacency_threshold &&  m_trigger_on_adjacency) {
-
-    // Check for a new maximum, display the largest seen adjacency in the log.
-    uint16_t adjacency = check_adjacency();
-    if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
-    TLOG(1) << "Emitting adjacency TA with adjacency " << check_adjacency() <<
-               " and the largest seen so far is " << m_max_adjacency;
-
-    output_ta.push_back(construct_ta());
-    m_current_window.reset(input_tp);
-  }
-
-  // 4) Otherwise, slide the window along using the current TP.
+  // Otherwise, slide the relevant window along using the current TP.
   else {
-    m_current_window.move(input_tp, m_window_length);
+    if (isU) m_induction1_window.move(input_tp, m_window_length);
+    else if (isY) m_induction2_window.move(input_tp, m_window_length);
+    else if (isZ) m_collection_window.move(input_tp, m_window_length);
   }
   m_primitive_count++;
 
@@ -82,7 +84,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
 }
 
 void
-TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json& config)
+TriggerActivityMakerLowEnergyEvent::configure(const nlohmann::json& config)
 {
   if (config.is_object()) {
     if (config.contains("trigger_on_adc"))
@@ -106,7 +108,7 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json& config)
 }
 
 TriggerActivity
-TriggerActivityMakerHorizontalMuon::construct_ta() const
+TriggerActivityMakerLowEnergyEvent::construct_ta(Window m_current_window) const
 {
 
   TriggerPrimitive latest_tp_in_window = m_current_window.inputs.back();
@@ -123,14 +125,14 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
   ta.adc_peak = latest_tp_in_window.adc_peak;
   ta.detid = latest_tp_in_window.detid;
   ta.type = TriggerActivity::Type::kTPC;
-  ta.algorithm = TriggerActivity::Algorithm::kHorizontalMuon;
+  ta.algorithm = TriggerActivity::Algorithm::kLowEnergyEvent;
   ta.inputs = m_current_window.inputs;
 
   return ta;
 }
 
 uint16_t
-TriggerActivityMakerHorizontalMuon::check_adjacency() const
+TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
 {
   // This function returns the adjacency value for the current window, where adjacency
   // is defined as the maximum number of consecutive wires containing hits. It accepts
@@ -147,7 +149,7 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 
   // Generate a channelID ordered list of hit channels for this window
   std::vector<int> chanList;
-  for (auto tp : m_current_window.inputs) {
+  for (auto tp : window.inputs) {
     chanList.push_back(tp.channel);
   }
   std::sort(chanList.begin(), chanList.end());
@@ -175,11 +177,9 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 
     // If next channel is not on the next hit, but the 'second next', increase adjacency 
     // but also tally up with the tolerance counter.
-    else if (((next_channel == channel + 2) || (next_channel == channel + 3) || 
-              (next_channel == channel + 4) || (next_channel == channel + 5))
-             && (tol_count < m_adj_tolerance)) {
-      ++adj;
-      for (int i = 0 ; i < next_channel-channel ; ++i){ ++tol_count; }
+    else if ((next_channel == channel + 2 || next_channel == channel + 3) && (tol_count < m_adj_tolerance)) { 
+	++adj;
+        for (int i = 0 ; i < next_channel-channel ; ++i) ++tol_count;
     }
 
     // If next hit isn't within reach, end the adjacency count and check for a new max.
@@ -198,7 +198,7 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 // Functions below this line are for debugging purposes.
 // =====================================================================================
 void
-TriggerActivityMakerHorizontalMuon::add_window_to_record(Window window)
+TriggerActivityMakerLowEnergyEvent::add_window_to_record(Window window)
 {
   m_window_record.push_back(window);
   return;
@@ -206,7 +206,7 @@ TriggerActivityMakerHorizontalMuon::add_window_to_record(Window window)
 
 // Function to dump the details of the TA window currently on record
 void
-TriggerActivityMakerHorizontalMuon::dump_window_record()
+TriggerActivityMakerLowEnergyEvent::dump_window_record()
 {
   std::ofstream outfile;
   outfile.open("window_record_tam.csv", std::ios_base::app);
@@ -219,9 +219,11 @@ TriggerActivityMakerHorizontalMuon::dump_window_record()
     outfile << window.n_channels_hit() << ",";       // Number of unique channels with hits
     outfile << window.inputs.size() << ",";          // Number of TPs in Window
     outfile << window.inputs.back().channel << ",";  // Last TP Channel ID
+    outfile << window.inputs.back().time_start << ",";  // Last TP start time
     outfile << window.inputs.front().channel << ","; // First TP Channel ID
-    outfile << check_adjacency() << ",";             // New adjacency value for the window
-    outfile << check_tot() << std::endl;             // Summed window TOT
+    outfile << window.inputs.front().time_start << ","; // First TP start time 
+    outfile << check_adjacency(window) << ",";             // New adjacency value for the window
+    outfile << check_tot(window) << std::endl;             // Summed window TOT
   }
 
   outfile.close();
@@ -232,7 +234,7 @@ TriggerActivityMakerHorizontalMuon::dump_window_record()
 
 // Function to add current TP details to a text file for testing and debugging.
 void
-TriggerActivityMakerHorizontalMuon::dump_tp(TriggerPrimitive const& input_tp)
+TriggerActivityMakerLowEnergyEvent::dump_tp(TriggerPrimitive const& input_tp)
 {
   std::ofstream outfile;
   outfile.open("coldbox_tps.txt", std::ios_base::app);
@@ -252,7 +254,7 @@ TriggerActivityMakerHorizontalMuon::dump_tp(TriggerPrimitive const& input_tp)
 }
 
 int
-TriggerActivityMakerHorizontalMuon::check_tot() const
+TriggerActivityMakerLowEnergyEvent::check_tot(Window m_current_window) const
 {
   // Here, we just want to sum up all the tot values for each TP within window,
   // and return this tot of the window.
@@ -264,25 +266,4 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
   return window_tot;
 }
 
-/*
-void
-TriggerActivityMakerHorizontalMuon::flush(timestamp_t, std::vector<TriggerActivity>& output_ta)
-{
-  // Check the status of the current window, construct TA if conditions are met. Regardless
-  // of whether the conditions are met, reset the window.
-  if(m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc){
-  //else if(m_current_window.adc_integral > m_conf.adc_threshold && m_conf.trigger_on_adc){
-    //TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    output_ta.push_back(construct_ta());
-  }
-  else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
-  //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
-    //TLOG_DEBUG(TRACE_NAME) << "Number of channels hit in the window is greater than specified threshold.";
-    output_ta.push_back(construct_ta());
-  }
-
-  //TLOG_DEBUG(TRACE_NAME) << "Clearing the current window, on the arrival of the next input_tp, the window will be
-reset."; m_current_window.clear();
-
-  return;
-}*/
+// END OF TA MAKER - LOW ENERGY EVENTS

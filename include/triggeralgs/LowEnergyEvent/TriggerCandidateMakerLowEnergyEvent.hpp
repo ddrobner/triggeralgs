@@ -1,23 +1,21 @@
 /**
- * @file TriggerCandidateMakerHorizontalMuon.hpp
+ * @file TriggerCandidateMakerLowEnergyEvent.hpp
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2021.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#ifndef TRIGGERALGS_HORIZONTALMUON_TRIGGERCANDIDATEMAKERHORIZONTALMUON_HPP_
-#define TRIGGERALGS_HORIZONTALMUON_TRIGGERCANDIDATEMAKERHORIZONTALMUON_HPP_
+#ifndef TRIGGERALGS_LOWENERGYEVENT_TRIGGERCANDIDATEMAKERLOWENERGYEVENT_HPP_
+#define TRIGGERALGS_LOWENERGYEVENT_TRIGGERCANDIDATEMAKERLOWENERGYEVENT_HPP_
 
 #include "triggeralgs/TriggerCandidateMaker.hpp"
-
-//#include "triggeralgs/triggercandidatemakerhorizontalmuon/Nljs.hpp"
 
 #include <fstream>
 #include <vector>
 
 namespace triggeralgs {
-class TriggerCandidateMakerHorizontalMuon : public TriggerCandidateMaker
+class TriggerCandidateMakerLowEnergyEvent : public TriggerCandidateMaker
 {
 
 public:
@@ -128,7 +126,6 @@ private:
   uint64_t m_activity_count = 0; // NOLINT(build/unsigned)
 
   // Configurable parameters.
-  // triggercandidatemakerhorizontalmuon::ConfParams m_conf;
   // If both m_trigger_on_adc and m_trigger_on_n_channels is false, nothing is done at
   // the candidate level, candidates are made 1 for 1 with activities.
   // Use any other combination of m_trigger_on_adc and m_trigger_on_n_channels with caution,
@@ -144,11 +141,10 @@ private:
   // Might not be the best type for this map.
   // std::unordered_map<std::pair<detid_t,channel_t>,channel_t> m_channel_map;
 
-  // For debugging purposes.
   void add_window_to_record(Window window);
   void dump_window_record();
   std::vector<Window> m_window_record;
 };
 } // namespace triggeralgs
 
-#endif // TRIGGERALGS_HORIZONTALMUON_TRIGGERCANDIDATEMAKERHORIZONTALMUON_HPP_
+#endif // TRIGGERALGS_LOWENERGYEVENT_TRIGGERCANDIDATEMAKERLOWENERGYEVENT_HPP_
