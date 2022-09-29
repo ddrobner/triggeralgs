@@ -3,6 +3,12 @@ project(triggeralgs VERSION 1.1.5)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_compile_options(-O2 -march=native -flto)
+
 set(CMAKE_INSTALL_CMAKEDIR   ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/cmake )
 
 find_package(nlohmann_json REQUIRED)
@@ -32,8 +38,11 @@ add_library(triggeralgs SHARED
   src/TriggerCandidateMakerPrescale.cpp
   src/TriggerActivityMakerSupernova.cpp
   src/TriggerCandidateMakerSupernova.cpp
-  src/TriggerDecisionMakerSupernova.cpp)
-
+  src/TriggerDecisionMakerSupernova.cpp
+  src/TriggerActivityMakerDBSCAN.cpp
+  src/dbscan/dbscan.cpp
+  src/dbscan/Hit.cpp
+  )
 
 target_include_directories(triggeralgs PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
