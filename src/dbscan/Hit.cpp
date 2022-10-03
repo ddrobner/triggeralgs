@@ -1,7 +1,8 @@
-#include "Hit.hpp"
+#include "triggeralgs/dbscan/Hit.hpp"
 
 #include <algorithm>
 
+namespace triggeralgs {
 namespace dbscan {
 
 //======================================================================
@@ -73,6 +74,7 @@ Hit::add_potential_neighbour(Hit* other, float eps, int minPts)
     return false;
 }
 
+}
 }
 // Local Variables:
 // mode: c++

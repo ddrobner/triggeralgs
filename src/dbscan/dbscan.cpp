@@ -1,9 +1,10 @@
-#include "dbscan.hpp"
-#include "Hit.hpp"
+#include "triggeralgs/dbscan/dbscan.hpp"
+#include "triggeralgs/dbscan/Hit.hpp"
 
 #include <cassert>
 #include <limits>
 
+namespace triggeralgs {
 namespace dbscan {
 
 //======================================================================
@@ -315,6 +316,7 @@ IncrementalDBSCAN::trim_hits()
     m_hits.erase(m_hits.begin(), last_it);
 }
 
+}
 }
 // Local Variables:
 // mode: c++

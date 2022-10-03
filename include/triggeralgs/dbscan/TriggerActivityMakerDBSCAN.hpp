@@ -10,7 +10,7 @@
 #define TRIGGERALGS_DBSCAN_TRIGGERACTIVITYMAKERDBSCAN_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
-#include "dbscan/dbscan.hpp"
+#include "triggeralgs/dbscan/dbscan.hpp"
 
 #include <memory>
 #include <vector>

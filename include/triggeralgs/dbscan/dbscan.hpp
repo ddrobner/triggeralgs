@@ -7,9 +7,10 @@
 #include <set>
 #include <list>
 
-#include "Hit.hpp"
+#include "triggeralgs/dbscan/Hit.hpp"
 #include "triggeralgs/TriggerPrimitive.hpp"
 
+namespace triggeralgs {
 namespace dbscan {
 //======================================================================
 // Find the eps-neighbours of hit q, assuming that the hits vector is sorted by
@@ -101,6 +102,7 @@ private:
         m_clusters; // All of the currently-active (ie, kIncomplete) clusters
 };
 
+}
 }
 
 // Local Variables:
