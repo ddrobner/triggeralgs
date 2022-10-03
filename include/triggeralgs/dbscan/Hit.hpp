@@ -6,6 +6,7 @@
 #include <cmath>
 #include <list>
 
+namespace triggeralgs {
 namespace dbscan {
 //======================================================================
 
@@ -121,6 +122,7 @@ time_comp_lower(const Hit* hit, const float t)
     return hit->time < t;
 }
 
+}
 }
 // Local Variables:
 // mode: c++
