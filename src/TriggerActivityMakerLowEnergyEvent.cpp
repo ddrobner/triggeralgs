@@ -195,7 +195,7 @@ TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
 }
 
 // =====================================================================================
-// Functions below this line are for debugging purposes.
+// Functions below this line are for debugging and performance study purposes.
 // =====================================================================================
 void
 TriggerActivityMakerLowEnergyEvent::add_window_to_record(Window window)
@@ -216,12 +216,12 @@ TriggerActivityMakerLowEnergyEvent::dump_window_record()
     outfile << window.inputs.back().time_start << ",";
     outfile << window.inputs.back().time_start - window.time_start << ",";
     outfile << window.adc_integral << ",";
-    outfile << window.n_channels_hit() << ",";       // Number of unique channels with hits
-    outfile << window.inputs.size() << ",";          // Number of TPs in Window
-    outfile << window.inputs.back().channel << ",";  // Last TP Channel ID
-    outfile << window.inputs.back().time_start << ",";  // Last TP start time
-    outfile << window.inputs.front().channel << ","; // First TP Channel ID
-    outfile << window.inputs.front().time_start << ","; // First TP start time 
+    outfile << window.n_channels_hit() << ",";             // Number of unique channels with hits
+    outfile << window.inputs.size() << ",";                // Number of TPs in Window
+    outfile << window.inputs.back().channel << ",";        // Last TP Channel ID
+    outfile << window.inputs.back().time_start << ",";     // Last TP start time
+    outfile << window.inputs.front().channel << ",";       // First TP Channel ID
+    outfile << window.inputs.front().time_start << ",";    // First TP start time 
     outfile << check_adjacency(window) << ",";             // New adjacency value for the window
     outfile << check_tot(window) << std::endl;             // Summed window TOT
   }

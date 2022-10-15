@@ -82,11 +82,7 @@ TriggerCandidateMakerLowEnergyEvent::operator()(const TriggerActivity& activity,
     m_current_window.move(activity, m_window_length);
   }
 
-  // TLOG_DEBUG(TRACE_NAME) << m_current_window;
-
   m_activity_count++;
-
-  //  if(m_activity_count % 500 == 0) dump_window_record();
 
   return;
 }
@@ -94,7 +90,6 @@ TriggerCandidateMakerLowEnergyEvent::operator()(const TriggerActivity& activity,
 void
 TriggerCandidateMakerLowEnergyEvent::configure(const nlohmann::json& config)
 {
-  // FIX ME: Use some schema here. Also can't work out how to pass booleans.
   if (config.is_object()) {
     if (config.contains("trigger_on_adc"))
       m_trigger_on_adc = config["trigger_on_adc"];
@@ -111,26 +106,7 @@ TriggerCandidateMakerLowEnergyEvent::configure(const nlohmann::json& config)
     if (config.contains("readout_window_ticks_after"))
       m_readout_window_ticks_after = config["readout_window_ticks_after"];
 
-    // if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
-  /*if(m_trigger_on_adc) {
-    TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger activities with times within a "
-                           << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger
-  will be issued.";
-  }
-  else if(m_trigger_on_n_channels) {
-    TLOG_DEBUG(TRACE_NAME) << "If the total number of channels with hits within a "
-                           << m_window_length << " tick time window is above " << m_n_channels_threshold << " channels,
-  a trigger will be issued.";
-  }
-  else if ((!m_trigger_on_adc) && (!m_trigger_on_n_channels)) {
-    TLOG_DEBUG(TRACE_NAME) << "The candidate maker will construct candidates 1 for 1 from trigger activities.";
-  }
-  else if (m_trigger_on_adc && m_trigger_on_n_channels) {
-    TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
-           << "unfortunately this is not yet supported. Exiting.";
-    // FIX ME: Logic to throw an exception here.
-  }*/
 
   return;
 }
@@ -196,26 +172,3 @@ TriggerCandidateMakerLowEnergyEvent::dump_window_record()
 
   return;
 }
-
-/*
-void
-TriggerCandidateMakerLowEnergyEvent::flush(timestamp_t, std::vector<TriggerCandidate>& output_tc)
-{
-  // Check the status of the current window, construct TC if conditions are met. Regardless
-  // of whether the conditions are met, reset the window.
-  if(m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc){
-  //else if(m_current_window.adc_integral > m_conf.adc_threshold && m_conf.trigger_on_adc){
-    //TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    output_tc.push_back(construct_tc());
-  }
-  else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
-  //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
-    //TLOG_DEBUG(TRACE_NAME) << "Number of channels hit in the window is greater than specified threshold.";
-    output_tc.push_back(construct_tc());
-  }
-
-  //TLOG_DEBUG(TRACE_NAME) << "Clearing the current window, on the arrival of the next input_tp, the window will be
-reset."; m_current_window.clear();
-
-  return;
-}*/
