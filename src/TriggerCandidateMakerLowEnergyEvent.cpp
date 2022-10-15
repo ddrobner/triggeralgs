@@ -51,7 +51,7 @@ TriggerCandidateMakerLowEnergyEvent::operator()(const TriggerActivity& activity,
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
   if ((activity.time_start - m_current_window.time_start) < m_window_length) {
-    // TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the activity to the window.";
+    // TLOG_DEBUG(TRACE_NAME) << "TAWindow not yet complete, adding the activity to the window.";
     m_current_window.add(activity);
   }
   // If the addition of the current TA to the window would make it longer
@@ -78,7 +78,7 @@ TriggerCandidateMakerLowEnergyEvent::operator()(const TriggerActivity& activity,
   }
   // If it is not, move the window along.
   else {
-    // TLOG_DEBUG(TRACE_NAME) << "Window is at required length but specified threshold not met, shifting window along.";
+    // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
 
@@ -144,7 +144,7 @@ TriggerCandidateMakerLowEnergyEvent::check_adjacency() const
 
 // Functions below this line are for debugging purposes.
 void
-TriggerCandidateMakerLowEnergyEvent::add_window_to_record(Window window)
+TriggerCandidateMakerLowEnergyEvent::add_window_to_record(TAWindow window)
 {
   m_window_record.push_back(window);
   return;

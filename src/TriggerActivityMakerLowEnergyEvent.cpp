@@ -108,7 +108,7 @@ TriggerActivityMakerLowEnergyEvent::configure(const nlohmann::json& config)
 }
 
 TriggerActivity
-TriggerActivityMakerLowEnergyEvent::construct_ta(Window m_current_window) const
+TriggerActivityMakerLowEnergyEvent::construct_ta(TPWindow m_current_window) const
 {
 
   TriggerPrimitive latest_tp_in_window = m_current_window.inputs.back();
@@ -132,7 +132,7 @@ TriggerActivityMakerLowEnergyEvent::construct_ta(Window m_current_window) const
 }
 
 uint16_t
-TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
+TriggerActivityMakerLowEnergyEvent::check_adjacency(TPWindow window) const
 {
   /* This function returns the adjacency value for the current window, where adjacency
   *  is defined as the maximum number of consecutive wires containing hits. It accepts
@@ -194,7 +194,7 @@ TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
 // Functions below this line are for debugging and performance study purposes.
 // =====================================================================================
 void
-TriggerActivityMakerLowEnergyEvent::add_window_to_record(Window window)
+TriggerActivityMakerLowEnergyEvent::add_window_to_record(TPWindow window)
 {
   m_window_record.push_back(window);
   return;
@@ -213,7 +213,7 @@ TriggerActivityMakerLowEnergyEvent::dump_window_record()
     outfile << window.inputs.back().time_start - window.time_start << ",";
     outfile << window.adc_integral << ",";
     outfile << window.n_channels_hit() << ",";             // Number of unique channels with hits
-    outfile << window.inputs.size() << ",";                // Number of TPs in Window
+    outfile << window.inputs.size() << ",";                // Number of TPs in TPWindow
     outfile << window.inputs.back().channel << ",";        // Last TP Channel ID
     outfile << window.inputs.back().time_start << ",";     // Last TP start time
     outfile << window.inputs.front().channel << ",";       // First TP Channel ID
@@ -250,7 +250,7 @@ TriggerActivityMakerLowEnergyEvent::dump_tp(TriggerPrimitive const& input_tp)
 }
 
 int
-TriggerActivityMakerLowEnergyEvent::check_tot(Window m_current_window) const
+TriggerActivityMakerLowEnergyEvent::check_tot(TPWindow m_current_window) const
 {
   // Here, we just want to sum up all the tot values for each TP within window,
   // and return this tot of the window.
