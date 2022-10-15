@@ -156,7 +156,7 @@ TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
   /* ADAJACENCY LOGIC ====================================================================
   *  Adjcancency Tolerance = Number of times prepared to skip missed hits before resetting 
   *  the adjacency count. This accounts for things like dead channels / missed TPs. */
-  for (int i = 0; i < chanList.size(); ++i) {
+  for (size_t i = 0; i < chanList.size(); ++i) {
 
     next = (i + 1) % chanList.size(); // Loops back when outside of channel list range
     channel = chanList.at(i);
@@ -175,7 +175,7 @@ TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
     // but also tally up with the tolerance counter.
     else if ((next_channel == channel + 2 || next_channel == channel + 3) && (tol_count < m_adj_tolerance)) { 
 	++adj;
-        for (int i = 0 ; i < next_channel-channel ; ++i) ++tol_count;
+        for (size_t i = 0 ; i < next_channel-channel ; ++i) ++tol_count;
     }
 
     // If next hit isn't within reach, end the adjacency count and check for a new max.
