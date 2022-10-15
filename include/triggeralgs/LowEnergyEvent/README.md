@@ -8,6 +8,18 @@
 ## Trigger Activity Maker
 - We have 3 instances of the `Window` class, as used in the Horizontal Muon Algorithm (HMA). Each `Window` will contain the TPs received in a configurable amount of time from one of three TPC planes. Currently we first require an ADC spike above pure radiological background and noise hits (from simulation) which is the sum of ADC integrals of all windows. Second, this must be coupled with a short primary ionisation track in the collection plane, presumably caused by a Michel electron or SN event. The adjacency checking of the tried and tested Horizontal Muon Algorithm is used here.
 
+#### Adjacency Checking Function
+ - This function returns the adjacency value for the current window, where adjacency
+ is defined as the maximum number of consecutive wires containing hits. It accepts
+ a configurable tolerance paramter, which allows up to adj_tolerance missing hits
+ on adjacent wires before restarting the adjacency count. The maximum gap is 4 which
+ comes from tuning on December 2021 coldbox data, and June 2022 coldbox runs.
+
+ - Adjcancency Tolerance = Number of times prepared to skip missed hits before resetting 
+  the adjacency count. This accounts for things like dead channels / missed TPs. The 
+  maximum gap is 4 which comes from tuning on December 2021 coldbox data, and June 2022 
+  coldbox runs.
+
 ## Trigger Candidate Maker
 - At the moment, we use a trivial logic, by which we mean that there is a one-to-one map between emitted TAs and TCs. More complex triggering logic will be used in the future, when we want to cluster TAs from multiple detector elements (APAs).
 
