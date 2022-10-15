@@ -134,11 +134,10 @@ TriggerActivityMakerLowEnergyEvent::construct_ta(Window m_current_window) const
 uint16_t
 TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
 {
-  // This function returns the adjacency value for the current window, where adjacency
-  // is defined as the maximum number of consecutive wires containing hits. It accepts
-  // a configurable tolerance paramter, which allows up to adj_tolerance missing hits
-  // on adjacent wires before restarting the adjacency count. The maximum gap is 4 which
-  // comes from tuning on December 2021 coldbox data, and June 2022 coldbox runs.
+  /* This function returns the adjacency value for the current window, where adjacency
+  *  is defined as the maximum number of consecutive wires containing hits. It accepts
+  *  a configurable tolerance paramter, which allows up to adj_tolerance missing hits
+  *  on adjacent wires before restarting the adjacency count. */
 
   uint16_t adj = 1;              // Initialise adjacency, 1 for the first wire.
   uint16_t max = 0;              // Maximum adjacency of window, which this function returns
@@ -147,19 +146,16 @@ TriggerActivityMakerLowEnergyEvent::check_adjacency(Window window) const
   unsigned int next = 0;         // The next position in the hit channels vector
   unsigned int tol_count = 0;    // Tolerance count, should not pass adj_tolerance
 
-  // Generate a channelID ordered list of hit channels for this window
+  /* Generate a channelID ordered list of hit channels for this window */
   std::vector<int> chanList;
   for (auto tp : window.inputs) {
     chanList.push_back(tp.channel);
   }
   std::sort(chanList.begin(), chanList.end());
 
-  // ADAJACENCY LOGIC ====================================================================
-  // =====================================================================================
-  // Adjcancency Tolerance = Number of times prepared to skip missed hits before resetting 
-  // the adjacency count. This accounts for things like dead channels / missed TPs. The 
-  // maximum gap is 4 which comes from tuning on December 2021 coldbox data, and June 2022 
-  // coldbox runs.
+  /* ADAJACENCY LOGIC ====================================================================
+  *  Adjcancency Tolerance = Number of times prepared to skip missed hits before resetting 
+  *  the adjacency count. This accounts for things like dead channels / missed TPs. */
   for (int i = 0; i < chanList.size(); ++i) {
 
     next = (i + 1) % chanList.size(); // Loops back when outside of channel list range
