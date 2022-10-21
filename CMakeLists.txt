@@ -17,8 +17,6 @@ find_package(detdataformats REQUIRED)
 find_package(cetlib REQUIRED)
 find_package(detchannelmaps REQUIRED)
 
-daq_setup_environment()
-
 # We follow the daq-cmake convention of building one main library for
 # the package. In our case, we include all of the available trigger
 # implementations in the library (rather than, say, splitting them out
