@@ -35,6 +35,9 @@ TriggerActivityMakerLowEnergyEvent::operator()(const TriggerPrimitive& input_tp,
   if (isY && (input_tp.time_start - m_induction2_window.time_start) < m_window_length) m_induction2_window.add(input_tp);
   if (isZ && (input_tp.time_start - m_collection_window.time_start) < m_window_length) m_collection_window.add(input_tp); 
 
+  // ISSUE - We are checking the collection plane window too early: Every time we are NOT receiving a collection plane
+  // TP, we're checking the trigger conditions. Fix this immediately and rerun trigger runs to test.
+
   // ===================================================================================
   // Below this line, we begin our hierarchy of checks for a low energy event,
   // taking advantage of the newly gained induction hits window.
@@ -46,20 +49,28 @@ TriggerActivityMakerLowEnergyEvent::operator()(const TriggerPrimitive& input_tp,
   // 1) REQUIRE ADC SPIKE FROM INDUCTION AND CHECK ADJACENCY ===========================
   // We're looking for a localised spike of ADC (short time window) and then a short
   // adjacency corresponding to an electron track/shower.
-  else if ((m_induction1_window.adc_integral + m_induction2_window.adc_integral + m_collection_window.adc_integral )
-            > m_adc_threshold && check_adjacency(m_collection_window) > m_adjacency_threshold){
+  
+  // ISSUE - We are checking the collection plane window too early and too frequently probably:
+  // Every time we are NOT receiving a collection plane TP, we're checking the trigger conditions. 
+  // Fix this immediately and rerun trigger runs to test.
+  // Introduce bool to check for collection window completeness:
+  bool collectionComplete = (input_tp.time_start - m_collection_window.time_start) > m_window_length;
+  // Then require that the collection window be complete in the adjacency checks
+  if (!collectionComplete) { } // Do nothing
+  else if (collectionComplete && (m_induction1_window.adc_integral + m_induction2_window.adc_integral + m_collection_window.adc_integral)
+            > m_adc_threshold && check_adjacency(m_collection_window) >= m_adjacency_threshold){
 
           TLOG(1) << "Emitting low energy trigger with " << m_induction1_window.adc_integral << " U "
                   << m_induction2_window.adc_integral << " Y induction ADC sums and "
                   << check_adjacency(m_collection_window) << " adjacent collection hits.";
    
           // Initial studies - output the TPs of the collection plane window that caused this trigger
-          //add_window_to_record(m_collection_window);
-          //dump_window_record();
-          //m_window_record.clear();     
+          add_window_to_record(m_collection_window);
+          dump_window_record();
+          m_window_record.clear();     
 
           // Initial studies - Also dump the TPs that have contributed to this TA decision
-          //for(auto tp : m_collection_window.inputs) dump_tp(tp);
+          for(auto tp : m_collection_window.inputs) dump_tp(tp);
  
           // We have fulfilled our trigger condition, construct a TA and reset/flush the windows
           // to ensure they're all in the same "time zone"!
@@ -233,7 +244,7 @@ void
 TriggerActivityMakerLowEnergyEvent::dump_tp(TriggerPrimitive const& input_tp)
 {
   std::ofstream outfile;
-  outfile.open("coldbox_tps.txt", std::ios_base::app);
+  outfile.open("triggered_coldbox_tps.txt", std::ios_base::app);
 
   // Output relevant TP information to file
   outfile << input_tp.time_start << " ";          
