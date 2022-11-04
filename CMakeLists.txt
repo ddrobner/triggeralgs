@@ -7,7 +7,8 @@ include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_compile_options(-O2 -march=native -flto)
+add_compile_options(-O2 -flto)
+#add_compile_options(-O2 -march=native -flto)
 
 set(CMAKE_INSTALL_CMAKEDIR   ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/cmake )
 
