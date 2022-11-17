@@ -123,6 +123,8 @@ private:
   uint16_t ta_adc = 0;
   uint16_t ta_channels = 0;
   timestamp_t m_window_length = 8000;    // Shouldn't exceed the max drift
+  uint16_t ta_count = 0;                  // Use for prescaling
+  uint16_t m_prescale = 1;                // Prescale value, defult is one, trigger every TA
 
   // For debugging purposes.
   void add_window_to_record(Window window);

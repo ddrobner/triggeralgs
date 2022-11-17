@@ -46,11 +46,15 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // make a TA and start a fresh window with the current TP.
   else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
 
-    TLOG(1) << "Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
-               " window ADC integral.";
+    ta_count++;
+    if (ta_count % m_prescale == 0){
 
-    output_ta.push_back(construct_ta());
-    m_current_window.reset(input_tp);
+    	TLOG(1) << "Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
+                   " window ADC integral.";
+
+    	output_ta.push_back(construct_ta());
+    	m_current_window.reset(input_tp);
+    }
   }
 
   // 2) MULTIPLICITY - N UNQIUE CHANNELS EXCEEDED =====================================
@@ -60,11 +64,15 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // on channel multiplicity, make a TA and start a fresh window with the current TP.
   else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
 
-    TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
-               " unique channels hit.";
+    ta_count++;
+    if (ta_count % m_prescale == 0){
 
-    output_ta.push_back(construct_ta());
-    m_current_window.reset(input_tp);
+    	TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
+                   " unique channels hit.";
+
+    	output_ta.push_back(construct_ta());
+    	m_current_window.reset(input_tp);
+    }
   }
 
   // 3) ADJACENCY THRESHOLD EXCEEDED ==================================================
@@ -74,14 +82,18 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // on adjacency, then create a TA and reset the window with the new/current TP.
   else if (check_adjacency() > m_adjacency_threshold &&  m_trigger_on_adjacency) {
 
-    // Check for a new maximum, display the largest seen adjacency in the log.
-    uint16_t adjacency = check_adjacency();
-    if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
-    TLOG(1) << "Emitting adjacency TA with adjacency " << check_adjacency() <<
-               " and the largest seen so far is " << m_max_adjacency;
+    ta_count++;
+    if (ta_count % m_prescale == 0){   
 
-    output_ta.push_back(construct_ta());
-    m_current_window.reset(input_tp);
+    	// Check for a new maximum, display the largest seen adjacency in the log.
+    	uint16_t adjacency = check_adjacency();
+    	if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
+    		TLOG(1) << "Emitting adjacency TA with adjacency " << check_adjacency() <<
+               		   " and the largest seen so far is " << m_max_adjacency;
+
+   	 	output_ta.push_back(construct_ta());
+    		m_current_window.reset(input_tp);
+     }
   }
 
   // 4) Otherwise, slide the window along using the current TP.
@@ -115,7 +127,9 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json& config)
       m_adjacency_threshold = config["adjacency_threshold"];
     if (config.contains("print_tp_info"))
       m_print_tp_info = config["print_tp_info"];
-  }
+    if (config.contains("prescale"))
+      m_prescale = config["prescale"]; 
+ }
 
 }
 
