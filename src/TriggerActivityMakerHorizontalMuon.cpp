@@ -48,8 +48,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // on channel multiplicity, make a TA and start a fresh window with the current TP.
   else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
 
-    TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
-               " unique channels hit.";
+    TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() << " unique channels hit.";
 
     output_ta.push_back(construct_ta());
     m_current_window.reset(input_tp);
@@ -60,13 +59,15 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // specified window length, don't add it but check whether the adjacency of the
   // current window exceeds the configured threshold. If it does, and we are triggering
   // on adjacency, then create a TA and reset the window with the new/current TP.
-  else if (check_adjacency() > m_adjacency_threshold &&  m_trigger_on_adjacency) {
+  else if (check_adjacency() > m_adjacency_threshold && m_trigger_on_adjacency) {
 
     // Check for a new maximum, display the largest seen adjacency in the log.
     uint16_t adjacency = check_adjacency();
-    if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
-    TLOG(1) << "Emitting adjacency TA with adjacency " << check_adjacency() <<
-               " and the largest seen so far is " << m_max_adjacency;
+    if (adjacency > m_max_adjacency) {
+      m_max_adjacency = adjacency;
+    }
+    TLOG(1) << "Emitting adjacency TA with adjacency " << check_adjacency() << " and the largest seen so far is "
+            << m_max_adjacency;
 
     output_ta.push_back(construct_ta());
     m_current_window.reset(input_tp);
@@ -102,7 +103,6 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json& config)
     if (config.contains("adjacency_threshold"))
       m_adjacency_threshold = config["adjacency_threshold"];
   }
-
 }
 
 TriggerActivity
@@ -154,9 +154,9 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 
   // ADAJACENCY LOGIC ====================================================================
   // =====================================================================================
-  // Adjcancency Tolerance = Number of times prepared to skip missed hits before resetting 
-  // the adjacency count. This accounts for things like dead channels / missed TPs. The 
-  // maximum gap is 4 which comes from tuning on December 2021 coldbox data, and June 2022 
+  // Adjcancency Tolerance = Number of times prepared to skip missed hits before resetting
+  // the adjacency count. This accounts for things like dead channels / missed TPs. The
+  // maximum gap is 4 which comes from tuning on December 2021 coldbox data, and June 2022
   // coldbox runs.
   for (int i = 0; i < chanList.size(); ++i) {
 
@@ -165,27 +165,37 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
     next_channel = chanList.at(next); // Next channel with a hit
 
     // End of vector condition.
-    if (next_channel == 0) { next_channel = channel - 1; }
+    if (next_channel == 0) {
+      next_channel = channel - 1;
+    }
 
     // Skip same channel hits.
-    if (next_channel == channel) { continue; }
+    if (next_channel == channel) {
+      continue;
+    }
 
     // If next hit is on next channel, increment the adjacency count.
-    else if (next_channel == channel + 1){ ++adj; }
-
-    // If next channel is not on the next hit, but the 'second next', increase adjacency 
-    // but also tally up with the tolerance counter.
-    else if (((next_channel == channel + 2) || (next_channel == channel + 3) || 
-              (next_channel == channel + 4) || (next_channel == channel + 5))
-             && (tol_count < m_adj_tolerance)) {
+    else if (next_channel == channel + 1) {
       ++adj;
-      for (int i = 0 ; i < next_channel-channel ; ++i){ ++tol_count; }
+    }
+
+    // If next channel is not on the next hit, but the 'second next', increase adjacency
+    // but also tally up with the tolerance counter.
+    else if (((next_channel == channel + 2) || (next_channel == channel + 3) || (next_channel == channel + 4) ||
+              (next_channel == channel + 5)) &&
+             (tol_count < m_adj_tolerance)) {
+      ++adj;
+      for (int i = 0; i < next_channel - channel; ++i) {
+        ++tol_count;
+      }
     }
 
     // If next hit isn't within reach, end the adjacency count and check for a new max.
     // Reset variables for next iteration.
     else {
-      if (adj > max) { max = adj; } 
+      if (adj > max) {
+        max = adj;
+      }
       adj = 1;
       tol_count = 0;
     }
@@ -238,14 +248,14 @@ TriggerActivityMakerHorizontalMuon::dump_tp(TriggerPrimitive const& input_tp)
   outfile.open("coldbox_tps.txt", std::ios_base::app);
 
   // Output relevant TP information to file
-  outfile << input_tp.time_start << " ";          
+  outfile << input_tp.time_start << " ";
   outfile << input_tp.time_over_threshold << " "; // 50MHz ticks
-  outfile << input_tp.time_peak << " ";           
-  outfile << input_tp.channel << " ";             // Offline channel ID
-  outfile << input_tp.adc_integral << " ";        
-  outfile << input_tp.adc_peak << " ";            
-  outfile << input_tp.detid << " ";               // Det ID - Identifies detector element
-  outfile << input_tp.type << std::endl;        
+  outfile << input_tp.time_peak << " ";
+  outfile << input_tp.channel << " "; // Offline channel ID
+  outfile << input_tp.adc_integral << " ";
+  outfile << input_tp.adc_peak << " ";
+  outfile << input_tp.detid << " "; // Det ID - Identifies detector element
+  outfile << input_tp.type << std::endl;
   outfile.close();
 
   return;
@@ -256,7 +266,7 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
 {
   // Here, we just want to sum up all the tot values for each TP within window,
   // and return this tot of the window.
-  int window_tot = 0; 
+  int window_tot = 0;
   for (auto tp : m_current_window.inputs) {
     window_tot += tp.time_over_threshold;
   }

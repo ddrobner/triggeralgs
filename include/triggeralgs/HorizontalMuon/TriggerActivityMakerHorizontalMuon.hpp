@@ -29,7 +29,7 @@ private:
     bool is_empty() const { return inputs.empty(); };
     void add(TriggerPrimitive const& input_tp)
     {
-      // Add the input TP's contribution to the total ADC, increase hit 
+      // Add the input TP's contribution to the total ADC, increase hit
       // channel's hit count and add it to the TP list.
       adc_integral += input_tp.adc_integral;
       channel_states[input_tp.channel]++;
@@ -87,8 +87,9 @@ private:
     };
     friend std::ostream& operator<<(std::ostream& os, const Window& window)
     {
-      if (window.is_empty()) {os << "Window is empty!\n";}
-      else {
+      if (window.is_empty()) {
+        os << "Window is empty!\n";
+      } else {
         os << "Window start: " << window.time_start << ", end: " << window.inputs.back().time_start;
         os << ". Total of: " << window.adc_integral << " ADC counts with " << window.inputs.size() << " TPs.\n";
         os << window.channel_states.size() << " independent channels have hits.\n";
@@ -121,7 +122,7 @@ private:
   int index = 0;
   uint16_t ta_adc = 0;
   uint16_t ta_channels = 0;
-  timestamp_t m_window_length = 8000;    // Shouldn't exceed the max drift
+  timestamp_t m_window_length = 8000; // Shouldn't exceed the max drift
 
   // For debugging purposes.
   void add_window_to_record(Window window);
