@@ -20,8 +20,7 @@ class TriggerPrimitiveMaker
 {
 public:
   virtual ~TriggerPrimitiveMaker() = default;
-  virtual void operator()(const void* input_rawdata,
-                          std::vector<dunedaq::detdataformats::trigger::TriggerPrimitive>& output_tp) = 0;
+  virtual void operator()(const void* input_rawdata, std::vector<dunedaq::detdataformats::trigger::TriggerPrimitive>& output_tp) = 0;
   virtual void flush(std::vector<dunedaq::detdataformats::trigger::TriggerPrimitive>&) {}
   virtual void configure(const nlohmann::json&) {}
 };
