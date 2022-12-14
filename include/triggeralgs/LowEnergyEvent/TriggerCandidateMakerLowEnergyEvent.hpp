@@ -1,22 +1,21 @@
 /**
- * @file TriggerCandidateMakerHorizontalMuon.hpp
+ * @file TriggerCandidateMakerLowEnergyEvent.hpp
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2021.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#ifndef TRIGGERALGS_HORIZONTALMUON_TRIGGERCANDIDATEMAKERHORIZONTALMUON_HPP_
-#define TRIGGERALGS_HORIZONTALMUON_TRIGGERCANDIDATEMAKERHORIZONTALMUON_HPP_
+#ifndef TRIGGERALGS_LOWENERGYEVENT_TRIGGERCANDIDATEMAKERLOWENERGYEVENT_HPP_
+#define TRIGGERALGS_LOWENERGYEVENT_TRIGGERCANDIDATEMAKERLOWENERGYEVENT_HPP_
 
 #include "triggeralgs/TriggerCandidateMaker.hpp"
 #include "triggeralgs/TAWindow.hpp"
-
 #include <fstream>
 #include <vector>
 
 namespace triggeralgs {
-class TriggerCandidateMakerHorizontalMuon : public TriggerCandidateMaker
+class TriggerCandidateMakerLowEnergyEvent : public TriggerCandidateMaker
 {
 
 public:
@@ -42,10 +41,10 @@ private:
   timestamp_t m_readout_window_ticks_after = 30000;
   int tc_number = 0;
 
-  // For debugging purposes.
+  // For debugging and performance study purposes.
   void add_window_to_record(TAWindow window);
   void dump_window_record();
   std::vector<TAWindow> m_window_record;
 };
 } // namespace triggeralgs
-#endif // TRIGGERALGS_HORIZONTALMUON_TRIGGERCANDIDATEMAKERHORIZONTALMUON_HPP_
+#endif // TRIGGERALGS_LOWENERGYEVENT_TRIGGERCANDIDATEMAKERLOWENERGYEVENT_HPP_
