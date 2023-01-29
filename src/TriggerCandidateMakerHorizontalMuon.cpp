@@ -27,69 +27,54 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   if (m_current_window.is_empty()) {
     m_current_window.reset(activity);
     m_activity_count++;
-    // Trivial TC Logic:
-    // If the request has been made to not trigger on number of channels or
-    // total adc, simply construct a trigger candidate from any single activity.
-    if ((!m_trigger_on_adc) && (!m_trigger_on_n_channels)) {
 
-      // add_window_to_record(m_current_window);
-      // dump_window_record();
-      TLOG(1) << "Constructing trivial TC.";
-      TLOG(1) << "Activity count: " << m_activity_count;
-      TriggerCandidate tc = construct_tc();
-      output_tc.push_back(tc);
+    TriggerCandidate tc = construct_tc();
+    output_tc.push_back(tc);
 
-      // Clear the current window (only has a single TA in it)
-      m_current_window.clear();
-    }
+    // Clear the current window (only has a single TA in it)
+    m_current_window.clear();
     return;
-  }
-
-  // FIX ME: Only want to call this if running in debug mode.
-  // add_window_to_record(m_current_window);
+    }
 
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
-  if ((activity.time_start - m_current_window.time_start) < m_window_length) {
+  else if ((activity.time_start - m_current_window.time_start) < m_window_length) {
     // TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the activity to the window.";
     m_current_window.add(activity);
   }
+  
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the sum of all adc in
   // the existing window is above the specified threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
   else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
     // TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
+    tc_number++;
     TriggerCandidate tc = construct_tc();
-
     output_tc.push_back(tc);
-    // TLOG_DEBUG(TRACE_NAME) << "Resetting window with activity.";
     m_current_window.reset(activity);
   }
+
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the number of hit channels in
   // the existing window is above the specified threshold. If it is, and we are triggering on channels,
   // make a TC and start a fresh window with the current TA.
   else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
     tc_number++;
-    //   output_tc.push_back(construct_tc());
+    output_tc.push_back(construct_tc());
     m_current_window.reset(activity);
-    TLOG(1) << "Should not see this!";
   }
+
   // If it is not, move the window along.
   else {
     // TLOG_DEBUG(TRACE_NAME) << "Window is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
 
-  // TLOG_DEBUG(TRACE_NAME) << m_current_window;
-
   m_activity_count++;
-
-  //  if(m_activity_count % 500 == 0) dump_window_record();
-
   return;
 }
+
 
 void
 TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
