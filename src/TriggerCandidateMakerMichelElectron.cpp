@@ -1,22 +1,22 @@
 /**
- * @file TriggerCandidateMakerHorizontalMuon.cpp
+ * @file TriggerCandidateMakerMichelElectron.cpp
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2021.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#include "triggeralgs/HorizontalMuon/TriggerCandidateMakerHorizontalMuon.hpp"
+#include "triggeralgs/MichelElectron/TriggerCandidateMakerMichelElectron.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerCandidateMakerHorizontalMuon"
+#define TRACE_NAME "TriggerCandidateMakerMichelElectron"
 
 #include <vector>
 
 using namespace triggeralgs;
 
 void
-TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
+TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
                                                 std::vector<TriggerCandidate>& output_tc)
 {
 
@@ -27,57 +27,72 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   if (m_current_window.is_empty()) {
     m_current_window.reset(activity);
     m_activity_count++;
+    // Trivial TC Logic:
+    // If the request has been made to not trigger on number of channels or
+    // total adc, simply construct a trigger candidate from any single activity.
+    if ((!m_trigger_on_adc) && (!m_trigger_on_n_channels)) {
 
-    TriggerCandidate tc = construct_tc();
-    output_tc.push_back(tc);
+      // add_window_to_record(m_current_window);
+      // dump_window_record();
+      // TLOG(1) << "Constructing trivial TC.";
 
-    // Clear the current window (only has a single TA in it)
-    m_current_window.clear();
-    return;
+      TriggerCandidate tc = construct_tc();
+      output_tc.push_back(tc);
+
+      // Clear the current window (only has a single TA in it)
+      m_current_window.clear();
     }
+    return;
+  }
+
+  // FIX ME: Only want to call this if running in debug mode.
+  // add_window_to_record(m_current_window);
 
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
-  else if ((activity.time_start - m_current_window.time_start) < m_window_length) {
+  if ((activity.time_start - m_current_window.time_start) < m_window_length) {
     // TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the activity to the window.";
     m_current_window.add(activity);
   }
-  
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the sum of all adc in
   // the existing window is above the specified threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
   else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
     // TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    tc_number++;
     TriggerCandidate tc = construct_tc();
+
     output_tc.push_back(tc);
+    // TLOG_DEBUG(TRACE_NAME) << "Resetting window with activity.";
     m_current_window.reset(activity);
   }
-
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the number of hit channels in
   // the existing window is above the specified threshold. If it is, and we are triggering on channels,
   // make a TC and start a fresh window with the current TA.
   else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
     tc_number++;
-    output_tc.push_back(construct_tc());
+    //   output_tc.push_back(construct_tc());
     m_current_window.reset(activity);
+    TLOG(1) << "Should not see this!";
   }
-
   // If it is not, move the window along.
   else {
     // TLOG_DEBUG(TRACE_NAME) << "Window is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
 
+  // TLOG_DEBUG(TRACE_NAME) << m_current_window;
+
   m_activity_count++;
+
+  //  if(m_activity_count % 500 == 0) dump_window_record();
+
   return;
 }
 
-
 void
-TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
+TriggerCandidateMakerMichelElectron::configure(const nlohmann::json& config)
 {
   // FIX ME: Use some schema here. Also can't work out how to pass booleans.
   if (config.is_object()) {
@@ -121,7 +136,7 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
 }
 
 TriggerCandidate
-TriggerCandidateMakerHorizontalMuon::construct_tc() const
+TriggerCandidateMakerMichelElectron::construct_tc() const
 {
   TriggerActivity latest_ta_in_window = m_current_window.inputs.back();
 
@@ -131,8 +146,8 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
     latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold + m_readout_window_ticks_after;
   tc.time_candidate = m_current_window.time_start;
   tc.detid = latest_ta_in_window.detid;
-  tc.type = TriggerCandidate::Type::kHorizontalMuon;
-  tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;
+  tc.type = TriggerCandidate::Type::kMichelElectron;
+  tc.algorithm = TriggerCandidate::Algorithm::kMichelElectron;
 
   // Take the list of triggeralgs::TriggerActivity in the current
   // window and convert them (implicitly) to detdataformats'
@@ -145,7 +160,7 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
 }
 
 bool
-TriggerCandidateMakerHorizontalMuon::check_adjacency() const
+TriggerCandidateMakerMichelElectron::check_adjacency() const
 {
   // FIX ME: An adjacency check on the channels which have hits.
   return true;
@@ -153,14 +168,14 @@ TriggerCandidateMakerHorizontalMuon::check_adjacency() const
 
 // Functions below this line are for debugging purposes.
 void
-TriggerCandidateMakerHorizontalMuon::add_window_to_record(Window window)
+TriggerCandidateMakerMichelElectron::add_window_to_record(Window window)
 {
   m_window_record.push_back(window);
   return;
 }
 
 void
-TriggerCandidateMakerHorizontalMuon::dump_window_record()
+TriggerCandidateMakerMichelElectron::dump_window_record()
 {
   // FIX ME: Need to index this outfile in the name by detid or something similar.
   std::ofstream outfile;
@@ -184,7 +199,7 @@ TriggerCandidateMakerHorizontalMuon::dump_window_record()
 
 /*
 void
-TriggerCandidateMakerHorizontalMuon::flush(timestamp_t, std::vector<TriggerCandidate>& output_tc)
+TriggerCandidateMakerMichelElectron::flush(timestamp_t, std::vector<TriggerCandidate>& output_tc)
 {
   // Check the status of the current window, construct TC if conditions are met. Regardless
   // of whether the conditions are met, reset the window.
