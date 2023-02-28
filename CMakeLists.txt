@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(triggeralgs VERSION 1.1.5)
+project(triggeralgs VERSION 1.1.7)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -37,8 +37,10 @@ add_library(triggeralgs SHARED
   src/TriggerCandidateMakerADCSimpleWindow.cpp
   src/TriggerActivityMakerHorizontalMuon.cpp
   src/TriggerCandidateMakerHorizontalMuon.cpp
+  src/TriggerActivityMakerLowEnergyEvent.cpp  
   src/TriggerCandidateMakerLowEnergyEvent.cpp
-  src/TriggerActivityMakerLowEnergyEvent.cpp
+  src/TriggerActivityMakerMichelElectron.cpp
+  src/TriggerCandidateMakerMichelElectron.cpp
   src/TriggerActivityMakerPrescale.cpp
   src/TriggerCandidateMakerPrescale.cpp
   src/TriggerActivityMakerSupernova.cpp
