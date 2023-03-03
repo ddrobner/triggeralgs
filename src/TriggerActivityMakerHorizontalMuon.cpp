@@ -10,7 +10,6 @@
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerHorizontalMuon"
 #include <vector>
-#include <chrono>
 
 using namespace triggeralgs;
 
@@ -56,6 +55,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     	TriggerActivity ta = construct_ta();
     	/* Mark System - Data time, at the point of TA construction for OpMon. Use start_time
     	as data time here.*/
+    	using namespace std::chrono;
     	uint64_t system_time = duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
         m_data_system_time_comparator = system_time - ta.time_start;
         output_ta.push_back(ta);
