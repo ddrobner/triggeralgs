@@ -53,7 +53,11 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     	TLOG(1) << "Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
                    " window ADC integral.";
 
-    	output_ta.push_back(construct_ta());
+    	TriggerActivity ta = construct_ta();
+    	// Mark System - Data time of this TA for OpMon. Use start_time.
+        m_data_system_time_comparator = ta.time_start;
+        output_ta.push_back(ta);
+
     	m_current_window.reset(input_tp);
     }
   }
@@ -154,9 +158,6 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
   ta.type = TriggerActivity::Type::kTPC;
   ta.algorithm = TriggerActivity::Algorithm::kHorizontalMuon;
   ta.inputs = m_current_window.inputs;
-
-  // Mark System - Data time of this TA for OpMon. Use start_time.
-  m_data_system_time_comparator = ta.time_start;
 
   return ta;
 }
