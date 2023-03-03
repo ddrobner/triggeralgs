@@ -27,7 +27,7 @@ public:
   virtual void configure(const nlohmann::json&) {}
 
 private:
-   uint64_t m_data_system_time_comparator = 0
+   uint64_t m_data_system_time_comparator = 0;
 
 };
 
