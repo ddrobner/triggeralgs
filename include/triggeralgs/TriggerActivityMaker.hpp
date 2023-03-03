@@ -26,6 +26,9 @@ public:
   virtual void flush(timestamp_t /* until */, std::vector<TriggerActivity>&) {}
   virtual void configure(const nlohmann::json&) {}
 
+private:
+   uint64_t m_data_system_time_comparator = 0
+
 };
 
 } // namespace triggeralgs
