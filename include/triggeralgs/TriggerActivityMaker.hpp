@@ -26,7 +26,7 @@ public:
   virtual void flush(timestamp_t /* until */, std::vector<TriggerActivity>&) {}
   virtual void configure(const nlohmann::json&) {}
 
-  void get_info(opmonlib::InfoCollector& /* ci */, int /*level*/);
+  void get_info(opmonlib::InfoCollector&, int /*level*/);
 };
 
 } // namespace triggeralgs
