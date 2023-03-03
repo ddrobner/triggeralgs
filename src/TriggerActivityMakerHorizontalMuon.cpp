@@ -54,8 +54,10 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
                    " window ADC integral.";
 
     	TriggerActivity ta = construct_ta();
-    	// Mark System - Data time of this TA for OpMon. Use start_time.
-        m_data_system_time_comparator = ta.time_start;
+    	/* Mark System - Data time, at the point of TA construction for OpMon. Use start_time
+    	as data time here.*/
+    	uint64_t system_time = duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
+        m_data_system_time_comparator = system_time - ta.time_start;
         output_ta.push_back(ta);
 
     	m_current_window.reset(input_tp);
@@ -74,8 +76,13 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
 
     	TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
                    " unique channels hit.";
+    	TriggerActivity ta = construct_ta();
+    	/* Mark System - Data time, at the point of TA construction for OpMon. Use start_time
+    	as data time here.*/
+    	uint64_t system_time = duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
+        m_data_system_time_comparator = system_time - ta.time_start;
+        output_ta.push_back(ta);
 
-    	output_ta.push_back(construct_ta());
     	m_current_window.reset(input_tp);
     }
   }
@@ -95,9 +102,14 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     	if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
     		TLOG(1) << "Emitting adjacency TA with adjacency " << check_adjacency() <<
                		   " and the largest seen so far is " << m_max_adjacency;
+    	TriggerActivity ta = construct_ta();
+    	/* Mark System - Data time, at the point of TA construction for OpMon. Use start_time
+    	as data time here.*/
+    	uint64_t system_time = duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
+        m_data_system_time_comparator = system_time - ta.time_start;
+        output_ta.push_back(ta);
 
-   	 	output_ta.push_back(construct_ta());
-    		m_current_window.reset(input_tp);
+    	m_current_window.reset(input_tp);
      }
   }
 
