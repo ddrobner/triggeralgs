@@ -15,6 +15,8 @@
 
 #include <nlohmann/json.hpp>
 #include <vector>
+#include <atomic>
+#include <chrono>
 
 namespace triggeralgs {
 
@@ -25,6 +27,8 @@ public:
   virtual void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta) = 0;
   virtual void flush(timestamp_t /* until */, std::vector<TriggerActivity>&) {}
   virtual void configure(const nlohmann::json&) {}
+
+  std::atomic<uint64_t> m_data_vs_system_time = 11111;
 };
 
 } // namespace triggeralgs

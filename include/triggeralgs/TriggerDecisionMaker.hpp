@@ -14,6 +14,7 @@
 
 #include <nlohmann/json.hpp>
 #include <vector>
+#include <atomic>
 
 namespace triggeralgs {
 
@@ -24,6 +25,9 @@ public:
   virtual void operator()(const TriggerCandidate& input_tc, std::vector<TriggerDecision>& output_tds) = 0;
   virtual void flush(std::vector<TriggerDecision>&) {}
   virtual void configure(const nlohmann::json&) {}
+
+  std::atomic<uint64_t> m_data_vs_system_time = 33333; 
+
 };
 
 } // namespace triggeralgs

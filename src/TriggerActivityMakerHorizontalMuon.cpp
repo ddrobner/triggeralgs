@@ -99,6 +99,13 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // 4) Otherwise, slide the window along using the current TP.
   else {
     m_current_window.move(input_tp, m_window_length);
+    
+    using namespace std::chrono;
+    // Get current system time in nanoseconds
+    uint64_t system_time = duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count(); 
+    uint64_t data_time = m_current_window.time_start*16;  // Convert 62.5 MHz ticks to nanoseconds    
+    m_data_vs_system_time.store(data_time - system_time); // Store the difference for OpMon
+    //TLOG() << "New parameter of the TAMakers - m_data_vs_system_time is: " << m_data_vs_system_time;
   }
   m_primitive_count++;
 
