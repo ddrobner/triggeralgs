@@ -155,6 +155,7 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
   ta.inputs = m_current_window.inputs;
 
   // Mark System - Data time of this TA for OpMon. Use start_time.
+  using namespace std::chrono;
   uint64_t system_time = duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
   m_data_system_time_comparator = system_time - ta.time_start;
 
