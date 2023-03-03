@@ -222,6 +222,11 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
   return max;
 }
 
+void
+TriggerActivityMakerHorizontalMuon::get_info(opmonlib::InfoCollector& ci, int level)
+{
+TLOG() << "This will be the get_info() code.";
+}
 // =====================================================================================
 // Functions below this line are for debugging purposes.
 // =====================================================================================

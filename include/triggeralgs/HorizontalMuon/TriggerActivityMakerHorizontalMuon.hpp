@@ -108,6 +108,7 @@ private:
   Window m_current_window;
   uint64_t m_primitive_count = 0;
   int check_tot() const;
+  void get_info(opmonlib::InfoCollector& ci, int level) override;
 
   // Configurable parameters.
   bool m_trigger_on_adc = false;
