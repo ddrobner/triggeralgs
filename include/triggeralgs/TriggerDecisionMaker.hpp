@@ -15,6 +15,7 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 #include <atomic>
+#include <chrono>
 
 namespace triggeralgs {
 
@@ -26,7 +27,7 @@ public:
   virtual void flush(std::vector<TriggerDecision>&) {}
   virtual void configure(const nlohmann::json&) {}
 
-  std::atomic<uint64_t> m_data_vs_system_time = 33333; 
+  std::atomic<uint64_t> m_data_vs_system_time = 0; 
 
 };
 
