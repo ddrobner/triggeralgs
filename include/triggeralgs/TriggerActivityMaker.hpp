@@ -25,9 +25,7 @@ public:
   virtual void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta) = 0;
   virtual void flush(timestamp_t /* until */, std::vector<TriggerActivity>&) {}
   virtual void configure(const nlohmann::json&) {}
-
-private:
-   uint64_t m_data_system_time_comparator = 0;
+  uint64_t m_data_system_time_comparator = 0;
 
 };
 
