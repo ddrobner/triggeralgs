@@ -31,10 +31,17 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
     TriggerCandidate tc = construct_tc();
     output_tc.push_back(tc);
 
+    using namespace std::chrono;
+
+    // Update OpMon Variable(s)
+    uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    uint64_t data_time = m_current_window.time_start*16*1e6;  // Convert 62.5 MHz ticks to ms    
+    m_data_vs_system_time.store(data_time - system_time); // Store the difference for OpMon
+    TLOG() << "Data v system time is: " << m_data_vs_system_time;
     // Clear the current window (only has a single TA in it)
     m_current_window.clear();
     return;
-    }
+  }
 
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.

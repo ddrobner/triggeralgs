@@ -103,9 +103,9 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     using namespace std::chrono;
 
     // Update OpMon Variable(s)
-    uint64_t system_time = duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count(); 
-    uint64_t data_time = m_current_window.time_start*16;  // Convert 62.5 MHz ticks to nanoseconds    
-    m_data_vs_system_time.store(data_time - system_time); // Store the difference for OpMon
+     uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count(); 
+     uint64_t data_time = m_current_window.time_start*16*1e6;  // Convert 62.5 MHz ticks to ms    
+     m_data_vs_system_time.store(data_time - system_time); // Store the difference for OpMon
   }
   m_primitive_count++;
 
