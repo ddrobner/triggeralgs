@@ -141,7 +141,10 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
 
   TriggerActivity ta;
   ta.time_start = m_current_window.time_start;
-  ta.time_end = latest_tp_in_window.time_start + latest_tp_in_window.time_over_threshold;
+  //ta.time_end = latest_tp_in_window.time_start + latest_tp_in_window.time_over_threshold;
+  // Should we be using TOT to define the readout window when the new HF produces huge
+  // TOT TPs? Probably not, lets remove it's contribution to the readout window:
+  ta.time_end = latest_tp_in_window.time_start;
   ta.time_peak = latest_tp_in_window.time_peak;
   ta.time_activity = latest_tp_in_window.time_peak;
   ta.channel_start = latest_tp_in_window.channel;
