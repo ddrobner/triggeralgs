@@ -19,12 +19,12 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
                                                std::vector<TriggerActivity>& output_ta)
 {
   // Add useful info about recived TPs here for FW and SW TPG guys.
-  /*if (m_print_tp_info){
+  if (m_print_tp_info){
     TLOG(1) << "TP Start Time: " << input_tp.time_start << ", TP ADC Sum: " <<  input_tp.adc_integral
 	    << ", TP TOT: " << input_tp.time_over_threshold << ", TP ADC Peak: " << input_tp.adc_peak
      	    << ", TP Offline Channel ID: " << input_tp.channel;
     TLOG(1) << "Adjacency of current window is: " << check_adjacency();    
-  }*/
+  }
 
 
   // 0) FIRST TP =====================================================================
@@ -46,7 +46,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // window length, don't add it but check whether the ADC integral if the existing
   // window is above the configured threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
-  /*else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
+  else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
 
     ta_count++;
     if (ta_count % m_prescale == 0){
@@ -57,7 +57,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
         output_ta.push_back(construct_ta());
     	m_current_window.reset(input_tp);
     }
-  }*/
+  }
 
   // 2) MULTIPLICITY - N UNQIUE CHANNELS EXCEEDED =====================================
   // If the addition of the current TP to the window would make it longer than the
@@ -82,14 +82,12 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // specified window length, don't add it but check whether the adjacency of the
   // current window exceeds the configured threshold. If it does, and we are triggering
   // on adjacency, then create a TA and reset the window with the new/current TP.
-  else if (check_adjacency() > m_adjacency_threshold &&  m_trigger_on_adjacency) {
+  else if (check_adjacency() > m_adjacency_threshold && m_trigger_on_adjacency) {
 
     ta_count++;
     if (ta_count % m_prescale == 0){   
 
-        //for (auto tp : m_current_window.inputs){
-        //    dump_tp(tp);
-        //}
+        //for (auto tp : m_current_window.inputs){ dump_tp(tp); }
 
     	// Check for a new maximum, display the largest seen adjacency in the log.
     	uint16_t adjacency = check_adjacency();
@@ -103,8 +101,8 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
      }
   }
 
-  // Temporary triggering logic for Adam. Trigger on very large TOT TPs.
-  /*else if (m_trigger_on_tot && input_tp.time_over_threshold > m_tot_threshold){
+  // Temporary triggering logic for Adam's large TOT TPs. Trigger on very large TOT TPs.
+  else if (m_trigger_on_tot && input_tp.time_over_threshold > m_tot_threshold){
       
       // If the incoming TP has a large time over threshold, we might have a cluster of
       // interesting physics activity surrounding it. Trigger on that.
@@ -113,24 +111,22 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
               << ", where the ADC integral of that TP is " << input_tp.adc_integral;
       output_ta.push_back(construct_ta());
       m_current_window.reset(input_tp);
-  }*/
-
-
+  }
 
   // 4) Otherwise, slide the window along using the current TP.
   else {
     m_current_window.move(input_tp, m_window_length);  
   }
 
-/*  using namespace std::chrono;
+  using namespace std::chrono;
   // If this is the first TP of the run, calculate the initial offset:
   if (m_primitive_count == 0){
    m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - input_tp.time_start*16*1e-6;
-  }*/
+  }
   
- /* // Update OpMon Variable(s)
+  // Update OpMon Variable(s)
   uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  uint64_t data_time = input_tp.time_start*16*1e-6;  // Convert 62.5 MHz ticks to ms
+  uint64_t data_time = input_tp.time_start*16*1e-6;                              // Convert 62.5 MHz ticks to ms
   m_data_vs_system_time.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon*/
   m_primitive_count++;
 
