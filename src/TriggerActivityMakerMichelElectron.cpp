@@ -37,6 +37,7 @@ TriggerActivityMakerMichelElectron::operator()(const TriggerPrimitive& input_tp,
   // has a potential Bragg P, and then a kink.
   else if (longest_activity().size() > m_adjacency_threshold) {
      
+     
      // We have a good length acitivity, now search for Bragg peak and kinks
      std::vector<TriggerPrimitive> trackHits = longest_activity();
      

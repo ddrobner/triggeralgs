@@ -12,7 +12,7 @@
 #define TRACE_NAME "TriggerCandidateMakerHorizontalMuon"
 
 #include <vector>
-
+#include <math.h>
 using namespace triggeralgs;
 
 void
@@ -23,21 +23,29 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   std::vector<TriggerActivity::TriggerActivityData> ta_list = { static_cast<TriggerActivity::TriggerActivityData>(
     activity) };
 
+  // Find the offset for the very first data vs system time measure:
+/*  if (m_activity_count == 0) {
+    using namespace std::chrono;
+    m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - activity.time_start*16*1e-6; 
+    TLOG() << "Initialised the initial offset, system time is " << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() <<               "ms and activity start time is: " << activity.time_start*16*1e-6 << "ms. Offset is then : " << m_initial_offset << "ms.";
+  }*/
+
   // The first time operator is called, reset window object.
   if (m_current_window.is_empty()) {
     m_current_window.reset(activity);
     m_activity_count++;
 
     TriggerCandidate tc = construct_tc();
+    //TLOG() << "Creating a TC with time candidate: " << 
     output_tc.push_back(tc);
 
-    using namespace std::chrono;
+    //using namespace std::chrono;
 
     // Update OpMon Variable(s)
-    uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    uint64_t data_time = m_current_window.time_start*16*1e6;  // Convert 62.5 MHz ticks to ms    
-    m_data_vs_system_time.store(data_time - system_time); // Store the difference for OpMon
-    TLOG() << "Data v system time is: " << m_data_vs_system_time;
+    //uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    //uint64_t data_time = m_current_window.time_start*16*1e-6;  // Convert 62.5 MHz ticks to ms    
+    //m_data_vs_system_time.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
+    
     // Clear the current window (only has a single TA in it)
     m_current_window.clear();
     return;
@@ -136,7 +144,7 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
   tc.time_start = m_current_window.time_start - m_readout_window_ticks_before;
   tc.time_end = m_current_window.time_start + m_readout_window_ticks_after;
   //tc.time_end = latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold;
-  //tc.time_candidate = m_current_window.time_start;
+  tc.time_candidate = m_current_window.time_start;
   tc.detid = latest_ta_in_window.detid;
   tc.type = TriggerCandidate::Type::kHorizontalMuon;
   tc.algorithm = TriggerCandidate::Algorithm::kHorizontalMuon;

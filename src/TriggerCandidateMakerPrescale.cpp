@@ -27,7 +27,7 @@ TriggerCandidateMakerPrescale::operator()(const TriggerActivity& activity, std::
     
     TriggerCandidate tc;
     tc.time_start = activity.time_start - m_readout_window_ticks_before;
-    tc.time_end = activity.time_end + m_readout_window_ticks_after;
+    tc.time_end = activity.time_start + m_readout_window_ticks_after;
     tc.time_candidate = activity.time_start;
     tc.detid = activity.detid;
     tc.type = TriggerCandidate::Type::kPrescale;
@@ -35,12 +35,12 @@ TriggerCandidateMakerPrescale::operator()(const TriggerActivity& activity, std::
 
     tc.inputs = ta_list;
 
-    using namespace std::chrono;
+    //using namespace std::chrono;
 
     // Update OpMon Variable(s)
-    uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    uint64_t data_time = activity.time_start*16e6;  // Convert 62.5 MHz ticks to ms    
-    m_data_vs_system_time.store(data_time - system_time); // Store the difference for OpMon
+    //uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    //uint64_t data_time = activity.time_start*16e6;  // Convert 62.5 MHz ticks to ms    
+    //m_data_vs_system_time.store(data_time - system_time); // Store the difference for OpMon
 
     cand.push_back(tc);
   }

@@ -113,6 +113,8 @@ private:
   bool m_trigger_on_adc = false;
   bool m_trigger_on_n_channels = false;
   bool m_trigger_on_adjacency = true;    // Default use of the horizontal muon triggering
+  bool m_trigger_on_tot = false;
+  uint16_t m_tot_threshold = 5000;       // Time over threshold - threshold to exceed.
   bool m_print_tp_info = false;          // Prints out some information on every TP received
   uint16_t m_adjacency_threshold = 15;   // Default is 15 wire track for testing
   int m_max_adjacency = 0;               // The maximum adjacency seen so far in any window
