@@ -262,7 +262,7 @@ TriggerActivityMakerHorizontalMuon::check_adjacency() const
 // Functions below this line are for debugging purposes.
 // =====================================================================================
 void
-TriggerActivityMakerHorizontalMuon::add_window_to_record(Window window)
+TriggerActivityMakerHorizontalMuon::add_window_to_record(TPWindow window)
 {
   m_window_record.push_back(window);
   return;
@@ -281,7 +281,7 @@ TriggerActivityMakerHorizontalMuon::dump_window_record()
     outfile << window.inputs.back().time_start - window.time_start << ",";
     outfile << window.adc_integral << ",";
     outfile << window.n_channels_hit() << ",";       // Number of unique channels with hits
-    outfile << window.inputs.size() << ",";          // Number of TPs in Window
+    outfile << window.inputs.size() << ",";          // Number of TPs in TPWindow
     outfile << window.inputs.back().channel << ",";  // Last TP Channel ID
     outfile << window.inputs.front().channel << ","; // First TP Channel ID
     outfile << check_adjacency() << ",";             // New adjacency value for the window
@@ -327,26 +327,3 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
 
   return window_tot;
 }
-
-/*
-void
-TriggerActivityMakerHorizontalMuon::flush(timestamp_t, std::vector<TriggerActivity>& output_ta)
-{
-  // Check the status of the current window, construct TA if conditions are met. Regardless
-  // of whether the conditions are met, reset the window.
-  if(m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc){
-  //else if(m_current_window.adc_integral > m_conf.adc_threshold && m_conf.trigger_on_adc){
-    //TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    output_ta.push_back(construct_ta());
-  }
-  else if(m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels){
-  //else if(m_current_window.n_channels_hit() > m_conf.n_channels_threshold && m_conf.trigger_on_n_channels){
-    //TLOG_DEBUG(TRACE_NAME) << "Number of channels hit in the window is greater than specified threshold.";
-    output_ta.push_back(construct_ta());
-  }
-
-  //TLOG_DEBUG(TRACE_NAME) << "Clearing the current window, on the arrival of the next input_tp, the window will be
-reset."; m_current_window.clear();
-
-  return;
-}*/

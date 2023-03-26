@@ -79,7 +79,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
 
   // If it is not, move the window along.
   else {
-    // TLOG_DEBUG(TRACE_NAME) << "Window is at required length but specified threshold not met, shifting window along.";
+    // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
 
@@ -162,7 +162,7 @@ TriggerCandidateMakerHorizontalMuon::check_adjacency() const
 
 // Functions below this line are for debugging purposes.
 void
-TriggerCandidateMakerHorizontalMuon::add_window_to_record(Window window)
+TriggerCandidateMakerHorizontalMuon::add_window_to_record(TAWindow window)
 {
   m_window_record.push_back(window);
   return;
