@@ -37,8 +37,8 @@ add_library(triggeralgs SHARED
   src/TriggerCandidateMakerADCSimpleWindow.cpp
   src/TriggerActivityMakerHorizontalMuon.cpp
   src/TriggerCandidateMakerHorizontalMuon.cpp
-  src/TriggerActivityMakerLowEnergyEvent.cpp  
-  src/TriggerCandidateMakerLowEnergyEvent.cpp
+  src/TriggerCandidateMakerPlaneCoincidence.cpp
+  src/TriggerActivityMakerPlaneCoincidence.cpp
   src/TriggerActivityMakerMichelElectron.cpp
   src/TriggerCandidateMakerMichelElectron.cpp
   src/TriggerActivityMakerPrescale.cpp

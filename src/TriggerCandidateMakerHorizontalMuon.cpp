@@ -12,7 +12,7 @@
 #define TRACE_NAME "TriggerCandidateMakerHorizontalMuon"
 
 #include <vector>
-
+#include <math.h>
 using namespace triggeralgs;
 
 void
@@ -23,6 +23,12 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   std::vector<TriggerActivity::TriggerActivityData> ta_list = { static_cast<TriggerActivity::TriggerActivityData>(
     activity) };
 
+  // Find the offset for the very first data vs system time measure:
+  if (m_activity_count == 0) {
+    using namespace std::chrono;
+    m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - activity.time_start*16*1e-6; 
+  }
+
   // The first time operator is called, reset window object.
   if (m_current_window.is_empty()) {
     m_current_window.reset(activity);
@@ -31,10 +37,16 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
     TriggerCandidate tc = construct_tc();
     output_tc.push_back(tc);
 
-    // Clear the current window (only has a single TA in it)
+    using namespace std::chrono;
+
+    // Update OpMon Variable(s)
+    uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    uint64_t data_time = m_current_window.time_start*16*1e-6;                      // Convert 62.5 MHz ticks to ms    
+    m_data_vs_system_time.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
+    
     m_current_window.clear();
     return;
-    }
+  }
 
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
@@ -79,7 +91,6 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
 void
 TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
 {
-  // FIX ME: Use some schema here. Also can't work out how to pass booleans.
   if (config.is_object()) {
     if (config.contains("trigger_on_adc"))
       m_trigger_on_adc = config["trigger_on_adc"];
@@ -95,8 +106,6 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
       m_readout_window_ticks_before = config["readout_window_ticks_before"];
     if (config.contains("readout_window_ticks_after"))
       m_readout_window_ticks_after = config["readout_window_ticks_after"];
-
-    // if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
   /*if(m_trigger_on_adc) {
     TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger activities with times within a "
@@ -127,8 +136,8 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
 
   TriggerCandidate tc;
   tc.time_start = m_current_window.time_start - m_readout_window_ticks_before;
-  tc.time_end =
-    latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold + m_readout_window_ticks_after;
+  tc.time_end = m_current_window.time_start + m_readout_window_ticks_after;
+  //tc.time_end = latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold;
   tc.time_candidate = m_current_window.time_start;
   tc.detid = latest_ta_in_window.detid;
   tc.type = TriggerCandidate::Type::kHorizontalMuon;

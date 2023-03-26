@@ -10,6 +10,7 @@
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerHorizontalMuon"
 #include <vector>
+#include <math.h>
 
 using namespace triggeralgs;
 
@@ -21,7 +22,8 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   if (m_print_tp_info){
     TLOG(1) << "TP Start Time: " << input_tp.time_start << ", TP ADC Sum: " <<  input_tp.adc_integral
 	    << ", TP TOT: " << input_tp.time_over_threshold << ", TP ADC Peak: " << input_tp.adc_peak
-     	    << ", TP Offline Channel ID: " << input_tp.channel;    
+     	    << ", TP Offline Channel ID: " << input_tp.channel;
+    TLOG(1) << "Adjacency of current window is: " << check_adjacency();    
   }
 
 
@@ -52,7 +54,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     	TLOG(1) << "Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
                    " window ADC integral.";
 
-    	output_ta.push_back(construct_ta());
+        output_ta.push_back(construct_ta());
     	m_current_window.reset(input_tp);
     }
   }
@@ -70,7 +72,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     	TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
                    " unique channels hit.";
 
-    	output_ta.push_back(construct_ta());
+        output_ta.push_back(construct_ta());
     	m_current_window.reset(input_tp);
     }
   }
@@ -80,26 +82,52 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // specified window length, don't add it but check whether the adjacency of the
   // current window exceeds the configured threshold. If it does, and we are triggering
   // on adjacency, then create a TA and reset the window with the new/current TP.
-  else if (check_adjacency() > m_adjacency_threshold &&  m_trigger_on_adjacency) {
+  else if (check_adjacency() > m_adjacency_threshold && m_trigger_on_adjacency) {
 
     ta_count++;
     if (ta_count % m_prescale == 0){   
 
+        //for (auto tp : m_current_window.inputs){ dump_tp(tp); }
+
     	// Check for a new maximum, display the largest seen adjacency in the log.
     	uint16_t adjacency = check_adjacency();
     	if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
-    		TLOG(1) << "Emitting adjacency TA with adjacency " << check_adjacency() <<
-               		   " and the largest seen so far is " << m_max_adjacency;
+    	TLOG(1) << "Emitting track and multiplicity TA with adjacency " << check_adjacency() <<
+                   " and multiplicity " << m_current_window.n_channels_hit() << ". The ADC integral of this TA is " << 
+                   m_current_window.adc_integral << " and the largest longest track seen so far is " << m_max_adjacency;
 
-   	 	output_ta.push_back(construct_ta());
-    		m_current_window.reset(input_tp);
+        output_ta.push_back(construct_ta());
+    	m_current_window.reset(input_tp);
      }
+  }
+
+  // Temporary triggering logic for Adam's large TOT TPs. Trigger on very large TOT TPs.
+  else if (m_trigger_on_tot && input_tp.time_over_threshold > m_tot_threshold){
+      
+      // If the incoming TP has a large time over threshold, we might have a cluster of
+      // interesting physics activity surrounding it. Trigger on that.
+      TLOG(1) << "Emitting a TA due to a TP with a very large time over threshold: "
+              << input_tp.time_over_threshold << " ticks and offline channel: " << input_tp.channel
+              << ", where the ADC integral of that TP is " << input_tp.adc_integral;
+      output_ta.push_back(construct_ta());
+      m_current_window.reset(input_tp);
   }
 
   // 4) Otherwise, slide the window along using the current TP.
   else {
-    m_current_window.move(input_tp, m_window_length);
+    m_current_window.move(input_tp, m_window_length);  
   }
+
+  using namespace std::chrono;
+  // If this is the first TP of the run, calculate the initial offset:
+  if (m_primitive_count == 0){
+   m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - input_tp.time_start*16*1e-6;
+  }
+  
+  // Update OpMon Variable(s)
+  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  uint64_t data_time = input_tp.time_start*16*1e-6;                              // Convert 62.5 MHz ticks to ms
+  m_data_vs_system_time.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon*/
   m_primitive_count++;
 
   return;
@@ -129,6 +157,11 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json& config)
       m_print_tp_info = config["print_tp_info"];
     if (config.contains("prescale"))
       m_prescale = config["prescale"]; 
+    if (config.contains("trigger_on_tot"))
+      m_trigger_on_tot = config["trigger_on_tot"];
+    if (config.contains("tot_threshold"))
+      m_tot_threshold = config["tot_threshold"];
+     
  }
 
 }
@@ -141,7 +174,10 @@ TriggerActivityMakerHorizontalMuon::construct_ta() const
 
   TriggerActivity ta;
   ta.time_start = m_current_window.time_start;
-  ta.time_end = latest_tp_in_window.time_start + latest_tp_in_window.time_over_threshold;
+  //ta.time_end = latest_tp_in_window.time_start + latest_tp_in_window.time_over_threshold;
+  // Should we be using TOT to define the readout window when the new HF produces huge
+  // TOT TPs? Probably not, lets remove it's contribution to the readout window:
+  ta.time_end = latest_tp_in_window.time_start;
   ta.time_peak = latest_tp_in_window.time_peak;
   ta.time_activity = latest_tp_in_window.time_peak;
   ta.channel_start = latest_tp_in_window.channel;

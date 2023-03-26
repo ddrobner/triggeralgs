@@ -33,6 +33,8 @@ private:
   bool m_trigger_on_adc = false;
   bool m_trigger_on_n_channels = false;
   bool m_trigger_on_adjacency = true;    // Default use of the horizontal muon triggering
+  bool m_trigger_on_tot = false;
+  uint16_t m_tot_threshold = 5000;       // Time over threshold - threshold to exceed.
   bool m_print_tp_info = false;          // Prints out some information on every TP received
   uint16_t m_adjacency_threshold = 15;   // Default is 15 wire track for testing
   int m_max_adjacency = 0;               // The maximum adjacency seen so far in any window
@@ -42,9 +44,9 @@ private:
   int index = 0;
   uint16_t ta_adc = 0;
   uint16_t ta_channels = 0;
-  timestamp_t m_window_length = 8000;    // Shouldn't exceed the max drift
-  uint16_t ta_count = 0;                  // Use for prescaling
-  uint16_t m_prescale = 1;                // Prescale value, defult is one, trigger every TA
+  timestamp_t m_window_length = 8000;    // Shouldn't exceed the max drift which is ~9375 62.5 MHz ticks for VDCB
+  uint16_t ta_count = 0;                 // Use for prescaling
+  uint16_t m_prescale = 1;               // Prescale value, defult is one, trigger every TA
 
   // For debugging and performance study purposes.
   void add_window_to_record(TPWindow window);
