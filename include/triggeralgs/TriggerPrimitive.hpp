@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERPRIMITIVE_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERPRIMITIVE_HPP_
 
-#include "detdataformats/trigger/TriggerPrimitive.hpp"
+#include "trgdataformats/TriggerPrimitive.hpp"
 
 namespace triggeralgs {
 // TriggerPrimitive looks a bit difference to TriggerActivity and
@@ -19,7 +19,7 @@ namespace triggeralgs {
 // definition only in detdataformats. So we just copy it here so that
 // references to TP, TA and TC in triggeralgs and downstream code
 // "look" the same
-using TriggerPrimitive = dunedaq::detdataformats::trigger::TriggerPrimitive;
+using TriggerPrimitive = dunedaq::trgdataformats::TriggerPrimitive;
 
 } // namespace triggeralgs
 

@@ -15,6 +15,7 @@ set(CMAKE_INSTALL_CMAKEDIR   ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/cmake )
 find_package(nlohmann_json REQUIRED)
 find_package(TRACE REQUIRED)
 find_package(detdataformats REQUIRED)
+find_package(trgdataformats REQUIRED)
 find_package(cetlib REQUIRED)
 find_package(detchannelmaps REQUIRED)
 
@@ -56,7 +57,7 @@ target_include_directories(triggeralgs PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
-target_link_libraries(triggeralgs PRIVATE nlohmann_json::nlohmann_json detdataformats::detdataformats cetlib::cetlib detchannelmaps::detchannelmaps)
+target_link_libraries(triggeralgs PRIVATE nlohmann_json::nlohmann_json detdataformats::detdataformats trgdataformats::trgdataformats cetlib::cetlib detchannelmaps::detchannelmaps)
 install(TARGETS triggeralgs EXPORT triggeralgsTargets)
 
 CONFIGURE_PACKAGE_CONFIG_FILE(cmake/triggeralgsConfig.cmake.in

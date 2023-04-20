@@ -21,7 +21,7 @@ TriggerCandidateMakerSupernova::operator()(const TriggerActivity& activity, std:
   // Yay! we have a trigger!
   if (m_activity.size() > m_threshold) {
 
-    detid_t detid = dunedaq::detdataformats::trigger::WHOLE_DETECTOR;
+    detid_t detid = dunedaq::trgdataformats::WHOLE_DETECTOR;
 
     TriggerCandidate tc;
     tc.time_start = time - 500'000'000; // time_start (10 seconds before the start of the activity)

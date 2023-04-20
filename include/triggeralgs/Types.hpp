@@ -9,16 +9,16 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TYPES_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TYPES_HPP_
 
-#include "detdataformats/trigger/Types.hpp"
+#include "trgdataformats/Types.hpp"
 
 namespace triggeralgs {
 
-using timestamp_t = dunedaq::detdataformats::trigger::timestamp_t;
-using timestamp_diff_t = dunedaq::detdataformats::trigger::timestamp_diff_t;
-using detid_t = dunedaq::detdataformats::trigger::detid_t;
-using trigger_number_t = dunedaq::detdataformats::trigger::trigger_number_t;
-using channel_t = dunedaq::detdataformats::trigger::channel_t;
-using version_t = dunedaq::detdataformats::trigger::version_t;
+using timestamp_t = dunedaq::trgdataformats::timestamp_t;
+using timestamp_diff_t = dunedaq::trgdataformats::timestamp_diff_t;
+using detid_t = dunedaq::trgdataformats::detid_t;
+using trigger_number_t = dunedaq::trgdataformats::trigger_number_t;
+using channel_t = dunedaq::trgdataformats::channel_t;
+using version_t = dunedaq::trgdataformats::version_t;
 
 } // namespace triggeralgs
 
