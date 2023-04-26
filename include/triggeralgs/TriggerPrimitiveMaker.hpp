@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERPRIMITIVEMAKER_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERPRIMITIVEMAKER_HPP_
 
-#include "detdataformats/trigger/TriggerPrimitive.hpp"
+#include "trgdataformats/TriggerPrimitive.hpp"
 
 #include <nlohmann/json.hpp>
 #include <vector>
@@ -20,8 +20,8 @@ class TriggerPrimitiveMaker
 {
 public:
   virtual ~TriggerPrimitiveMaker() = default;
-  virtual void operator()(const void* input_rawdata, std::vector<dunedaq::detdataformats::trigger::TriggerPrimitive>& output_tp) = 0;
-  virtual void flush(std::vector<dunedaq::detdataformats::trigger::TriggerPrimitive>&) {}
+  virtual void operator()(const void* input_rawdata, std::vector<dunedaq::trgdataformats::TriggerPrimitive>& output_tp) = 0;
+  virtual void flush(std::vector<dunedaq::trgdataformats::TriggerPrimitive>&) {}
   virtual void configure(const nlohmann::json&) {}
 };
 

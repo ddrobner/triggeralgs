@@ -9,14 +9,14 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERACTIVITY_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERACTIVITY_HPP_
 
-#include "detdataformats/trigger/TriggerActivityData.hpp"
+#include "trgdataformats/TriggerActivityData.hpp"
 #include "triggeralgs/TriggerPrimitive.hpp"
 
 #include <vector>
 
 namespace triggeralgs {
 
-struct TriggerActivity : public dunedaq::detdataformats::trigger::TriggerActivityData
+struct TriggerActivity : public dunedaq::trgdataformats::TriggerActivityData
 {
   std::vector<TriggerPrimitive> inputs;
 };
