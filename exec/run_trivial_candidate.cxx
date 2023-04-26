@@ -23,7 +23,7 @@
 
 using namespace DuneTriggers;
 
-using pd_clock = std::chrono::duration<double, std::ratio<1, 50000000>>;
+using pd_clock = std::chrono::duration<double, std::ratio<1, 62500000>>;
 
 std::default_random_engine generator;
 
