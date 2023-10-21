@@ -18,6 +18,9 @@ void
 TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
                                                std::vector<TriggerActivity>& output_ta)
 {
+
+  uint16_t adjacency;
+
   // Add useful info about recived TPs here for FW and SW TPG guys.
   if (m_print_tp_info){
     TLOG(1) << "TP Start Time: " << input_tp.time_start << ", TP ADC Sum: " <<  input_tp.adc_integral
@@ -69,7 +72,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     ta_count++;
     if (ta_count % m_prescale == 0){
 
-    	TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
+    	  TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
                    " unique channels hit.";
 
         output_ta.push_back(construct_ta());
@@ -82,7 +85,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // specified window length, don't add it but check whether the adjacency of the
   // current window exceeds the configured threshold. If it does, and we are triggering
   // on adjacency, then create a TA and reset the window with the new/current TP.
-  else if (check_adjacency() > m_adjacency_threshold && m_trigger_on_adjacency) {
+  else if ((adjacency = check_adjacency()) > m_adjacency_threshold && m_trigger_on_adjacency) {
 
     ta_count++;
     if (ta_count % m_prescale == 0){   
@@ -90,7 +93,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
         //for (auto tp : m_current_window.inputs){ dump_tp(tp); }
 
     	// Check for a new maximum, display the largest seen adjacency in the log.
-    	uint16_t adjacency = check_adjacency();
+    	// uint16_t adjacency = check_adjacency();
     	if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
     	TLOG(1) << "Emitting track and multiplicity TA with adjacency " << check_adjacency() <<
                    " and multiplicity " << m_current_window.n_channels_hit() << ". The ADC integral of this TA is " << 
@@ -170,25 +173,36 @@ TriggerActivity
 TriggerActivityMakerHorizontalMuon::construct_ta() const
 {
 
-  TriggerPrimitive latest_tp_in_window = m_current_window.inputs.back();
-
   TriggerActivity ta;
-  ta.time_start = m_current_window.time_start;
-  //ta.time_end = latest_tp_in_window.time_start + latest_tp_in_window.time_over_threshold;
-  // Should we be using TOT to define the readout window when the new HF produces huge
-  // TOT TPs? Probably not, lets remove it's contribution to the readout window:
-  ta.time_end = latest_tp_in_window.time_start;
-  ta.time_peak = latest_tp_in_window.time_peak;
-  ta.time_activity = latest_tp_in_window.time_peak;
-  ta.channel_start = latest_tp_in_window.channel;
-  ta.channel_end = latest_tp_in_window.channel;
-  ta.channel_peak = latest_tp_in_window.channel;
+
+  TriggerPrimitive last_tp = m_current_window.inputs.back();
+
+  ta.time_start = last_tp.time_start;
+  ta.time_end = last_tp.time_start+last_tp.time_over_threshold;
+  ta.time_peak = last_tp.time_peak;
+  ta.time_activity = last_tp.time_peak;
+  ta.channel_start = last_tp.channel;
+  ta.channel_end = last_tp.channel;
+  ta.channel_peak = last_tp.channel;
   ta.adc_integral = m_current_window.adc_integral;
-  ta.adc_peak = latest_tp_in_window.adc_peak;
-  ta.detid = latest_tp_in_window.detid;
+  ta.adc_peak = last_tp.adc_integral;
+  ta.detid = last_tp.detid;
   ta.type = TriggerActivity::Type::kTPC;
   ta.algorithm = TriggerActivity::Algorithm::kHorizontalMuon;
   ta.inputs = m_current_window.inputs;
+
+
+  for( const auto& tp : ta.inputs ) {
+    ta.time_start = std::min(ta.time_start, tp.time_start);
+    ta.time_end = std::max(ta.time_end, tp.time_start+tp.time_over_threshold);
+    ta.channel_start = std::min(ta.channel_start, tp.channel);
+    ta.channel_end = std::max(ta.channel_end, tp.channel);
+    if (tp.adc_peak > ta.adc_peak ) {
+      ta.time_peak = tp.time_peak;
+      ta.adc_peak = tp.adc_peak;
+      ta.channel_peak = tp.channel;
+    }
+  }
 
   return ta;
 }
