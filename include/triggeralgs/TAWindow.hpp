@@ -23,7 +23,9 @@ namespace triggeralgs {
   class TAWindow
   {
   public:
+    
     bool is_empty() const { return inputs.empty(); };
+
     void add(const TriggerActivity& input_ta)
     {
       // Add the input TA's contribution to the total ADC, increase the hit count
@@ -42,8 +44,11 @@ namespace triggeralgs {
       }
       inputs.insert(inputs.begin() + insert_at, input_ta);
     };
+
     void clear() { inputs.clear(); };
+
     uint16_t n_channels_hit() { return channel_states.size(); };
+
     void move(TriggerActivity const& input_ta, timestamp_t const& window_length)
     {
       // Find all of the TAs in the window that need to be removed
@@ -72,11 +77,14 @@ namespace triggeralgs {
       // Make the window start time the start time of what is now the
       // first TA.
       if (inputs.size() != 0) {
-        time_start = inputs.front().time_start;
         add(input_ta);
-      } else
+      } else {
         add(input_ta);
+      }
+      time_start = inputs.front().time_start;
+
     }
+
     void reset(TriggerActivity const& input_ta)
     {
       // Empty the channel and TA lists.
@@ -94,15 +102,16 @@ namespace triggeralgs {
       // Add the input TA to the TA list.
       inputs.push_back(input_ta);
     }
+
     friend std::ostream& operator<<(std::ostream& os, const TAWindow& window)
     {
       if (window.is_empty())
         os << "Window is empty!\n";
-      //      else{
-      //        os << "Window start: " << window.time_start << ", end: " << window.inputs.back().time_start;
-      //        os << ". Total of: " << window.adc_integral << " ADC counts with " << window.inputs.size() << " TPs.\n";
-      //        os << window.channel_states.size() << " independent channels have hits.\n";
-      //      }
+      else{
+        os << "Window start: " << window.time_start << ", end: " << window.inputs.back().time_start;
+        os << ". Total of: " << window.adc_integral << " ADC counts with " << window.inputs.size() << " TPs.\n";
+        os << window.channel_states.size() << " independent channels have hits.\n";
+      }
       return os;
     };
 

@@ -53,11 +53,12 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
 
     ta_count++;
     if (ta_count % m_prescale == 0){
+      auto ta = construct_ta();
 
-    	TLOG(1) << "Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
-                   " window ADC integral.";
+    	TLOG(1) << "[TA]: Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
+                   " window ADC integral. ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end;
 
-        output_ta.push_back(construct_ta());
+      output_ta.push_back(ta);
     	m_current_window.reset(input_tp);
     }
   }
@@ -95,7 +96,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     	// Check for a new maximum, display the largest seen adjacency in the log.
     	// uint16_t adjacency = check_adjacency();
     	if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
-    	TLOG(1) << "Emitting track and multiplicity TA with adjacency " << check_adjacency() <<
+    	TLOG_DEBUG(TRACE_NAME) << "Emitting track and multiplicity TA with adjacency " << check_adjacency() <<
                    " and multiplicity " << m_current_window.n_channels_hit() << ". The ADC integral of this TA is " << 
                    m_current_window.adc_integral << " and the largest longest track seen so far is " << m_max_adjacency;
 
@@ -109,7 +110,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
       
       // If the incoming TP has a large time over threshold, we might have a cluster of
       // interesting physics activity surrounding it. Trigger on that.
-      TLOG(1) << "Emitting a TA due to a TP with a very large time over threshold: "
+      TLOG_DEBUG(TRACE_NAME) << "Emitting a TA due to a TP with a very large time over threshold: "
               << input_tp.time_over_threshold << " ticks and offline channel: " << input_tp.channel
               << ", where the ADC integral of that TP is " << input_tp.adc_integral;
       output_ta.push_back(construct_ta());
