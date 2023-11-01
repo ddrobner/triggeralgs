@@ -34,11 +34,11 @@ public:
   uint16_t n_channels_hit() { return channel_states.size(); };
 
   /// @brief 
-  // Find all of the TAs in the window that need to be removed
-  // if the input_ta is to be added and the size of the window
-  // is to be conserved.
-  // Subtract those TAs' contribution from the total window ADC and remove their
-  // contributions to the hit counts.
+  /// Find all of the TAs in the window that need to be removed
+  /// if the input_ta is to be added and the size of the window
+  /// is to be conserved.
+  /// Subtract those TAs' contribution from the total window ADC and remove their
+  /// contributions to the hit counts.
   /// @param input_ta 
   /// @param window_length 
   void move(TriggerActivity const& input_ta, timestamp_t const& window_length);
