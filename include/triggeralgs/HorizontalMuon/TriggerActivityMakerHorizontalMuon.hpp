@@ -11,6 +11,7 @@
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TPWindow.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include <fstream>
 #include <vector>
 
@@ -20,6 +21,7 @@ class TriggerActivityMakerHorizontalMuon : public TriggerActivityMaker
 public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
   void configure(const nlohmann::json& config);
+  static shared_ptr<TriggerActivityMaker> createMaker();
 
 private:
   TriggerActivity construct_ta() const;
@@ -53,6 +55,9 @@ private:
   void dump_window_record();
   void dump_tp(TriggerPrimitive const& input_tp);
   std::vector<TPWindow> m_window_record;
+
+  // Registering in TA Factory
+  static bool s_registered;
 };
 } // namespace triggeralgs
 #endif // TRIGGERALGS_HORIZONTALMUON_TRIGGERACTIVITYMAKERHORIZONTALMUON_HPP_

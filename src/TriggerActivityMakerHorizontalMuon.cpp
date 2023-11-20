@@ -7,6 +7,7 @@
  */
 
 #include "triggeralgs/HorizontalMuon/TriggerActivityMakerHorizontalMuon.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerHorizontalMuon"
 #include <vector>
@@ -168,6 +169,10 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json& config)
      
  }
 
+}
+
+shared_ptr<TriggerActivityMaker> TriggerActivityMakerHorizontalMuon::createMaker() {
+  return std::make_shared<TriggerActivityMakerHorizontalMuon>();
 }
 
 TriggerActivity
@@ -342,3 +347,5 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
 
   return window_tot;
 }
+
+bool TriggerActivityMakerHorizontalMuon::s_registered = TriggerActivityFactory::registerCreator(TRACE_NAME, TriggerActivityMakerHorizontalMuon::createMaker);
