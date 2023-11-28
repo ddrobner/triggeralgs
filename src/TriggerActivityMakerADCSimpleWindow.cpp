@@ -15,6 +15,10 @@
 
 using namespace triggeralgs;
 
+std::shared_ptr<TriggerActivityMaker> TriggerActivityMakerADCSimpleWindow::createMaker() {
+  return std::make_shared<TriggerActivityMakerADCSimpleWindow>();
+}
+
 void
 TriggerActivityMakerADCSimpleWindow::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
@@ -96,3 +100,6 @@ TriggerActivityMakerADCSimpleWindow::construct_ta() const
   ta.inputs = m_current_window.tp_list;
   return ta;
 }
+
+// Register algo in TA Factory
+bool TriggerActivityMakerADCSimpleWindow::s_registered = TriggerActivityFactory::registerCreator(TRACE_NAME, TriggerActivityMakerADCSimpleWindow::createMaker);

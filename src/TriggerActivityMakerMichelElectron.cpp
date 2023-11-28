@@ -14,6 +14,10 @@
 
 using namespace triggeralgs;
 
+std::shared_ptr<TriggerActivityMaker> TriggerActivityMakerMichelElectron::createMaker() {
+  return std::make_shared<TriggerActivityMakerMichelElectron>();
+}
+
 void
 TriggerActivityMakerMichelElectron::operator()(const TriggerPrimitive& input_tp,
                                                std::vector<TriggerActivity>& output_ta)
@@ -384,3 +388,6 @@ reset."; m_current_window.clear();
 
   return;
 }*/
+
+// Register algo in TA Factory
+bool TriggerActivityMakerMichelElectron::s_registered = TriggerActivityFactory::registerCreator(TRACE_NAME, TriggerActivityMakerMichelElectron::createMaker);

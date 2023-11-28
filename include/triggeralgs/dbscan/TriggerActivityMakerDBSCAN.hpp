@@ -10,6 +10,7 @@
 #define TRIGGERALGS_DBSCAN_TRIGGERACTIVITYMAKERDBSCAN_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/dbscan/dbscan.hpp"
 
 #include <memory>
@@ -23,6 +24,8 @@ public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
   
   void configure(const nlohmann::json &config);
+
+  static std::shared_ptr<TriggerActivityMaker> createMaker();
   
 private:  
   int m_min_pts{3}; // Minimum number of points to form a cluster
@@ -31,6 +34,8 @@ private:
   std::vector<dbscan::Cluster> m_dbscan_clusters;
   std::unique_ptr<dbscan::IncrementalDBSCAN> m_dbscan;
   
+  // TA Factory Registration
+  static bool s_registered;
 };
 } // namespace triggeralgs
 

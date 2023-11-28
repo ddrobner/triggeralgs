@@ -10,6 +10,7 @@
 #define TRIGGERALGS_ADCSIMPLEWINDOW_TRIGGERACTIVITYMAKERADCSIMPLEWINDOW_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/Types.hpp"
 
 #include <vector>
@@ -22,6 +23,7 @@ public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
   
   void configure(const nlohmann::json &config);
+  static std::shared_ptr<TriggerActivityMaker> createMaker();
 
 private:  
   class Window {
@@ -95,6 +97,8 @@ private:
   uint32_t m_adc_threshold = 1200000;
   timestamp_t m_window_length = 100000;
 
+  // TA Factory Registration
+  static bool s_registered;
 };
 } // namespace triggeralgs
 

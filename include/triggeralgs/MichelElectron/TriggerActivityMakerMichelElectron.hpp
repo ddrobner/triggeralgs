@@ -10,6 +10,7 @@
 #define TRIGGERALGS_MICHELELECTRON_TRIGGERACTIVITYMAKERMICHELELECTRON_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include <fstream>
 #include <vector>
 
@@ -21,6 +22,8 @@ public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
 
   void configure(const nlohmann::json& config);
+
+  static std::shared_ptr<TriggerActivityMaker> createMaker();
 
 private:
   class Window
@@ -132,6 +135,9 @@ private:
   void dump_window_record();
   void dump_tp(TriggerPrimitive const& input_tp);
   std::vector<Window> m_window_record;
+
+  // TA Factory Registration
+  static bool s_registered;
 };
 } // namespace triggeralgs
 

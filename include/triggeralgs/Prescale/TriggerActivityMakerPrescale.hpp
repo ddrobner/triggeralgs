@@ -10,6 +10,7 @@
 #define TRIGGERALGS_PRESCALE_TRIGGERACTIVITYMAKERPRESCALE_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 
 #include <vector>
 
@@ -21,11 +22,14 @@ public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
   
   void configure(const nlohmann::json &config);
+  static std::shared_ptr<TriggerActivityMaker> createMaker();
   
 private:  
   uint64_t m_primitive_count = 0;   // NOLINT(build/unsigned)
   uint64_t m_prescale = 1;          // NOLINT(build/unsigned)
   
+  // TA Factory Registration
+  static bool s_registered;
 };
 } // namespace triggeralgs
 

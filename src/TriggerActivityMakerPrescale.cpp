@@ -15,6 +15,10 @@
 
 using namespace triggeralgs;
 
+std::shared_ptr<TriggerActivityMaker> TriggerActivityMakerPrescale::createMaker() {
+  return std::make_shared<TriggerActivityMakerPrescale>();
+}
+
 void
 TriggerActivityMakerPrescale::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
@@ -62,3 +66,6 @@ TriggerActivityMakerPrescale::configure(const nlohmann::json &config)
   }
   TLOG_DEBUG(TRACE_NAME) << "Using activity prescale " << m_prescale;
 }
+
+// Register algo in TA Factory
+bool TriggerActivityMakerPrescale::s_registered = TriggerActivityFactory::registerCreator(TRACE_NAME, TriggerActivityMakerPrescale::createMaker);

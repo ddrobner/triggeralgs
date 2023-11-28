@@ -11,6 +11,7 @@
 
 #include "detchannelmaps/TPCChannelMap.hpp"
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/TPWindow.hpp"
 #include <fstream>
 #include <vector>
@@ -28,6 +29,7 @@ class TriggerActivityMakerPlaneCoincidence : public TriggerActivityMaker
 public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
   void configure(const nlohmann::json& config);
+  static std::shared_ptr<TriggerActivityMaker> createMaker();
 
 private:
   TriggerActivity construct_ta(TPWindow m_current_window) const;
@@ -68,6 +70,8 @@ private:
   void dump_tp(TriggerPrimitive const& input_tp);
   std::vector<TPWindow> m_window_record;
 
+  // TA Factory Registration
+  static bool s_registered;
 };
 } // namespace triggeralgs
 #endif // TRIGGERALGS_PLANECOINCIDENCE_TRIGGERACTIVITYMAKERPLANECOINCIDENCE_HPP_
