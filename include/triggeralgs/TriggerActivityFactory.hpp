@@ -11,12 +11,14 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include "triggeralgs/TriggerActivityMaker.hpp"
 
 namespace triggeralgs {
+
 class TriggerActivityFactory
 {
   public:
-    using TAMakerCreator = shared_ptr<TriggerActivityMaker>(*)();
+    using TAMakerCreator = std::shared_ptr<TriggerActivityMaker>(*)();
     using TAMakerMap = std::unordered_map<std::string, TAMakerCreator>;
 
   public:
@@ -24,13 +26,15 @@ class TriggerActivityFactory
     TriggerActivityFactory& operator=(const TriggerActivityFactory&) = delete;
     virtual ~TriggerActivityFactory() {}
 
-    static shared_ptr<TriggerActivityMaker> makeTAMaker(const std::string& algName);
+    static std::shared_ptr<TriggerActivityMaker> makeTAMaker(const std::string& algName);
 
     static bool registerCreator(const std::string algName, TAMakerCreator creator);
 
   private:
-    static CreatorMap& getTAMakers();
+    static TAMakerMap& getTAMakers();
 };
+
+} /* namespace triggeralgs */
 
 // TODO: Define ers exceptions
 #endif // TRIGGERALGS_TRIGGER_ACTIVITY_FACTORY_HPP_

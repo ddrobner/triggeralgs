@@ -17,18 +17,16 @@ TriggerActivityFactory::TAMakerMap& TriggerActivityFactory::getTAMakers() {
   return s_makers;
 }
 
-bool TriggerActivityFactory::registerCreator(const std::string name, TAMakerCreator creator)
+bool TriggerActivityFactory::registerCreator(const std::string algName, TAMakerCreator creator)
 {
   TAMakerMap& makers = getTAMakers();
 
-  auto it = makers.find(name);
+  auto it = makers.find(algName);
   if (it == makers.end()) {
-    makers[name] = creator;
-    std::cout << "Registered " << name << std::endl;
+    makers[algName] = creator;
     return true;
   }
 
-  std::cout << "Not registered.\n";
   return false;
 }
 
@@ -38,10 +36,8 @@ std::shared_ptr<TriggerActivityMaker> TriggerActivityFactory::makeTAMaker(const 
 
   auto it = makers.find(algName);
   if (it != makers.end()) {
-    std::cout << "Found " << name << "." << std::endl;
     return it->second();
   }
 
-  std::cout << "Requested " << name << " not found.\n";
   return nullptr;
 }
