@@ -8,7 +8,7 @@
 
 #include "triggeralgs/MichelElectron/TriggerActivityMakerMichelElectron.hpp"
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerMichelElectron"
+#define TRACE_NAME "TriggerActivityMakerMichelElectronPlugin"
 #include <vector>
 #include <algorithm>
 

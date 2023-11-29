@@ -13,7 +13,7 @@
 #include "triggeralgs/Types.hpp"
 #include <chrono>
 #include <limits>
-#define TRACE_NAME "TriggerActivityMakerDBSCAN"
+#define TRACE_NAME "TriggerActivityMakerDBSCANPlugin"
 
 #include <vector>
 

@@ -9,7 +9,7 @@
 #include "triggeralgs/Supernova/TriggerActivityMakerSupernova.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerSupernova"
+#define TRACE_NAME "TriggerActivityMakerSupernovaPlugin"
 
 #include <chrono>
 #include <vector>

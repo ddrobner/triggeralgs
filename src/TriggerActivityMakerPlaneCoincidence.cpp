@@ -8,7 +8,7 @@
 
 #include "triggeralgs/PlaneCoincidence/TriggerActivityMakerPlaneCoincidence.hpp"
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerPlaneCoincidence"
+#define TRACE_NAME "TriggerActivityMakerPlaneCoincidencePlugin"
 #include <vector>
 
 using namespace triggeralgs;

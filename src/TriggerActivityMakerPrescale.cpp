@@ -9,7 +9,7 @@
 #include "triggeralgs/Prescale/TriggerActivityMakerPrescale.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerPrescale"
+#define TRACE_NAME "TriggerActivityMakerPrescalePlugin"
 
 #include <vector>
 

@@ -7,9 +7,8 @@
  */
 
 #include "triggeralgs/HorizontalMuon/TriggerActivityMakerHorizontalMuon.hpp"
-#include "triggeralgs/TriggerActivityFactory.hpp"
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerHorizontalMuon"
+#define TRACE_NAME "TriggerActivityMakerHorizontalMuonPlugin"
 #include <vector>
 #include <math.h>
 
