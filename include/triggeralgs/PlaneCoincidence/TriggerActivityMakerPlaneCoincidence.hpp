@@ -29,7 +29,6 @@ class TriggerActivityMakerPlaneCoincidence : public TriggerActivityMaker
 public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
   void configure(const nlohmann::json& config);
-  static std::shared_ptr<TriggerActivityMaker> createMaker();
 
 private:
   TriggerActivity construct_ta(TPWindow m_current_window) const;

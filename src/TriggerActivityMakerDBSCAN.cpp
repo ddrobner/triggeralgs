@@ -19,10 +19,6 @@
 
 using namespace triggeralgs;
 
-std::shared_ptr<TriggerActivityMaker> TriggerActivityMakerDBSCAN::createMaker() {
-    return std::make_shared<TriggerActivityMakerDBSCAN>();
-}
-
 void
 TriggerActivityMakerDBSCAN::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
@@ -92,4 +88,4 @@ TriggerActivityMakerDBSCAN::configure(const nlohmann::json &config)
 }
 
 // Register algo in TA Factory
-bool TriggerActivityMakerDBSCAN::s_registered = TriggerActivityFactory::registerCreator(TRACE_NAME, TriggerActivityMakerDBSCAN::createMaker);
+REGISTER_TAM(TRACE_NAME, TriggerActivityMakerDBSCAN)

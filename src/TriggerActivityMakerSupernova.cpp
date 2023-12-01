@@ -17,10 +17,6 @@
 using pd_clock = std::chrono::duration<double, std::ratio<1, 62500000>>;
 using namespace triggeralgs;
 
-std::shared_ptr<TriggerActivityMaker> TriggerActivityMakerSupernova::createMaker() {
-  return std::make_shared<TriggerActivityMakerSupernova>();
-}
-
 void
 TriggerActivityMakerSupernova::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
@@ -88,4 +84,4 @@ TriggerActivityMakerSupernova::operator()(const TriggerPrimitive& input_tp, std:
 }
 
 // Register algo in TA Factory
-bool TriggerActivityMakerSupernova::s_registered = TriggerActivityFactory::registerCreator(TRACE_NAME, TriggerActivityMakerSupernova::createMaker);
+REGISTER_TAM(TRACE_NAME, TriggerActivityMakerSupernova)

@@ -23,7 +23,6 @@ public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta);
   
   void configure(const nlohmann::json &config);
-  static std::shared_ptr<TriggerActivityMaker> createMaker();
 
 private:  
   class Window {

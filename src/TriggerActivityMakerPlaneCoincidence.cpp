@@ -13,10 +13,6 @@
 
 using namespace triggeralgs;
 
-std::shared_ptr<TriggerActivityMaker> TriggerActivityMakerPlaneCoincidence::createMaker() {
-  return std::make_shared<TriggerActivityMakerPlaneCoincidence>();
-}
-
 void
 TriggerActivityMakerPlaneCoincidence::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
@@ -278,5 +274,5 @@ TriggerActivityMakerPlaneCoincidence::check_tot(TPWindow m_current_window) const
 }
 
 // Regiser algo in TA Factory
-bool TriggerActivityMakerPlaneCoincidence::s_registered = TriggerActivityFactory::registerCreator(TRACE_NAME, TriggerActivityMakerPlaneCoincidence::createMaker);
+REGISTER_TAM(TRACE_NAME, TriggerActivityMakerPlaneCoincidence)
 // END OF TA MAKER - LOW ENERGY EVENTS

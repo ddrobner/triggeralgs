@@ -23,8 +23,6 @@ public:
 
   void configure(const nlohmann::json& config);
 
-  static std::shared_ptr<TriggerActivityMaker> createMaker();
-
 private:
   class Window
   {

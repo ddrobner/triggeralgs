@@ -13,6 +13,9 @@
 #include <unordered_map>
 #include "triggeralgs/TriggerActivityMaker.hpp"
 
+#define REGISTER_TAM(tam_name, tam_class) \
+  bool tam_class::s_registered = TriggerActivityFactory::registerCreator(tam_name, []()->std::shared_ptr<TriggerActivityMaker> {return std::make_shared<tam_class>();});
+
 namespace triggeralgs {
 
 class TriggerActivityFactory

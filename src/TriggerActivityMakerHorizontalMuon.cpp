@@ -14,10 +14,6 @@
 
 using namespace triggeralgs;
 
-std::shared_ptr<TriggerActivityMaker> TriggerActivityMakerHorizontalMuon::createMaker() {
-  return std::make_shared<TriggerActivityMakerHorizontalMuon>();
-}
-
 void
 TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
                                                std::vector<TriggerActivity>& output_ta)
@@ -348,4 +344,4 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
 }
 
 // Register algo in TA Factory
-bool TriggerActivityMakerHorizontalMuon::s_registered = TriggerActivityFactory::registerCreator(TRACE_NAME, TriggerActivityMakerHorizontalMuon::createMaker);
+REGISTER_TAM(TRACE_NAME, TriggerActivityMakerHorizontalMuon)
