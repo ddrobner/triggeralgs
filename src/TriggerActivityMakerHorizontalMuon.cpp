@@ -344,4 +344,4 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
 }
 
 // Register algo in TA Factory
-REGISTER_TAM(TRACE_NAME, TriggerActivityMakerHorizontalMuon)
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerHorizontalMuon)

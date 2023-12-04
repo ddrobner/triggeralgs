@@ -84,4 +84,4 @@ TriggerActivityMakerSupernova::operator()(const TriggerPrimitive& input_tp, std:
 }
 
 // Register algo in TA Factory
-REGISTER_TAM(TRACE_NAME, TriggerActivityMakerSupernova)
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerSupernova)

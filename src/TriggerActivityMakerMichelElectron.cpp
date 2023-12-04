@@ -386,4 +386,4 @@ reset."; m_current_window.clear();
 }*/
 
 // Register algo in TA Factory
-REGISTER_TAM(TRACE_NAME, TriggerActivityMakerMichelElectron)
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerMichelElectron)

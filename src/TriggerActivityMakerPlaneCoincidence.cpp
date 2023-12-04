@@ -274,5 +274,5 @@ TriggerActivityMakerPlaneCoincidence::check_tot(TPWindow m_current_window) const
 }
 
 // Regiser algo in TA Factory
-REGISTER_TAM(TRACE_NAME, TriggerActivityMakerPlaneCoincidence)
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerPlaneCoincidence)
 // END OF TA MAKER - LOW ENERGY EVENTS

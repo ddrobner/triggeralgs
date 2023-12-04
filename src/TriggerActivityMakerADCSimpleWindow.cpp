@@ -98,4 +98,4 @@ TriggerActivityMakerADCSimpleWindow::construct_ta() const
 }
 
 // Register algo in TA Factory
-REGISTER_TAM(TRACE_NAME, TriggerActivityMakerADCSimpleWindow)
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerADCSimpleWindow)
