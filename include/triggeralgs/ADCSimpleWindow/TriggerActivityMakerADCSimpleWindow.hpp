@@ -95,9 +95,6 @@ private:
   // Configurable parameters.
   uint32_t m_adc_threshold = 1200000;
   timestamp_t m_window_length = 100000;
-
-  // TA Factory Registration
-  static bool s_registered;
 };
 } // namespace triggeralgs
 

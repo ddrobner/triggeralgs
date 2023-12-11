@@ -31,9 +31,6 @@ private:
   timestamp_t m_prev_timestamp{0};
   std::vector<dbscan::Cluster> m_dbscan_clusters;
   std::unique_ptr<dbscan::IncrementalDBSCAN> m_dbscan;
-  
-  // TA Factory Registration
-  static bool s_registered;
 };
 } // namespace triggeralgs
 

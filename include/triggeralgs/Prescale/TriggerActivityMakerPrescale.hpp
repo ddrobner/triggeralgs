@@ -26,9 +26,6 @@ public:
 private:  
   uint64_t m_primitive_count = 0;   // NOLINT(build/unsigned)
   uint64_t m_prescale = 1;          // NOLINT(build/unsigned)
-  
-  // TA Factory Registration
-  static bool s_registered;
 };
 } // namespace triggeralgs
 

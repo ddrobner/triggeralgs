@@ -133,9 +133,6 @@ private:
   void dump_window_record();
   void dump_tp(TriggerPrimitive const& input_tp);
   std::vector<Window> m_window_record;
-
-  // TA Factory Registration
-  static bool s_registered;
 };
 } // namespace triggeralgs
 

@@ -17,17 +17,14 @@ TriggerActivityFactory::TAMakerMap& TriggerActivityFactory::getTAMakers() {
   return s_makers;
 }
 
-bool TriggerActivityFactory::registerCreator(const std::string algName, TAMakerCreator creator)
+void TriggerActivityFactory::registerCreator(const std::string algName, TAMakerCreator creator)
 {
   TAMakerMap& makers = getTAMakers();
 
   auto it = makers.find(algName);
   if (it == makers.end()) {
     makers[algName] = creator;
-    return true;
   }
-
-  return false;
 }
 
 std::shared_ptr<TriggerActivityMaker> TriggerActivityFactory::makeTAMaker(const std::string& algName)

@@ -54,9 +54,6 @@ private:
   void dump_window_record();
   void dump_tp(TriggerPrimitive const& input_tp);
   std::vector<TPWindow> m_window_record;
-
-  // Registering in TA Factory
-  static bool s_registered;
 };
 } // namespace triggeralgs
 #endif // TRIGGERALGS_HORIZONTALMUON_TRIGGERACTIVITYMAKERHORIZONTALMUON_HPP_

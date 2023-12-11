@@ -96,9 +96,6 @@ private:
   TriggerActivity::Algorithm m_algorithm = TriggerActivity::Algorithm::kSupernova;
 
   std::vector<TriggerPrimitive> m_tp_list;
-
-  // TA Factory Registration
-  static bool s_registered;
 };
 } // namespace triggeralgs
 
