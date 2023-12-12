@@ -10,6 +10,7 @@
 #define TRIGGERALGS_DBSCAN_TRIGGERACTIVITYMAKERDBSCAN_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/dbscan/dbscan.hpp"
 
 #include <memory>
@@ -30,7 +31,6 @@ private:
   timestamp_t m_prev_timestamp{0};
   std::vector<dbscan::Cluster> m_dbscan_clusters;
   std::unique_ptr<dbscan::IncrementalDBSCAN> m_dbscan;
-  
 };
 } // namespace triggeralgs
 

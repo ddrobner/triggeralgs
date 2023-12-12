@@ -10,6 +10,7 @@
 #define TRIGGERALGS_PRESCALE_TRIGGERACTIVITYMAKERPRESCALE_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 
 #include <vector>
 
@@ -25,7 +26,6 @@ public:
 private:  
   uint64_t m_primitive_count = 0;   // NOLINT(build/unsigned)
   uint64_t m_prescale = 1;          // NOLINT(build/unsigned)
-  
 };
 } // namespace triggeralgs
 

@@ -11,6 +11,7 @@
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TPWindow.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include <fstream>
 #include <vector>
 

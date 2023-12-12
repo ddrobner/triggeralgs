@@ -9,7 +9,7 @@
 #include "triggeralgs/Prescale/TriggerActivityMakerPrescale.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerPrescale"
+#define TRACE_NAME "TriggerActivityMakerPrescalePlugin"
 
 #include <vector>
 
@@ -62,3 +62,6 @@ TriggerActivityMakerPrescale::configure(const nlohmann::json &config)
   }
   TLOG_DEBUG(TRACE_NAME) << "Using activity prescale " << m_prescale;
 }
+
+// Register algo in TA Factory
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerPrescale)

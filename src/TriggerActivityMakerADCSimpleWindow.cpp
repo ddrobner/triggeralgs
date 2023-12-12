@@ -9,7 +9,7 @@
 #include "triggeralgs/ADCSimpleWindow/TriggerActivityMakerADCSimpleWindow.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerADCSimpleWindow"
+#define TRACE_NAME "TriggerActivityMakerADCSimpleWindowPlugin"
 
 #include <vector>
 
@@ -96,3 +96,6 @@ TriggerActivityMakerADCSimpleWindow::construct_ta() const
   ta.inputs = m_current_window.tp_list;
   return ta;
 }
+
+// Register algo in TA Factory
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerADCSimpleWindow)

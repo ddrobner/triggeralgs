@@ -8,7 +8,7 @@
 
 #include "triggeralgs/PlaneCoincidence/TriggerActivityMakerPlaneCoincidence.hpp"
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerPlaneCoincidence"
+#define TRACE_NAME "TriggerActivityMakerPlaneCoincidencePlugin"
 #include <vector>
 
 using namespace triggeralgs;
@@ -273,4 +273,6 @@ TriggerActivityMakerPlaneCoincidence::check_tot(TPWindow m_current_window) const
   return window_tot;
 }
 
+// Regiser algo in TA Factory
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerPlaneCoincidence)
 // END OF TA MAKER - LOW ENERGY EVENTS

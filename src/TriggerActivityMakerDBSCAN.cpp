@@ -13,7 +13,7 @@
 #include "triggeralgs/Types.hpp"
 #include <chrono>
 #include <limits>
-#define TRACE_NAME "TriggerActivityMakerDBSCAN"
+#define TRACE_NAME "TriggerActivityMakerDBSCANPlugin"
 
 #include <vector>
 
@@ -86,3 +86,6 @@ TriggerActivityMakerDBSCAN::configure(const nlohmann::json &config)
 
   m_dbscan=std::make_unique<dbscan::IncrementalDBSCAN>(10, m_min_pts, 10000);
 }
+
+// Register algo in TA Factory
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerDBSCAN)

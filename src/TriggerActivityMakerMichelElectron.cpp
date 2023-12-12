@@ -8,7 +8,7 @@
 
 #include "triggeralgs/MichelElectron/TriggerActivityMakerMichelElectron.hpp"
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerMichelElectron"
+#define TRACE_NAME "TriggerActivityMakerMichelElectronPlugin"
 #include <vector>
 #include <algorithm>
 
@@ -384,3 +384,6 @@ reset."; m_current_window.clear();
 
   return;
 }*/
+
+// Register algo in TA Factory
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerMichelElectron)

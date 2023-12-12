@@ -11,6 +11,7 @@
 
 #include "detchannelmaps/TPCChannelMap.hpp"
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/TPWindow.hpp"
 #include <fstream>
 #include <vector>
@@ -67,7 +68,6 @@ private:
   void dump_window_record();
   void dump_tp(TriggerPrimitive const& input_tp);
   std::vector<TPWindow> m_window_record;
-
 };
 } // namespace triggeralgs
 #endif // TRIGGERALGS_PLANECOINCIDENCE_TRIGGERACTIVITYMAKERPLANECOINCIDENCE_HPP_

@@ -8,6 +8,9 @@
 
 #include "triggeralgs/Supernova/TriggerActivityMakerSupernova.hpp"
 
+#include "TRACE/trace.h"
+#define TRACE_NAME "TriggerActivityMakerSupernovaPlugin"
+
 #include <chrono>
 #include <vector>
 
@@ -79,3 +82,6 @@ TriggerActivityMakerSupernova::operator()(const TriggerPrimitive& input_tp, std:
   m_adc_integral += input_tp.adc_integral;
   m_detid |= input_tp.detid;
 }
+
+// Register algo in TA Factory
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerSupernova)

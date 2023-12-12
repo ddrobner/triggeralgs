@@ -10,6 +10,7 @@
 #define TRIGGERALGS_ADCSIMPLEWINDOW_TRIGGERACTIVITYMAKERADCSIMPLEWINDOW_HPP_
 
 #include "triggeralgs/TriggerActivityMaker.hpp"
+#include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/Types.hpp"
 
 #include <vector>
@@ -94,7 +95,6 @@ private:
   // Configurable parameters.
   uint32_t m_adc_threshold = 1200000;
   timestamp_t m_window_length = 100000;
-
 };
 } // namespace triggeralgs
 

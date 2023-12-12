@@ -1,8 +1,4 @@
-
-add_executable(test_trivial test_trivial.cxx)
-target_include_directories(test_trivial PRIVATE ${BOOST_INCLUDE_DIRS})
-add_test(NAME trivial COMMAND test_trivial)
-
-add_executable(test_supernova test_supernova.cxx)
-target_include_directories(test_supernova PRIVATE ${BOOST_INCLUDE_DIRS})
-add_test(NAME supernova COMMAND test_supernova)
+add_executable(test_factory test_factory.cxx)
+target_link_libraries(test_factory PRIVATE triggeralgs trgdataformats::trgdataformats)
+target_include_directories(test_factory PRIVATE ${BOOST_INCLUDE_DIRS})
+add_test(NAME factory COMMAND test_factory)

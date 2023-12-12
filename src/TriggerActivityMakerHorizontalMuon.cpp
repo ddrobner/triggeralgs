@@ -8,7 +8,7 @@
 
 #include "triggeralgs/HorizontalMuon/TriggerActivityMakerHorizontalMuon.hpp"
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerActivityMakerHorizontalMuon"
+#define TRACE_NAME "TriggerActivityMakerHorizontalMuonPlugin"
 #include <vector>
 #include <math.h>
 
@@ -342,3 +342,6 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
 
   return window_tot;
 }
+
+// Register algo in TA Factory
+REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerHorizontalMuon)
