@@ -9,7 +9,6 @@
 #ifndef TRIGGERALGS_ADCSIMPLEWINDOW_TRIGGERACTIVITYMAKERADCSIMPLEWINDOW_HPP_
 #define TRIGGERALGS_ADCSIMPLEWINDOW_TRIGGERACTIVITYMAKERADCSIMPLEWINDOW_HPP_
 
-#include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/Types.hpp"
 

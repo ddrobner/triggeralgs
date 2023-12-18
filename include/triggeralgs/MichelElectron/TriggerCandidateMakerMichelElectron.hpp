@@ -9,7 +9,6 @@
 #ifndef TRIGGERALGS_MICHELELECTRON_TRIGGERCANDIDATEMAKERMICHELELECTRON_HPP_
 #define TRIGGERALGS_MICHELELECTRON_TRIGGERCANDIDATEMAKERMICHELELECTRON_HPP_
 
-#include "triggeralgs/TriggerCandidateMaker.hpp"
 #include "triggeralgs/TriggerCandidateFactory.hpp"
 
 //#include "triggeralgs/triggercandidatemakerhorizontalmuon/Nljs.hpp"

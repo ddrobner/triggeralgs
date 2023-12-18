@@ -9,7 +9,6 @@
 #ifndef TRIGGERALGS_PRESCALE_TRIGGERCANDIDATEMAKERPRESCALE_HPP_
 #define TRIGGERALGS_PRESCALE_TRIGGERCANDIDATEMAKERPRESCALE_HPP_
 
-#include "triggeralgs/TriggerCandidateMaker.hpp"
 #include "triggeralgs/TriggerCandidateFactory.hpp"
 
 #include <vector>

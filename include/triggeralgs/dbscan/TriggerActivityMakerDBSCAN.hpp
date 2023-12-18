@@ -9,7 +9,6 @@
 #ifndef TRIGGERALGS_DBSCAN_TRIGGERACTIVITYMAKERDBSCAN_HPP_
 #define TRIGGERALGS_DBSCAN_TRIGGERACTIVITYMAKERDBSCAN_HPP_
 
-#include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/dbscan/dbscan.hpp"
 

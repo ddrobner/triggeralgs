@@ -9,7 +9,6 @@
 #ifndef TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERACTIVITYMAKERSUPERNOVA_HPP_
 #define TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERACTIVITYMAKERSUPERNOVA_HPP_
 
-#include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TriggerActivityFactory.hpp"
 
 #include <algorithm>
