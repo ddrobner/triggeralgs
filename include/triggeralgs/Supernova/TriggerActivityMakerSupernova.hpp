@@ -51,8 +51,6 @@ public:
 
   void flush(timestamp_t, std::vector<TriggerActivity>& tas) override { tas.push_back(MakeTriggerActivity()); }
 
-  static std::shared_ptr<TriggerActivityMaker> createMaker();
-
 protected:
   timestamp_diff_t m_time_tolerance =
     250; /// Maximum tolerated time difference between two primitives to form an activity (in 50 MHz clock ticks)
