@@ -14,7 +14,7 @@
 #define REGISTER_TRIGGER_ACTIVITY_MAKER(tam_name, tam_class)                                                                                      \
   static struct tam_class##Registrar {                                                                                                            \
     tam_class##Registrar() {                                                                                                                      \
-      TriggerActivityFactory::registerCreator(tam_name, []() -> std::shared_ptr<TriggerActivityMaker> {return std::make_shared<tam_class>();});   \
+      TriggerActivityFactory::registerCreator(tam_name, []() -> std::unique_ptr<TriggerActivityMaker> {return std::make_unique<tam_class>();});   \
     }                                                                                                                                             \
   } tam_class##_registrar;
 
