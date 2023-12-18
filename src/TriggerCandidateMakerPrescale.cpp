@@ -9,7 +9,7 @@
 #include "triggeralgs/Prescale/TriggerCandidateMakerPrescale.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerCandidateMakerPrescale"
+#define TRACE_NAME "TriggerCandidateMakerPrescalePlugin"
 
 #include <vector>
 
@@ -60,3 +60,5 @@ TriggerCandidateMakerPrescale::configure(const nlohmann::json &config)
   }
   TLOG_DEBUG(TRACE_NAME) << "Using candidate prescale " << m_prescale;
 }
+
+REGISTER_TRIGGER_CANDIDATE_MAKER(TRACE_NAME, TriggerCandidateMakerPrescale)

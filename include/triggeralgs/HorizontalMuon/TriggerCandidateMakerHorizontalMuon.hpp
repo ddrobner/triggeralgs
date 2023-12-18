@@ -10,6 +10,7 @@
 #define TRIGGERALGS_HORIZONTALMUON_TRIGGERCANDIDATEMAKERHORIZONTALMUON_HPP_
 
 #include "triggeralgs/TriggerCandidateMaker.hpp"
+#include "triggeralgs/TriggerCandidateFactory.hpp"
 #include "triggeralgs/TAWindow.hpp"
 
 #include <fstream>

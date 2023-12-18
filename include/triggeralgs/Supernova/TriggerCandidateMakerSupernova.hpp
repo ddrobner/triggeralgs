@@ -10,6 +10,7 @@
 #define TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERCANDIDATEMAKERSUPERNOVA_HPP_
 
 #include "triggeralgs/TriggerCandidateMaker.hpp"
+#include "triggeralgs/TriggerCandidateFactory.hpp"
 #include "triggeralgs/Types.hpp"
 
 #include <algorithm>

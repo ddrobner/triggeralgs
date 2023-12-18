@@ -8,6 +8,9 @@
 
 #include "triggeralgs/Supernova/TriggerCandidateMakerSupernova.hpp"
 
+#include "TRACE/trace.h"
+#define TRACE_NAME "TriggerCandidateMakerSupernovaPlugin"
+
 using namespace triggeralgs;
 
 void
@@ -37,3 +40,5 @@ TriggerCandidateMakerSupernova::operator()(const TriggerActivity& activity, std:
     cand.push_back(tc);
   }
 }
+
+REGISTER_TRIGGER_CANDIDATE_MAKER(TRACE_NAME, TriggerCandidateMakerSupernova)

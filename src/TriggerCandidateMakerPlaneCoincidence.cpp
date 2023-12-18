@@ -9,7 +9,7 @@
 #include "triggeralgs/PlaneCoincidence/TriggerCandidateMakerPlaneCoincidence.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerCandidateMakerPlaneCoincidence"
+#define TRACE_NAME "TriggerCandidateMakerPlaneCoincidencePlugin"
 
 #include <vector>
 
@@ -172,3 +172,5 @@ TriggerCandidateMakerPlaneCoincidence::dump_window_record()
 
   return;
 }
+
+REGISTER_TRIGGER_CANDIDATE_MAKER(TRACE_NAME, TriggerCandidateMakerPlaneCoincidence)
