@@ -18,20 +18,20 @@ namespace triggeralgs {
 template <typename T>
 class AbstractFactory
 {
-  using makerCreator = std::function<std::unique_ptr<T>()>;
-  using creationMap = std::unordered_map<std::string, makerCreator>;
+  using maker_creator = std::function<std::unique_ptr<T>()>;
+  using creation_map = std::unordered_map<std::string, maker_creator>;
 
   public:
     AbstractFactory(const AbstractFactory&) = delete;
     AbstractFactory& operator=(const AbstractFactory&) = delete;
     virtual ~AbstractFactory() {}
 
-    static std::unique_ptr<T> buildMaker(const std::string& algName);
+    static std::unique_ptr<T> build_maker(const std::string& alg_name);
 
-    static void registerCreator(const std::string algName, makerCreator creator);
+    static void register_creator(const std::string alg_name, maker_creator creator);
 
   private:
-    static creationMap& getMakers();
+    static creation_map& get_makers();
 };
 
 } /* namespace triggeralgs */

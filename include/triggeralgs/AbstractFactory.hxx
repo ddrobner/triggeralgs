@@ -11,29 +11,29 @@
 namespace triggeralgs {
 
 template <typename T>
-typename AbstractFactory<T>::creationMap& AbstractFactory<T>::getMakers(){
-  static creationMap s_makers;
+typename AbstractFactory<T>::creation_map& AbstractFactory<T>::get_makers(){
+  static creation_map s_makers;
   return s_makers;
 }
 
 template <typename T>
-void AbstractFactory<T>::registerCreator(const std::string algName, makerCreator creator)
+void AbstractFactory<T>::register_creator(const std::string alg_name, maker_creator creator)
 {
-  creationMap& makers = getMakers();
-  auto it = makers.find(algName);
+  creation_map& makers = get_makers();
+  auto it = makers.find(alg_name);
 
   if (it == makers.end()) {
-    makers[algName] = creator;
+    makers[alg_name] = creator;
     return;
   }
   return;
 }
 
 template <typename T>
-std::unique_ptr<T> AbstractFactory<T>::buildMaker(const std::string& algName)
+std::unique_ptr<T> AbstractFactory<T>::build_maker(const std::string& alg_name)
 {
-  creationMap& makers = getMakers();
-  auto it = makers.find(algName);
+  creation_map& makers = get_makers();
+  auto it = makers.find(alg_name);
 
   if (it != makers.end()) {
     return it->second();
