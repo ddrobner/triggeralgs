@@ -22,13 +22,19 @@ class AbstractFactory
   using creation_map = std::unordered_map<std::string, maker_creator>;
 
   public:
+    AbstractFactory() {}
     AbstractFactory(const AbstractFactory&) = delete;
     AbstractFactory& operator=(const AbstractFactory&) = delete;
     virtual ~AbstractFactory() {}
 
-    static std::unique_ptr<T> build_maker(const std::string& alg_name);
+    std::unique_ptr<T> build_maker(const std::string& alg_name);
 
     static void register_creator(const std::string alg_name, maker_creator creator);
+
+    static std::shared_ptr<AbstractFactory<T>> get_instance();
+
+  protected:
+    static std::shared_ptr<AbstractFactory<T>> s_single_factory;
 
   private:
     static creation_map& get_makers();

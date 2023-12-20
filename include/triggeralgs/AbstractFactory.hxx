@@ -11,6 +11,9 @@
 namespace triggeralgs {
 
 template <typename T>
+std::shared_ptr<AbstractFactory<T>> AbstractFactory<T>::s_single_factory = nullptr;
+
+template <typename T>
 typename AbstractFactory<T>::creation_map& AbstractFactory<T>::get_makers(){
   static creation_map s_makers;
   return s_makers;
@@ -40,6 +43,15 @@ std::unique_ptr<T> AbstractFactory<T>::build_maker(const std::string& alg_name)
   }
 
   return nullptr;
+}
+
+template <typename T>
+std::shared_ptr<AbstractFactory<T>> AbstractFactory<T>::get_instance()
+{
+  if (s_single_factory == nullptr) {
+    s_single_factory = std::make_shared<AbstractFactory<T>>();
+  }
+  return s_single_factory;
 }
 
 } // namespace triggeralgs
