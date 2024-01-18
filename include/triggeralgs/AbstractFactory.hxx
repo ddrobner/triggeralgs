@@ -39,9 +39,11 @@ std::unique_ptr<T> AbstractFactory<T>::build_maker(const std::string& alg_name)
   auto it = makers.find(alg_name);
 
   if (it != makers.end()) {
+    TLOG(0) << "Factory building " << alg_name << ".";
     return it->second();
   }
 
+  TLOG(0) << "Factory couldn't find " << alg_name << ".";
   return nullptr;
 }
 

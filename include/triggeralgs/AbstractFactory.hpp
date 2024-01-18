@@ -8,6 +8,8 @@
 #ifndef TRIGGERALGS_ABSTRACT_FACTORY_HPP_
 #define TRIGGERALGS_ABSTRACT_FACTORY_HPP_
 
+#include "logging/Logging.hpp"
+
 #include <functional>
 #include <memory>
 #include <string>
