@@ -9,7 +9,7 @@
 #include "triggeralgs/HorizontalMuon/TriggerCandidateMakerHorizontalMuon.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerCandidateMakerHorizontalMuon"
+#define TRACE_NAME "TriggerCandidateMakerHorizontalMuonPlugin"
 
 #include <vector>
 #include <math.h>
@@ -227,3 +227,5 @@ reset."; m_current_window.clear();
 
   return;
 }*/
+
+REGISTER_TRIGGER_CANDIDATE_MAKER(TRACE_NAME, TriggerCandidateMakerHorizontalMuon)

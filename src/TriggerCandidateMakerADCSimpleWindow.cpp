@@ -9,7 +9,7 @@
 #include "triggeralgs/ADCSimpleWindow/TriggerCandidateMakerADCSimpleWindow.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerCandidateMakerADCSimpleWindow"
+#define TRACE_NAME "TriggerCandidateMakerADCSimpleWindowPlugin"
 
 #include <vector>
 
@@ -44,3 +44,4 @@ TriggerCandidateMakerADCSimpleWindow::configure(const nlohmann::json &config)
 {
 }
 
+REGISTER_TRIGGER_CANDIDATE_MAKER(TRACE_NAME, TriggerCandidateMakerADCSimpleWindow)

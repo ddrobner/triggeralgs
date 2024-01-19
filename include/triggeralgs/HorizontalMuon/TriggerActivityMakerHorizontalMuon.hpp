@@ -9,7 +9,6 @@
 #ifndef TRIGGERALGS_HORIZONTALMUON_TRIGGERACTIVITYMAKERHORIZONTALMUON_HPP_
 #define TRIGGERALGS_HORIZONTALMUON_TRIGGERACTIVITYMAKERHORIZONTALMUON_HPP_
 
-#include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TPWindow.hpp"
 #include "triggeralgs/TriggerActivityFactory.hpp"
 #include <fstream>

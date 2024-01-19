@@ -10,7 +10,6 @@
 #define TRIGGERALGS_PLANECOINCIDENCE_TRIGGERACTIVITYMAKERPLANECOINCIDENCE_HPP_
 
 #include "detchannelmaps/TPCChannelMap.hpp"
-#include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TriggerActivityFactory.hpp"
 #include "triggeralgs/TPWindow.hpp"
 #include <fstream>

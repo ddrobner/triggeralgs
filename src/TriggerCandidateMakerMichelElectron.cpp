@@ -9,7 +9,7 @@
 #include "triggeralgs/MichelElectron/TriggerCandidateMakerMichelElectron.hpp"
 
 #include "TRACE/trace.h"
-#define TRACE_NAME "TriggerCandidateMakerMichelElectron"
+#define TRACE_NAME "TriggerCandidateMakerMichelElectronPlugin"
 
 #include <vector>
 
@@ -219,3 +219,5 @@ reset."; m_current_window.clear();
 
   return;
 }*/
+
+REGISTER_TRIGGER_CANDIDATE_MAKER(TRACE_NAME, TriggerCandidateMakerMichelElectron)

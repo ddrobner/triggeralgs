@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_ADCSIMPLEWINDOW_TRIGGERCANDIDATEMAKERADCSIMPLEWINDOW_HPP_
 #define TRIGGERALGS_ADCSIMPLEWINDOW_TRIGGERCANDIDATEMAKERADCSIMPLEWINDOW_HPP_
 
-#include "triggeralgs/TriggerCandidateMaker.hpp"
+#include "triggeralgs/TriggerCandidateFactory.hpp"
 
 #include <vector>
 

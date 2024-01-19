@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_PLANECOINCIDENCE_TRIGGERCANDIDATEMAKERPLANECOINCIDENCE_HPP_
 #define TRIGGERALGS_PLANECOINCIDENCE_TRIGGERCANDIDATEMAKERPLANECOINCIDENCE_HPP_
 
-#include "triggeralgs/TriggerCandidateMaker.hpp"
+#include "triggeralgs/TriggerCandidateFactory.hpp"
 #include "triggeralgs/TAWindow.hpp"
 #include <fstream>
 #include <vector>

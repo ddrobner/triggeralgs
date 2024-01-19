@@ -9,7 +9,6 @@
 #ifndef TRIGGERALGS_MICHELELECTRON_TRIGGERACTIVITYMAKERMICHELELECTRON_HPP_
 #define TRIGGERALGS_MICHELELECTRON_TRIGGERACTIVITYMAKERMICHELELECTRON_HPP_
 
-#include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TriggerActivityFactory.hpp"
 #include <fstream>
 #include <vector>

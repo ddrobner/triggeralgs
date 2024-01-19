@@ -9,7 +9,6 @@
 #ifndef TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERACTIVITYMAKERSUPERNOVA_HPP_
 #define TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERACTIVITYMAKERSUPERNOVA_HPP_
 
-#include "triggeralgs/TriggerActivityMaker.hpp"
 #include "triggeralgs/TriggerActivityFactory.hpp"
 
 #include <algorithm>
@@ -51,8 +50,6 @@ public:
   void operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta) override;
 
   void flush(timestamp_t, std::vector<TriggerActivity>& tas) override { tas.push_back(MakeTriggerActivity()); }
-
-  static std::shared_ptr<TriggerActivityMaker> createMaker();
 
 protected:
   timestamp_diff_t m_time_tolerance =
