@@ -24,5 +24,4 @@ class TriggerActivityFactory : public AbstractFactory<TriggerActivityMaker> {};
 
 } /* namespace triggeralgs */
 
-// TODO: Define ers exceptions
 #endif // TRIGGERALGS_TRIGGER_ACTIVITY_FACTORY_HPP_

@@ -24,5 +24,4 @@ class TriggerCandidateFactory : public AbstractFactory<TriggerCandidateMaker> {}
 
 } /* namespace triggeralgs */
 
-// TODO: Define ers exceptions
 #endif // TRIGGERALGS_TRIGGER_CANDIDATE_FACTORY_HPP_

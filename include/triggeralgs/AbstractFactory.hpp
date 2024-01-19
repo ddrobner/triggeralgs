@@ -46,5 +46,4 @@ class AbstractFactory
 
 #include "triggeralgs/AbstractFactory.hxx"
 
-// TODO: Define ers exceptions
 #endif // TRIGGERALGS_ABSTRACT_FACTORY_HPP_

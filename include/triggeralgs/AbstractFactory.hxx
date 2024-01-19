@@ -29,6 +29,8 @@ void AbstractFactory<T>::register_creator(const std::string alg_name, maker_crea
     makers[alg_name] = creator;
     return;
   }
+  TLOG(0) << "Attempted to overwrite a creator in factory with " << alg_name << ".";
+  throw; // creators should not be overwritten.
   return;
 }
 
