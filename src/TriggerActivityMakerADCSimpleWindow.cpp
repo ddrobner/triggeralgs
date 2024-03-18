@@ -16,7 +16,6 @@
 
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_INFO;
 using dunedaq::triggeralgs::logging::TLVL_IMPORTANT;
 
 using namespace triggeralgs;
