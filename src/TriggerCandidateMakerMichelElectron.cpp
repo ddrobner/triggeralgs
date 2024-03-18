@@ -7,11 +7,17 @@
  */
 
 #include "triggeralgs/MichelElectron/TriggerCandidateMakerMichelElectron.hpp"
+#include "triggeralgs/Logging.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerMichelElectronPlugin"
 
 #include <vector>
+
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_INFO;
 
 using namespace triggeralgs;
 
@@ -34,7 +40,7 @@ TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
 
       // add_window_to_record(m_current_window);
       // dump_window_record();
-      // TLOG(1) << "Constructing trivial TC.";
+      TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:ME] Constructing trivial TC.";
 
       TriggerCandidate tc = construct_tc();
       output_tc.push_back(tc);
@@ -51,7 +57,7 @@ TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
   if ((activity.time_start - m_current_window.time_start) < m_window_length) {
-    // TLOG_DEBUG(TRACE_NAME) << "Window not yet complete, adding the activity to the window.";
+    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:ME] Window not yet complete, adding the activity to the window.";
     m_current_window.add(activity);
   }
   // If the addition of the current TA to the window would make it longer
@@ -59,11 +65,11 @@ TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
   // the existing window is above the specified threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
   else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
-    // TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:ME] ADC integral in window is greater than specified threshold.";
     TriggerCandidate tc = construct_tc();
 
     output_tc.push_back(tc);
-    // TLOG_DEBUG(TRACE_NAME) << "Resetting window with activity.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:ME] Resetting window with activity.";
     m_current_window.reset(activity);
   }
   // If the addition of the current TA to the window would make it longer
@@ -74,15 +80,15 @@ TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
     tc_number++;
     //   output_tc.push_back(construct_tc());
     m_current_window.reset(activity);
-    TLOG(1) << "Should not see this!";
+    TLOG_DEBUG(TLVL_DEBUG_INFO) << "[TCM:ME] Should not see this!";
   }
   // If it is not, move the window along.
   else {
-    // TLOG_DEBUG(TRACE_NAME) << "Window is at required length but specified threshold not met, shifting window along.";
+    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:ME] Window is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
 
-  // TLOG_DEBUG(TRACE_NAME) << m_current_window;
+  //TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:ME] " m_current_window;
 
   m_activity_count++;
 

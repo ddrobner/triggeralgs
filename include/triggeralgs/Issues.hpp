@@ -11,12 +11,16 @@
 
 #include "ers/Issue.hpp"
 
-namespace dunedaq {
+#include <string>
 
-ERS_DECLARE_ISSUE(triggeralgs, FactoryOverwrite, "Attempted to overwrite a creator in factory with " << alg_name, ((std::string)alg_name))
+ERS_DECLARE_ISSUE(triggeralgs,
+                  FactoryOverwrite, 
+                  "Attempted to overwrite a creator in factory with " << alg_name,
+                  ((std::string)alg_name))
 
-ERS_DECLARE_ISSUE(triggeralgs, FactoryNotFound, "Factory couldn't find: " << alg_name, ((std::string)alg_name))
-
-} // namespace dunedaq
+ERS_DECLARE_ISSUE(triggeralgs,
+                  FactoryNotFound,
+                  "Factory couldn't find: " << alg_name,
+                  ((std::string)alg_name))
 
 #endif // TRIGGERALGS_INCLUDE_TRIGGERALGS_ISSUES_HPP_

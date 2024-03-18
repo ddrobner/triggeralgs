@@ -7,10 +7,13 @@
  */
 
 #include "triggeralgs/MichelElectron/TriggerActivityMakerMichelElectron.hpp"
+#include "triggeralgs/Logging.hpp"
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerMichelElectronPlugin"
 #include <vector>
 #include <algorithm>
+
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
 
 using namespace triggeralgs;
 
@@ -43,7 +46,7 @@ TriggerActivityMakerMichelElectron::operator()(const TriggerPrimitive& input_tp,
      
      if (check_bragg_peak(trackHits)){
        if (check_kinks(trackHits)){
-         TLOG(1) << "Emitting a trigger for candidate Michel event.";
+         TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TAM:ME] Emitting a trigger for candidate Michel event.";
          output_ta.push_back(construct_ta());
          m_current_window.reset(input_tp);
        } // Kinks 

@@ -7,6 +7,7 @@
  */
 
 #include "triggeralgs/dbscan/TriggerActivityMakerDBSCAN.hpp"
+#include "triggeralgs/Logging.hpp"
 #include "dbscan/Point.hpp"
 
 #include "TRACE/trace.h"
@@ -16,6 +17,8 @@
 #define TRACE_NAME "TriggerActivityMakerDBSCANPlugin"
 
 #include <vector>
+
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
 
 using namespace triggeralgs;
 
@@ -28,7 +31,7 @@ TriggerActivityMakerDBSCAN::operator()(const TriggerPrimitive& input_tp, std::ve
   }
   
   if(input_tp.time_start < m_prev_timestamp){
-    TLOG(TLVL_INFO) << "Out-of-order TPs: prev " << m_prev_timestamp << ", current " << input_tp.time_start;
+    TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TAM:DBS] Out-of-order TPs: prev " << m_prev_timestamp << ", current " << input_tp.time_start;
     return;
   }
   

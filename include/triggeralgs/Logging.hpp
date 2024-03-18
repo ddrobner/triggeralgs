@@ -17,10 +17,10 @@ namespace logging {
 */
 enum
 {
-  TLVL_VERY_IMPORTANT = 1
+  TLVL_VERY_IMPORTANT = 1,
   TLVL_IMPORTANT      = 2,
   TLVL_GENERAL        = 3,
-  TLVL_INFO           = 4,
+  TLVL_DEBUG_INFO     = 4,
   TLVL_DEBUG_LOW      = 5,
   TLVL_DEBUG_MEDIUM   = 10,
   TLVL_DEBUG_HIGH     = 15,

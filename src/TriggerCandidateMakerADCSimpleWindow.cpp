@@ -7,11 +7,14 @@
  */
 
 #include "triggeralgs/ADCSimpleWindow/TriggerCandidateMakerADCSimpleWindow.hpp"
+#include "triggeralgs/Logging.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerADCSimpleWindowPlugin"
 
 #include <vector>
+
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
 
 using namespace triggeralgs;
 
@@ -24,7 +27,7 @@ TriggerCandidateMakerADCSimpleWindow::operator()(const TriggerActivity& activity
   m_activity_count++;
   std::vector<TriggerActivity::TriggerActivityData> ta_list = {static_cast<TriggerActivity::TriggerActivityData>(activity)};
 
-  TLOG(TLVL_DEBUG_1) << "Emitting an ADCSimpleWindow TriggerCandidate " << (m_activity_count-1);
+  TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:ADCSW] Emitting an ADCSimpleWindow TriggerCandidate " << (m_activity_count-1);
   TriggerCandidate tc;
   tc.time_start = activity.time_start; 
   tc.time_end = activity.time_end;  
