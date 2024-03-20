@@ -16,6 +16,7 @@
 
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
 using dunedaq::triggeralgs::logging::TLVL_IMPORTANT;
 
 using namespace triggeralgs;
@@ -35,7 +36,7 @@ TriggerActivityMakerADCSimpleWindow::operator()(const TriggerPrimitive& input_tp
   // If the difference between the current TP's start time and the start of the window
   // is less than the specified window size, add the TP to the window.
   if((input_tp.time_start - m_current_window.time_start) < m_window_length){
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TAM:ADCSW] Window not yet complete, adding the input_tp to the window.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TAM:ADCSW] Window not yet complete, adding the input_tp to the window.";
     m_current_window.add(input_tp);
   }
   // If the addition of the current TP to the window would make it longer
@@ -43,9 +44,9 @@ TriggerActivityMakerADCSimpleWindow::operator()(const TriggerPrimitive& input_tp
   // the existing window is above the specified threshold. If it is, make a TA and start 
   // a fresh window with the current TP.
   else if(m_current_window.adc_integral > m_adc_threshold){
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TAM:ADCSW] ADC integral in window is greater than specified threshold.";
+    TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TAM:ADCSW] ADC integral in window is greater than specified threshold.";
     output_ta.push_back(construct_ta());
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TAM:ADCSW] Resetting window with input_tp.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TAM:ADCSW] Resetting window with input_tp.";
     m_current_window.reset(input_tp);
   }
   // If it is not, move the window along.
@@ -79,7 +80,7 @@ TriggerActivityMakerADCSimpleWindow::configure(const nlohmann::json &config)
 TriggerActivity
 TriggerActivityMakerADCSimpleWindow::construct_ta() const
 {
-  TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TAM:ADCSW] I am constructing a trigger activity!";
+  TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TAM:ADCSW] I am constructing a trigger activity!";
   //TLOG_DEBUG(TRACE_NAME) << m_current_window;
 
   TriggerPrimitive latest_tp_in_window = m_current_window.tp_list.back();

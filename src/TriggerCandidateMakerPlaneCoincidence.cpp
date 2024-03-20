@@ -14,9 +14,9 @@
 
 #include <vector>
 
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_INFO;
 
 using namespace triggeralgs;
@@ -40,7 +40,7 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
 
       // add_window_to_record(m_current_window);
       // dump_window_record();
-      TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:PC] Constructing trivial TC.";
+      TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:PC] Constructing trivial TC.";
       TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:PC] Activity count: " << m_activity_count;
       TriggerCandidate tc = construct_tc();
       output_tc.push_back(tc);
@@ -69,7 +69,7 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
     TriggerCandidate tc = construct_tc();
 
     output_tc.push_back(tc);
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:PC] Resetting window with activity.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:PC] Resetting window with activity.";
     m_current_window.reset(activity);
   }
   // If the addition of the current TA to the window would make it longer
@@ -84,7 +84,7 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
   }
   // If it is not, move the window along.
   else {
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:PC] TAWindow is at required length but specified threshold not met, shifting window along.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:PC] TAWindow is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
 

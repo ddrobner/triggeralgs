@@ -16,7 +16,7 @@
 
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_INFO;
 
 using namespace triggeralgs;
@@ -40,7 +40,7 @@ TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
 
       // add_window_to_record(m_current_window);
       // dump_window_record();
-      TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:ME] Constructing trivial TC.";
+      TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:ME] Constructing trivial TC.";
 
       TriggerCandidate tc = construct_tc();
       output_tc.push_back(tc);
@@ -57,7 +57,7 @@ TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
   if ((activity.time_start - m_current_window.time_start) < m_window_length) {
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:ME] Window not yet complete, adding the activity to the window.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:ME] Window not yet complete, adding the activity to the window.";
     m_current_window.add(activity);
   }
   // If the addition of the current TA to the window would make it longer
@@ -65,7 +65,7 @@ TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
   // the existing window is above the specified threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
   else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:ME] ADC integral in window is greater than specified threshold.";
+    TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:ME] ADC integral in window is greater than specified threshold.";
     TriggerCandidate tc = construct_tc();
 
     output_tc.push_back(tc);
@@ -84,7 +84,7 @@ TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
   }
   // If it is not, move the window along.
   else {
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:ME] Window is at required length but specified threshold not met, shifting window along.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:ME] Window is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
 

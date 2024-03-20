@@ -14,7 +14,7 @@
 
 #include <vector>
 
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
 using dunedaq::triggeralgs::logging::TLVL_IMPORTANT;
 
 using namespace triggeralgs;
@@ -24,7 +24,7 @@ TriggerCandidateMakerPrescale::operator()(const TriggerActivity& activity, std::
 { 
   if ((m_activity_count++) % m_prescale == 0)
   {
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:Pr] Emitting prescaled TriggerCandidate " << (m_activity_count-1);
+    TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:Pr] Emitting prescaled TriggerCandidate " << (m_activity_count-1);
 
     std::vector<TriggerActivity::TriggerActivityData> ta_list;
     ta_list.push_back(static_cast<TriggerActivity::TriggerActivityData>(activity));

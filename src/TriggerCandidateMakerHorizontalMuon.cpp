@@ -17,6 +17,7 @@
 
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
 using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
 
 using namespace triggeralgs;
 
@@ -56,7 +57,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
   else if ((activity.time_start - m_current_window.time_start) < m_window_length) {
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] Window not yet complete, adding the activity to the window.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:HM] Window not yet complete, adding the activity to the window.";
     m_current_window.add(activity);
   }
   // If it is not, move the window along.
@@ -72,10 +73,10 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   // make a TA and start a fresh window with the current TP.
   if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
     // TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] m_current_window.adc_integral " << m_current_window.adc_integral << " - m_adc_threshold " << m_adc_threshold;
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] m_current_window.adc_integral " << m_current_window.adc_integral << " - m_adc_threshold " << m_adc_threshold;
     tc_number++;
     TriggerCandidate tc = construct_tc();
-    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:HM] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end << " len(tc.inputs) " << tc.inputs.size();
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end << " len(tc.inputs) " << tc.inputs.size();
     for( const auto& ta : tc.inputs ) {
       TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] [TA] ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end << " ta.adc_integral=" << ta.adc_integral;
     }
