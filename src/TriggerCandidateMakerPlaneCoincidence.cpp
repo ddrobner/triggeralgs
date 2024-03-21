@@ -40,7 +40,7 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
 
       // add_window_to_record(m_current_window);
       // dump_window_record();
-      TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:PC] Constructing trivial TC.";
+      TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:PC] Constructing TC.";
       TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:PC] Activity count: " << m_activity_count;
       TriggerCandidate tc = construct_tc();
       output_tc.push_back(tc);
