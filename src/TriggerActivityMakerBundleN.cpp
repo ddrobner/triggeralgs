@@ -24,8 +24,6 @@ TriggerActivityMakerBundleN::operator()(const TriggerPrimitive& input_tp, std::v
   m_current_ta.inputs.push_back(input_tp);
 
   if (bundle_condition()) {
-    TLOG(TLVL_DEBUG_1) << "Emitting BundleNTriggerActivity with " << m_current_ta.inputs.size() << " TPs.";
-
     // Using the first TA as reference.
     TriggerPrimitive first_tp = m_current_ta.inputs.front();
     TriggerPrimitive last_tp = m_current_ta.inputs.back();
@@ -38,7 +36,7 @@ TriggerActivityMakerBundleN::operator()(const TriggerPrimitive& input_tp, std::v
 
     m_current_ta.detid = first_tp.detid;
 
-    m_current_ta.algorithm = TriggerActivity::Algorithm::kUnknown;
+    m_current_ta.algorithm = TriggerActivity::Algorithm::kBundle;
     m_current_ta.type = TriggerActivity::Type::kTPC;
 
     m_current_ta.adc_peak = 0;
@@ -73,7 +71,7 @@ TriggerActivityMakerBundleN::operator()(const TriggerPrimitive& input_tp, std::v
 
     m_current_ta.detid = first_tp.detid;
 
-    m_current_ta.algorithm = TriggerActivity::Algorithm::kUnknown;
+    m_current_ta.algorithm = TriggerActivity::Algorithm::kBundle;
     m_current_ta.type = TriggerActivity::Type::kTPC;
 
     m_current_ta.adc_peak = 0;
@@ -98,14 +96,7 @@ TriggerActivityMakerBundleN::configure(const nlohmann::json& config)
 {
   if (config.is_object() && config.contains("bundle_number")) {
     m_bundle_num = config["bundle_number"];
-
-    // TODO: Are we keeping these?
-//    if (config.contains("readout_window_ticks_before"))
-//      m_readout_window_ticks_before = config["readout_window_ticks_before"];
-//    if (config.contains("readout_window_ticks_after"))
-//      m_readout_window_ticks_after = config["readout_window_ticks_after"];
   }
-  TLOG_DEBUG(TRACE_NAME) << "Using Activity bundle number " << m_bundle_num;
 }
 
 REGISTER_TRIGGER_ACTIVITY_MAKER(TRACE_NAME, TriggerActivityMakerBundleN)

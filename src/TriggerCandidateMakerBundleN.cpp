@@ -24,8 +24,6 @@ TriggerCandidateMakerBundleN::operator()(const TriggerActivity& input_ta, std::v
   m_current_tc.inputs.push_back(input_ta);
 
   if (bundle_condition()) {
-    TLOG(TLVL_DEBUG_1) << "Emitting BundleNTriggerCandidate with " << m_current_tc.inputs.size() << " TAs.";
-
     // Using the first TA as reference.
     dunedaq::trgdataformats::TriggerActivityData front_ta = m_current_tc.inputs.front();
 
@@ -33,8 +31,8 @@ TriggerCandidateMakerBundleN::operator()(const TriggerActivity& input_ta, std::v
     m_current_tc.time_end = m_current_tc.inputs.back().time_end;
     m_current_tc.time_candidate = front_ta.time_start; // TODO: Conforming. Do we change this?
     m_current_tc.detid = front_ta.detid;
-    m_current_tc.type = TriggerCandidate::Type::kUnknown; // TODO: Change to a meaningful type.
-    m_current_tc.algorithm = TriggerCandidate::Algorithm::kCustom; // TODO: Make a kBundleN algo.
+    m_current_tc.type = TriggerCandidate::Type::kBundle;
+    m_current_tc.algorithm = TriggerCandidate::Algorithm::kBundle;
 
     output_tcs.push_back(m_current_tc);
 
@@ -54,8 +52,8 @@ TriggerCandidateMakerBundleN::operator()(const TriggerActivity& input_ta, std::v
     tc.time_end = m_current_tc.inputs.back().time_end;
     tc.time_candidate = front_ta.time_start; // TODO: Conforming. Do we change this?
     tc.detid = front_ta.detid;
-    tc.type = TriggerCandidate::Type::kUnknown; // TODO: Change to a meaningful type.
-    tc.algorithm = TriggerCandidate::Algorithm::kCustom; // TODO: Make a kBundleN algo.
+    tc.type = TriggerCandidate::Type::kBundle; // TODO: Change to a meaningful type.
+    tc.algorithm = TriggerCandidate::Algorithm::kBundle; // TODO: Make a kBundleN algo.
 
     output_tcs.push_back(tc);
 
@@ -69,14 +67,7 @@ TriggerCandidateMakerBundleN::configure(const nlohmann::json& config)
 {
   if (config.is_object() && config.contains("bundle_number")) {
     m_bundle_num = config["bundle_number"];
-
-    // TODO: Are we keeping these?
-//    if (config.contains("readout_window_ticks_before"))
-//      m_readout_window_ticks_before = config["readout_window_ticks_before"];
-//    if (config.contains("readout_window_ticks_after"))
-//      m_readout_window_ticks_after = config["readout_window_ticks_after"];
   }
-  TLOG_DEBUG(TRACE_NAME) << "Using Candidate bundle number " << m_bundle_num;
 }
 
 REGISTER_TRIGGER_CANDIDATE_MAKER(TRACE_NAME, TriggerCandidateMakerBundleN)
