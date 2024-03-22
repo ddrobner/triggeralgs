@@ -11,8 +11,6 @@
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerChannelDistancePlugin"
 
-#include <iostream>
-
 namespace triggeralgs {
 
 void
@@ -82,7 +80,7 @@ TriggerActivityMakerChannelDistance::set_ta_attributes()
 
   m_current_ta.detid = first_tp.detid;
 
-  m_current_ta.algorithm = TriggerActivity::Algorithm::kUnknown;
+  m_current_ta.algorithm = TriggerActivity::Algorithm::kChannelDistance;
   m_current_ta.type = TriggerActivity::Type::kTPC;
 
   m_current_ta.adc_peak = 0;
