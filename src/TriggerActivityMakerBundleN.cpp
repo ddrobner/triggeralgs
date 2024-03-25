@@ -14,7 +14,7 @@
 namespace triggeralgs {
 
 bool TriggerActivityMakerBundleN::bundle_condition() {
-  return m_current_ta.inputs.size() == m_bundle_num;
+  return m_current_ta.inputs.size() == m_bundle_size;
 }
 
 void
@@ -56,7 +56,7 @@ TriggerActivityMakerBundleN::operator()(const TriggerPrimitive& input_tp, std::v
   }
 
   // Should never reach this step. In this case, send it out.
-  if (m_current_ta.inputs.size() > m_bundle_num) {
+  if (m_current_ta.inputs.size() > m_bundle_size) {
     TLOG(TLVL_DEBUG_1) << "Emitting large BundleN TriggerActivity with " << m_current_ta.inputs.size() << " TPs.";
 
     // Using the first TA as reference.
@@ -94,8 +94,8 @@ TriggerActivityMakerBundleN::operator()(const TriggerPrimitive& input_tp, std::v
 void
 TriggerActivityMakerBundleN::configure(const nlohmann::json& config)
 {
-  if (config.is_object() && config.contains("bundle_number")) {
-    m_bundle_num = config["bundle_number"];
+  if (config.is_object() && config.contains("bundle_size")) {
+    m_bundle_size = config["bundle_size"];
   }
 }
 

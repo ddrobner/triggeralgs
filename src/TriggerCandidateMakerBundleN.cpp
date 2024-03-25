@@ -14,7 +14,7 @@
 namespace triggeralgs {
 
 bool TriggerCandidateMakerBundleN::bundle_condition() {
-  return m_current_tc.inputs.size() == m_bundle_num;
+  return m_current_tc.inputs.size() == m_bundle_size;
 }
 
 void
@@ -41,7 +41,7 @@ TriggerCandidateMakerBundleN::operator()(const TriggerActivity& input_ta, std::v
   }
 
   // Should never reach this step. In this case, send it out.
-  if (m_current_tc.inputs.size() > m_bundle_num) {
+  if (m_current_tc.inputs.size() > m_bundle_size) {
     TLOG(TLVL_DEBUG_1) << "Emitting large BundleN TriggerCandidate with " << m_current_tc.inputs.size() << " TAs.";
 
     // Using the first TA as reference.
@@ -65,8 +65,8 @@ TriggerCandidateMakerBundleN::operator()(const TriggerActivity& input_ta, std::v
 void
 TriggerCandidateMakerBundleN::configure(const nlohmann::json& config)
 {
-  if (config.is_object() && config.contains("bundle_number")) {
-    m_bundle_num = config["bundle_number"];
+  if (config.is_object() && config.contains("bundle_size")) {
+    m_bundle_size = config["bundle_size"];
   }
 }
 

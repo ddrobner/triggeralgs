@@ -23,7 +23,7 @@ class TriggerCandidateMakerBundleN : public TriggerCandidateMaker
     bool bundle_condition();
 
   private:
-      uint64_t m_bundle_num = 1;
+      uint64_t m_bundle_size = 1;
       TriggerCandidate m_current_tc;
 };
 
