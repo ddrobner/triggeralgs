@@ -38,6 +38,8 @@ add_library(triggeralgs SHARED
   src/TriggerActivityMakerChannelDistance.cpp
   src/TriggerCandidateMakerChannelDistance.cpp
   src/TriggerCandidateMakerADCSimpleWindow.cpp
+  src/TriggerActivityMakerBundleN.cpp
+  src/TriggerCandidateMakerBundleN.cpp
   src/TriggerActivityMakerHorizontalMuon.cpp
   src/TriggerCandidateMakerHorizontalMuon.cpp
   src/TriggerCandidateMakerPlaneCoincidence.cpp
