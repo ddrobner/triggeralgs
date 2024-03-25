@@ -34,7 +34,7 @@ TriggerActivityMakerChannelDistance::operator()
   }
 
   // Check to close the TA based on time.
-  if (input_tp.time_start - m_current_ta.inputs.front().time_start > m_max_time_delta) {
+  if (input_tp.time_start - m_current_ta.inputs.front().time_start > m_window_length) {
     // Check to block the TA based on min TPs.
     if (m_current_ta.inputs.size() >= m_min_tps) {
       set_ta_attributes();
@@ -58,8 +58,8 @@ TriggerActivityMakerChannelDistance::configure(const nlohmann::json& config)
 {
   if (config.contains("min_tps"))
     m_min_tps = config["min_tps"];
-  if (config.contains("max_time_delta"))
-    m_max_time_delta = config["max_time_delta"];
+  if (config.contains("window_length"))
+    m_window_length = config["window_length"];
   if (config.contains("max_channel_distance"))
     m_max_channel_distance = config["max_channel_distance"];
 

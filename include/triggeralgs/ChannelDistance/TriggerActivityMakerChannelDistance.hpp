@@ -24,7 +24,7 @@ class TriggerActivityMakerChannelDistance : public TriggerActivityMaker {
     void set_new_ta(const TriggerPrimitive& input_tp);
     TriggerActivity m_current_ta;
     uint32_t m_max_channel_distance = 50;
-    uint64_t m_max_time_delta = 8000;
+    uint64_t m_window_length = 8000;
     uint16_t m_min_tps = 20; // AEO: Type is arbitrary. Surprised even asking for 2^8 TPs.
     uint32_t m_current_lower_bound;
     uint32_t m_current_upper_bound;
