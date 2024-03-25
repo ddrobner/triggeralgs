@@ -25,6 +25,7 @@ class TriggerActivityMakerBundleN : public TriggerActivityMaker
   private:
       uint64_t m_bundle_size = 1;
       TriggerActivity m_current_ta;
+      void set_ta_attributes();
 };
 
 } // namespace triggeralgs

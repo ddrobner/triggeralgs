@@ -13,6 +13,34 @@
 
 namespace triggeralgs {
 
+void TriggerActivityMakerBundleN::set_ta_attributes() {
+    // Using the first TA as reference.
+    TriggerPrimitive first_tp = m_current_ta.inputs.front();
+    TriggerPrimitive last_tp = m_current_ta.inputs.back();
+
+    m_current_ta.channel_start = first_tp.channel;
+    m_current_ta.channel_end = last_tp.channel;
+
+    m_current_ta.time_start = first_tp.time_start;
+    m_current_ta.time_end = last_tp.time_start;
+
+    m_current_ta.detid = first_tp.detid;
+
+    m_current_ta.algorithm = TriggerActivity::Algorithm::kBundle;
+    m_current_ta.type = TriggerActivity::Type::kTPC;
+
+    m_current_ta.adc_peak = 0;
+    for (const TriggerPrimitive& tp : m_current_ta.inputs) {
+      m_current_ta.adc_integral += tp.adc_integral;
+      if (tp.adc_peak <= m_current_ta.adc_peak) continue;
+      m_current_ta.adc_peak = tp.adc_peak;
+      m_current_ta.channel_peak = tp.channel;
+      m_current_ta.time_peak = tp.time_peak;
+    }
+    m_current_ta.time_activity = m_current_ta.time_peak;
+    return;
+}
+
 bool TriggerActivityMakerBundleN::bundle_condition() {
   return m_current_ta.inputs.size() == m_bundle_size;
 }
@@ -24,31 +52,7 @@ TriggerActivityMakerBundleN::operator()(const TriggerPrimitive& input_tp, std::v
   m_current_ta.inputs.push_back(input_tp);
 
   if (bundle_condition()) {
-    // Using the first TA as reference.
-    TriggerPrimitive first_tp = m_current_ta.inputs.front();
-    TriggerPrimitive last_tp = m_current_ta.inputs.back();
-
-    m_current_ta.channel_start = first_tp.channel;
-    m_current_ta.channel_end = last_tp.channel;
-
-    m_current_ta.time_start = first_tp.time_start;
-    m_current_ta.time_end = last_tp.time_start;
-
-    m_current_ta.detid = first_tp.detid;
-
-    m_current_ta.algorithm = TriggerActivity::Algorithm::kBundle;
-    m_current_ta.type = TriggerActivity::Type::kTPC;
-
-    m_current_ta.adc_peak = 0;
-    for (const TriggerPrimitive& tp : m_current_ta.inputs) {
-      m_current_ta.adc_integral += tp.adc_integral;
-      if (tp.adc_peak <= m_current_ta.adc_peak) continue;
-      m_current_ta.adc_peak = tp.adc_peak;
-      m_current_ta.channel_peak = tp.channel;
-      m_current_ta.time_peak = tp.time_peak;
-    }
-    m_current_ta.time_activity = m_current_ta.time_peak;
-
+    set_ta_attributes();
     output_tas.push_back(m_current_ta);
 
     // Reset the current.
@@ -58,32 +62,7 @@ TriggerActivityMakerBundleN::operator()(const TriggerPrimitive& input_tp, std::v
   // Should never reach this step. In this case, send it out.
   if (m_current_ta.inputs.size() > m_bundle_size) {
     TLOG(TLVL_DEBUG_1) << "Emitting large BundleN TriggerActivity with " << m_current_ta.inputs.size() << " TPs.";
-
-    // Using the first TA as reference.
-    TriggerPrimitive first_tp = m_current_ta.inputs.front();
-    TriggerPrimitive last_tp = m_current_ta.inputs.back();
-
-    m_current_ta.channel_start = first_tp.channel;
-    m_current_ta.channel_end = last_tp.channel;
-
-    m_current_ta.time_start = first_tp.time_start;
-    m_current_ta.time_end = last_tp.time_start;
-
-    m_current_ta.detid = first_tp.detid;
-
-    m_current_ta.algorithm = TriggerActivity::Algorithm::kBundle;
-    m_current_ta.type = TriggerActivity::Type::kTPC;
-
-    m_current_ta.adc_peak = 0;
-    for (const TriggerPrimitive& tp : m_current_ta.inputs) {
-      m_current_ta.adc_integral += tp.adc_integral;
-      if (tp.adc_peak <= m_current_ta.adc_peak) continue;
-      m_current_ta.adc_peak = tp.adc_peak;
-      m_current_ta.channel_peak = tp.channel;
-      m_current_ta.time_peak = tp.time_peak;
-    }
-    m_current_ta.time_activity = m_current_ta.time_peak;
-
+    set_ta_attributes();
     output_tas.push_back(m_current_ta);
 
     // Reset the current.

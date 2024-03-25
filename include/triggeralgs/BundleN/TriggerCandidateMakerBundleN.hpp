@@ -25,6 +25,7 @@ class TriggerCandidateMakerBundleN : public TriggerCandidateMaker
   private:
       uint64_t m_bundle_size = 1;
       TriggerCandidate m_current_tc;
+      void set_tc_attributes();
 };
 
 } // namespace triggeralgs
