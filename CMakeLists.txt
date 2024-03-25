@@ -35,6 +35,8 @@ find_package(detchannelmaps REQUIRED)
 # provided by the trigger package)
 add_library(triggeralgs SHARED
   src/TriggerActivityMakerADCSimpleWindow.cpp
+  src/TriggerActivityMakerChannelDistance.cpp
+  src/TriggerCandidateMakerChannelDistance.cpp
   src/TriggerCandidateMakerADCSimpleWindow.cpp
   src/TriggerActivityMakerHorizontalMuon.cpp
   src/TriggerCandidateMakerHorizontalMuon.cpp
