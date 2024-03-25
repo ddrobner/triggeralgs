@@ -7,11 +7,15 @@
  */
 
 #include "triggeralgs/Prescale/TriggerActivityMakerPrescale.hpp"
+#include "triggeralgs/Logging.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerPrescalePlugin"
 
 #include <vector>
+
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
+using dunedaq::triggeralgs::logging::TLVL_IMPORTANT;
 
 using namespace triggeralgs;
 
@@ -21,7 +25,7 @@ TriggerActivityMakerPrescale::operator()(const TriggerPrimitive& input_tp, std::
   if ((m_primitive_count++) % m_prescale == 0)
   {
 
-    TLOG(TLVL_DEBUG_1) << "Emitting prescaled TriggerActivity " << (m_primitive_count-1);
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:Pr] Emitting prescaled TriggerActivity " << (m_primitive_count-1);
     std::vector<TriggerPrimitive> tp_list;
     tp_list.push_back(input_tp);
 
@@ -60,7 +64,7 @@ TriggerActivityMakerPrescale::configure(const nlohmann::json &config)
   {
     m_prescale = config["prescale"];
   }
-  TLOG_DEBUG(TRACE_NAME) << "Using activity prescale " << m_prescale;
+  TLOG_DEBUG(TLVL_IMPORTANT) << "[TAM:Pr] Using activity prescale " << m_prescale;
 }
 
 // Register algo in TA Factory

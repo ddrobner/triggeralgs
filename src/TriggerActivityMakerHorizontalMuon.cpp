@@ -7,10 +7,14 @@
  */
 
 #include "triggeralgs/HorizontalMuon/TriggerActivityMakerHorizontalMuon.hpp"
+#include "triggeralgs/Logging.hpp"
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerHorizontalMuonPlugin"
 #include <vector>
 #include <math.h>
+
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
 
 using namespace triggeralgs;
 
@@ -23,10 +27,10 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
 
   // Add useful info about recived TPs here for FW and SW TPG guys.
   if (m_print_tp_info){
-    TLOG(1) << "TP Start Time: " << input_tp.time_start << ", TP ADC Sum: " <<  input_tp.adc_integral
+    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TAM:HM] TP Start Time: " << input_tp.time_start << ", TP ADC Sum: " <<  input_tp.adc_integral
 	    << ", TP TOT: " << input_tp.time_over_threshold << ", TP ADC Peak: " << input_tp.adc_peak
      	    << ", TP Offline Channel ID: " << input_tp.channel;
-    TLOG(1) << "Adjacency of current window is: " << check_adjacency();    
+    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TAM:HM] Adjacency of current window is: " << check_adjacency();    
   }
 
 
@@ -55,7 +59,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     if (ta_count % m_prescale == 0){
       auto ta = construct_ta();
 
-    	TLOG(1) << "[TA]: Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
+    	TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM]: Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
                    " window ADC integral. ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end;
 
       output_ta.push_back(ta);
@@ -73,7 +77,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     ta_count++;
     if (ta_count % m_prescale == 0){
 
-    	  TLOG(1) << "Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
+    	  TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM] Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
                    " unique channels hit.";
 
         output_ta.push_back(construct_ta());
@@ -96,7 +100,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     	// Check for a new maximum, display the largest seen adjacency in the log.
     	// uint16_t adjacency = check_adjacency();
     	if (adjacency > m_max_adjacency) { m_max_adjacency = adjacency; }
-    	TLOG_DEBUG(TRACE_NAME) << "Emitting track and multiplicity TA with adjacency " << check_adjacency() <<
+    	TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM] Emitting track and multiplicity TA with adjacency " << check_adjacency() <<
                    " and multiplicity " << m_current_window.n_channels_hit() << ". The ADC integral of this TA is " << 
                    m_current_window.adc_integral << " and the largest longest track seen so far is " << m_max_adjacency;
 
@@ -110,7 +114,7 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
       
       // If the incoming TP has a large time over threshold, we might have a cluster of
       // interesting physics activity surrounding it. Trigger on that.
-      TLOG_DEBUG(TRACE_NAME) << "Emitting a TA due to a TP with a very large time over threshold: "
+      TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM] Emitting a TA due to a TP with a very large time over threshold: "
               << input_tp.time_over_threshold << " ticks and offline channel: " << input_tp.channel
               << ", where the ADC integral of that TP is " << input_tp.adc_integral;
       output_ta.push_back(construct_ta());

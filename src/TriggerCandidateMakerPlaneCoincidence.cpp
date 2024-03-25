@@ -7,11 +7,17 @@
  */
 
 #include "triggeralgs/PlaneCoincidence/TriggerCandidateMakerPlaneCoincidence.hpp"
+#include "triggeralgs/Logging.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerPlaneCoincidencePlugin"
 
 #include <vector>
+
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_INFO;
 
 using namespace triggeralgs;
 
@@ -34,8 +40,8 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
 
       // add_window_to_record(m_current_window);
       // dump_window_record();
-      TLOG(1) << "Constructing trivial TC.";
-      TLOG(1) << "Activity count: " << m_activity_count;
+      TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:PC] Constructing TC.";
+      TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:PC] Activity count: " << m_activity_count;
       TriggerCandidate tc = construct_tc();
       output_tc.push_back(tc);
 
@@ -51,7 +57,7 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
   if ((activity.time_start - m_current_window.time_start) < m_window_length) {
-    // TLOG_DEBUG(TRACE_NAME) << "TAWindow not yet complete, adding the activity to the window.";
+    // TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:PC] TAWindow not yet complete, adding the activity to the window.";
     m_current_window.add(activity);
   }
   // If the addition of the current TA to the window would make it longer
@@ -59,11 +65,11 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
   // the existing window is above the specified threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
   else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
-    // TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:PC] ADC integral in window is greater than specified threshold.";
     TriggerCandidate tc = construct_tc();
 
     output_tc.push_back(tc);
-    // TLOG_DEBUG(TRACE_NAME) << "Resetting window with activity.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:PC] Resetting window with activity.";
     m_current_window.reset(activity);
   }
   // If the addition of the current TA to the window would make it longer
@@ -74,11 +80,11 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
     tc_number++;
     //   output_tc.push_back(construct_tc());
     m_current_window.reset(activity);
-    TLOG(1) << "Should not see this!";
+    TLOG_DEBUG(TLVL_DEBUG_INFO) << "[TCM:PC] Should not see this!";
   }
   // If it is not, move the window along.
   else {
-    // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met, shifting window along.";
+    TLOG_DEBUG(TLVL_DEBUG_HIGH) << "[TCM:PC] TAWindow is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
 
