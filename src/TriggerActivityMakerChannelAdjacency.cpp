@@ -7,10 +7,13 @@
  */
 
 #include "triggeralgs/ChannelAdjacency/TriggerActivityMakerChannelAdjacency.hpp"
+#include "triggeralgs/Logging.hpp"
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerChannelAdjacencyPlugin"
 #include <vector>
 #include <math.h>
+
+using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
 
 using namespace triggeralgs;
 
@@ -21,10 +24,10 @@ TriggerActivityMakerChannelAdjacency::operator()(const TriggerPrimitive& input_t
 
   // Add useful info about recived TPs here for FW and SW TPG guys.
   if (m_print_tp_info){
-    TLOG(1) << " ########## m_current_window is reset ##########\n"
-	    << " TP Start Time: " << input_tp.time_start << ", TP ADC Sum: " << input_tp.adc_integral
-	    << ", TP TOT: " << input_tp.time_over_threshold << ", TP ADC Peak: " << input_tp.adc_peak
-	    << ", TP Offline Channel ID: " << input_tp.channel << "\n";
+    TLOG_DEBUG(TLVL_DEBUG_LOW) << " ########## m_current_window is reset ##########\n"
+				  << " TP Start Time: " << input_tp.time_start << ", TP ADC Sum: " << input_tp.adc_integral
+				  << ", TP TOT: " << input_tp.time_over_threshold << ", TP ADC Peak: " << input_tp.adc_peak
+				  << ", TP Offline Channel ID: " << input_tp.channel << "\n";
   }
   
   // 0) FIRST TP =====================================================================
@@ -42,7 +45,7 @@ TriggerActivityMakerChannelAdjacency::operator()(const TriggerPrimitive& input_t
   if ((input_tp.time_start - m_current_window.time_start) < m_window_length) {
     m_current_window.add(input_tp);
     window_filled = 0;
-    TLOG(1) << "m_current_window.time_start " << m_current_window.time_start << "\n";
+    TLOG_DEBUG(TLVL_DEBUG_LOW) << "m_current_window.time_start " << m_current_window.time_start << "\n";
   }
   
   else {
@@ -158,7 +161,7 @@ TriggerActivityMakerChannelAdjacency::construct_ta(TPWindow win_adj_max) const
 //std::vector<TriggerPrimitive>
 TPWindow
 TriggerActivityMakerChannelAdjacency::check_adjacency() {
-  // This function deals with tp window (m_current_window), select adjacent tps (with a channel gap from 0 to 4; sum of all gaps < m_adj_tolerance),
+  // This function deals with tp window (m_current_window), select adjacent tps (with a channel gap from 0 to 5; sum of all gaps < m_adj_tolerance),
   // checks if track length > m_adjacency_threshold: return the tp window (win_adj_max, which is subset of the input tp window)
 
   unsigned int channel = 0;      // Current channel ID
