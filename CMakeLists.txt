@@ -53,6 +53,8 @@ add_library(triggeralgs SHARED
   src/TriggerDecisionMakerSupernova.cpp
   src/TriggerActivityMakerDBSCAN.cpp
   src/TriggerCandidateMakerDBSCAN.cpp
+  src/TriggerActivityMakerChannelAdjacency.cpp
+  src/TriggerCandidateMakerChannelAdjacency.cpp
   src/TAWindow.cpp
   src/TPWindow.cpp
   src/dbscan/dbscan.cpp
