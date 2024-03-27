@@ -26,7 +26,7 @@ private:
 
   TPWindow check_adjacency();
 
-  TPWindow m_current_window;              // Holds collection hits only
+  TPWindow m_current_window;
   uint64_t m_primitive_count = 0;
   
   // Configurable parameters.
