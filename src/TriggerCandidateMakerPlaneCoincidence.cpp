@@ -19,6 +19,7 @@ using Logging::TLVL_DEBUG_HIGH;
 using Logging::TLVL_DEBUG_MEDIUM;
 using Logging::TLVL_DEBUG_LOW;
 using Logging::TLVL_DEBUG_INFO;
+using Logging::TLVL_VERY_IMPORTANT;
 
 void
 TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activity,
@@ -56,7 +57,6 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
   // If the difference between the current TA's start time and the start of the window
   // is less than the specified window size, add the TA to the window.
   if ((activity.time_start - m_current_window.time_start) < m_window_length) {
-    // TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:PC] TAWindow not yet complete, adding the activity to the window.";
     m_current_window.add(activity);
   }
   // If the addition of the current TA to the window would make it longer
@@ -76,6 +76,7 @@ TriggerCandidateMakerPlaneCoincidence::operator()(const TriggerActivity& activit
   // the existing window is above the specified threshold. If it is, and we are triggering on channels,
   // make a TC and start a fresh window with the current TA.
   else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
+    // TODO 04-2024: This case appears unsupported. Throwing error for now, but should this be removed?
     tc_number++;
     //   output_tc.push_back(construct_tc());
     m_current_window.reset(activity);
@@ -111,6 +112,13 @@ TriggerCandidateMakerPlaneCoincidence::configure(const nlohmann::json& config)
     if (config.contains("readout_window_ticks_after"))
       m_readout_window_ticks_after = config["readout_window_ticks_after"];
 
+  }
+  if (m_trigger_on_n_channels) {
+    TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:PC] Using trigger_on_n_channels is not supported.";
+    throw BadConfiguration(ERS_HERE, TRACE_NAME);
+  }
+  if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
+    TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:PC] Both trigger flags are false. Passing TAs through 1:1.";
   }
 
   return;

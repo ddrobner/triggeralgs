@@ -126,24 +126,14 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
     if (config.contains("readout_window_ticks_after"))
       m_readout_window_ticks_after = config["readout_window_ticks_after"];
   }
-  /*if(m_trigger_on_adc) {
-    TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger activities with times within a "
-                           << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger
-  will be issued.";
+  if (m_trigger_on_adc && m_trigger_on_n_channels) {
+    TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:HM] Triggering on ADC count and number of channels is not supported.";
+    throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
-  else if(m_trigger_on_n_channels) {
-    TLOG_DEBUG(TRACE_NAME) << "If the total number of channels with hits within a "
-                           << m_window_length << " tick time window is above " << m_n_channels_threshold << " channels,
-  a trigger will be issued.";
+  if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
+    TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:HM] Not triggering! All trigger flags are false!";
+    throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
-  else if ((!m_trigger_on_adc) && (!m_trigger_on_n_channels)) {
-    TLOG_DEBUG(TRACE_NAME) << "The candidate maker will construct candidates 1 for 1 from trigger activities.";
-  }
-  else if (m_trigger_on_adc && m_trigger_on_n_channels) {
-    TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
-           << "unfortunately this is not yet supported. Exiting.";
-    // FIX ME: Logic to throw an exception here.
-  }*/
 
   return;
 }
