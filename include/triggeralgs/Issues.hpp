@@ -23,4 +23,9 @@ ERS_DECLARE_ISSUE(triggeralgs,
                   "Factory couldn't find: " << alg_name,
                   ((std::string)alg_name))
 
+ERS_DECLARE_ISSUE(triggeralgs,
+                  BadConfiguration,
+                  "Bad configuration in " << alg_name,
+                  ((std::string)alg_name))
+
 #endif // TRIGGERALGS_INCLUDE_TRIGGERALGS_ISSUES_HPP_
