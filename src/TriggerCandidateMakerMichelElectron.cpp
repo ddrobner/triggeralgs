@@ -7,19 +7,19 @@
  */
 
 #include "triggeralgs/MichelElectron/TriggerCandidateMakerMichelElectron.hpp"
-#include "triggeralgs/Logging.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerMichelElectronPlugin"
 
 #include <vector>
 
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_INFO;
-
 using namespace triggeralgs;
+
+using Logging::TLVL_DEBUG_ALL;
+using Logging::TLVL_DEBUG_HIGH;
+using Logging::TLVL_DEBUG_LOW;
+using Logging::TLVL_DEBUG_INFO;
+using Logging::TLVL_VERY_IMPORTANT;
 
 void
 TriggerCandidateMakerMichelElectron::operator()(const TriggerActivity& activity,
@@ -119,24 +119,13 @@ TriggerCandidateMakerMichelElectron::configure(const nlohmann::json& config)
 
     // if (config.contains("channel_map")) m_channel_map = config["channel_map"];
   }
-  /*if(m_trigger_on_adc) {
-    TLOG_DEBUG(TRACE_NAME) << "If the total ADC of trigger activities with times within a "
-                           << m_window_length << " tick time window is above " << m_adc_threshold << " counts, a trigger
-  will be issued.";
+  if (m_trigger_on_adc && m_trigger_on_n_channels) {
+    TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:ME] Triggering on ADC count and number of channels is not supported.";
+    throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
-  else if(m_trigger_on_n_channels) {
-    TLOG_DEBUG(TRACE_NAME) << "If the total number of channels with hits within a "
-                           << m_window_length << " tick time window is above " << m_n_channels_threshold << " channels,
-  a trigger will be issued.";
+  if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
+    TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:ME] Both trigger flags are false. Passing TAs through 1:1.";
   }
-  else if ((!m_trigger_on_adc) && (!m_trigger_on_n_channels)) {
-    TLOG_DEBUG(TRACE_NAME) << "The candidate maker will construct candidates 1 for 1 from trigger activities.";
-  }
-  else if (m_trigger_on_adc && m_trigger_on_n_channels) {
-    TLOG() << "You have requsted to trigger on both the number of channels hit and the sum of adc counts, "
-           << "unfortunately this is not yet supported. Exiting.";
-    // FIX ME: Logic to throw an exception here.
-  }*/
 
   return;
 }

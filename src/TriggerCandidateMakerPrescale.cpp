@@ -7,17 +7,16 @@
  */
 
 #include "triggeralgs/Prescale/TriggerCandidateMakerPrescale.hpp"
-#include "triggeralgs/Logging.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerPrescalePlugin"
 
 #include <vector>
 
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
-using dunedaq::triggeralgs::logging::TLVL_IMPORTANT;
-
 using namespace triggeralgs;
+
+using Logging::TLVL_DEBUG_LOW;
+using Logging::TLVL_IMPORTANT;
 
 void
 TriggerCandidateMakerPrescale::operator()(const TriggerActivity& activity, std::vector<TriggerCandidate>& cand)
@@ -62,7 +61,7 @@ TriggerCandidateMakerPrescale::configure(const nlohmann::json &config)
       m_readout_window_ticks_after = config["readout_window_ticks_after"];
 
   }
-  TLOG_DEBUG(TLVL_IMPORTANT) << "[TCM:pr] Using candidate prescale " << m_prescale;
+  TLOG_DEBUG(TLVL_IMPORTANT) << "[TCM:Pr] Using candidate prescale " << m_prescale;
 }
 
 REGISTER_TRIGGER_CANDIDATE_MAKER(TRACE_NAME, TriggerCandidateMakerPrescale)

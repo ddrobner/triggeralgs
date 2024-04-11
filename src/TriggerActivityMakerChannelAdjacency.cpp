@@ -13,9 +13,9 @@
 #include <vector>
 #include <math.h>
 
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_LOW;
-
 using namespace triggeralgs;
+
+using Logging::TLVL_DEBUG_LOW;
 
 void
 TriggerActivityMakerChannelAdjacency::operator()(const TriggerPrimitive& input_tp,
