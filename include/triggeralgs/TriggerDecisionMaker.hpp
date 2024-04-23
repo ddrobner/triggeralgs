@@ -9,6 +9,8 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERDECISIONMAKER_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERDECISIONMAKER_HPP_
 
+#include "triggeralgs/Issues.hpp"
+#include "triggeralgs/Logging.hpp"
 #include "triggeralgs/TriggerCandidate.hpp"
 #include "triggeralgs/TriggerDecision.hpp"
 

@@ -15,12 +15,12 @@
 #include <vector>
 #include <math.h>
 
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_ALL;
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_HIGH;
-using dunedaq::triggeralgs::logging::TLVL_DEBUG_MEDIUM;
-using dunedaq::triggeralgs::logging::TLVL_VERY_IMPORTANT;
-
 using namespace triggeralgs;
+
+using Logging::TLVL_DEBUG_ALL;
+using Logging::TLVL_DEBUG_HIGH;
+using Logging::TLVL_DEBUG_MEDIUM;
+using Logging::TLVL_VERY_IMPORTANT;
 
 void
 TriggerCandidateMakerChannelAdjacency::operator()(const TriggerActivity& activity,
@@ -78,10 +78,6 @@ TriggerCandidateMakerChannelAdjacency::operator()(const TriggerActivity& activit
     output_tc.push_back(construct_tc());
     m_current_window.clear();
   }
-
-  else if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
-    TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:CA] either trigger_on_adc or trigger_on_n_channels should be true!";
-  }
   
   m_activity_count++;
   return;
@@ -106,6 +102,12 @@ TriggerCandidateMakerChannelAdjacency::configure(const nlohmann::json& config)
       m_readout_window_ticks_before = config["readout_window_ticks_before"];
     if (config.contains("readout_window_ticks_after"))
       m_readout_window_ticks_after = config["readout_window_ticks_after"];
+  }
+
+  // Both trigger flags were false. This will never trigger.
+  if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
+    TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:CA] Not triggering! All trigger flags are false!";
+    throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
 
   return;

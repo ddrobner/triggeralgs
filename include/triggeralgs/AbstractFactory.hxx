@@ -31,8 +31,7 @@ void AbstractFactory<T>::register_creator(const std::string alg_name, maker_crea
     makers[alg_name] = creator;
     return;
   }
-  ers::warning(FactoryOverwrite(ERS_HERE, alg_name));
-  throw; // creators should not be overwritten.
+  throw FactoryOverwrite(ERS_HERE, alg_name);
   return;
 }
 
@@ -47,7 +46,7 @@ std::unique_ptr<T> AbstractFactory<T>::build_maker(const std::string& alg_name)
     return it->second();
   }
 
-  ers::error(FactoryNotFound(ERS_HERE, alg_name));
+  throw FactoryNotFound(ERS_HERE, alg_name);
   return nullptr;
 }
 
