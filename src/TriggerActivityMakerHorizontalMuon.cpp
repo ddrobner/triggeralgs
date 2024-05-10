@@ -37,9 +37,20 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   // The first time operator() is called, reset the window object.
   if (m_current_window.is_empty()) {
     m_current_window.reset(input_tp);
-    m_primitive_count++;
     return;
   }
+
+  using namespace std::chrono;
+  // If this is the first TP of the run, calculate the initial offset:
+  if (m_first_tp){
+    m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - input_tp.time_start*16*1e-6;
+    m_first_tp = false;
+  }
+
+  // Update OpMon Variable(s)
+  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  uint64_t data_time = input_tp.time_start*(16*1e-6);                              // Convert 62.5 MHz ticks to ms
+  m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
 
   // If the difference between the current TP's start time and the start of the window
   // is less than the specified window size, add the TP to the window.
@@ -55,14 +66,13 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   else if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
 
     ta_count++;
-    if (ta_count % m_prescale == 0){
+    if (ta_count % m_prescale == 0){ 
       auto ta = construct_ta();
-
-    	TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM]: Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
+      TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM]: Emitting ADC threshold trigger with " << m_current_window.adc_integral <<
                    " window ADC integral. ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end;
-
       output_ta.push_back(ta);
-    	m_current_window.reset(input_tp);
+      update_opmon( ta.time_start );
+      m_current_window.reset(input_tp);
     }
   }
 
@@ -76,10 +86,12 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
     ta_count++;
     if (ta_count % m_prescale == 0){
 
-    	  TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM] Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
+    	TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM] Emitting multiplicity trigger with " << m_current_window.n_channels_hit() <<
                    " unique channels hit.";
 
-        output_ta.push_back(construct_ta());
+	auto ta = construct_ta();
+        output_ta.push_back(ta);
+	update_opmon( ta.time_start );
     	m_current_window.reset(input_tp);
     }
   }
@@ -103,8 +115,10 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
                    " and multiplicity " << m_current_window.n_channels_hit() << ". The ADC integral of this TA is " << 
                    m_current_window.adc_integral << " and the largest longest track seen so far is " << m_max_adjacency;
 
-        output_ta.push_back(construct_ta());
-    	m_current_window.reset(input_tp);
+    	auto ta = construct_ta();
+        output_ta.push_back(ta);
+        update_opmon( ta.time_start );
+	m_current_window.reset(input_tp);
      }
   }
 
@@ -116,7 +130,9 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
       TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:HM] Emitting a TA due to a TP with a very large time over threshold: "
               << input_tp.time_over_threshold << " ticks and offline channel: " << input_tp.channel
               << ", where the ADC integral of that TP is " << input_tp.adc_integral;
-      output_ta.push_back(construct_ta());
+      auto ta = construct_ta();
+      output_ta.push_back(ta);
+      update_opmon( ta.time_start );
       m_current_window.reset(input_tp);
   }
 
@@ -124,18 +140,6 @@ TriggerActivityMakerHorizontalMuon::operator()(const TriggerPrimitive& input_tp,
   else {
     m_current_window.move(input_tp, m_window_length);  
   }
-
-  using namespace std::chrono;
-  // If this is the first TP of the run, calculate the initial offset:
-  if (m_primitive_count == 0){
-   m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - input_tp.time_start*16*1e-6;
-  }
-  
-  // Update OpMon Variable(s)
-  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  uint64_t data_time = input_tp.time_start*16*1e-6;                              // Convert 62.5 MHz ticks to ms
-  m_data_vs_system_time.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon*/
-  m_primitive_count++;
 
   return;
 }
@@ -168,7 +172,7 @@ TriggerActivityMakerHorizontalMuon::configure(const nlohmann::json& config)
       m_trigger_on_tot = config["trigger_on_tot"];
     if (config.contains("tot_threshold"))
       m_tot_threshold = config["tot_threshold"];
-     
+    
  }
 
 }
@@ -344,6 +348,17 @@ TriggerActivityMakerHorizontalMuon::check_tot() const
   }
 
   return window_tot;
+}
+
+void
+TriggerActivityMakerHorizontalMuon::update_opmon( uint64_t const time_start )
+{
+  using namespace std::chrono;
+  // Update OpMon Variable(s)
+  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  uint64_t data_time = time_start*(16*1e-6);
+  m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
+  return;
 }
 
 // Register algo in TA Factory

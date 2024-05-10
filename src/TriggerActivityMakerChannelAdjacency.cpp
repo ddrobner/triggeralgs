@@ -14,6 +14,7 @@
 #include <math.h>
 
 using namespace triggeralgs;
+using namespace std::chrono;
 
 using Logging::TLVL_DEBUG_LOW;
 
@@ -34,10 +35,21 @@ TriggerActivityMakerChannelAdjacency::operator()(const TriggerPrimitive& input_t
   // The first time operator() is called, reset the window object.
   if (m_current_window.is_empty()) {
     m_current_window.reset(input_tp);
-    m_primitive_count++;
     return;
   }
-  
+
+  if (m_first_tp){ 
+  using namespace std::chrono;
+  // If this is the first TP of thm_data_vs_system_time_oute run, calculate the initial offset:
+    m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (input_tp.time_start*(16*1e-6));
+    m_first_tp = false;
+  }
+
+  // Update OpMon Variable(s)
+  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  uint64_t data_time = input_tp.time_start*(16*1e-6);                              // Convert 62.5 MHz ticks to ms
+  m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
+
   // If the difference between the current TP's start time and the start of the window
   // is less than the specified window size, add the TP to the window.
   bool adj_pass = 0; // sets to true when adjacency logic is satisfied
@@ -75,8 +87,13 @@ TriggerActivityMakerChannelAdjacency::operator()(const TriggerPrimitive& input_t
 	ta_found = 1;
 	m_ta_count++;
 	if (m_ta_count % m_prescale == 0){
-	  
-	  output_ta.push_back(construct_ta(win_adj_max));
+	  auto ta = construct_ta(win_adj_max);
+	  output_ta.push_back(ta);
+          // Update OpMon Variable(s)
+          system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+	  data_time = ta.time_start*(16*1e-6);
+          m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
+
 	}
       }
       else ta_found = 0;
@@ -88,18 +105,6 @@ TriggerActivityMakerChannelAdjacency::operator()(const TriggerPrimitive& input_t
   if (window_filled && !adj_pass) {
     m_current_window.move(input_tp, m_window_length);  
   }
-  
-  using namespace std::chrono;
-  // If this is the first TP of the run, calculate the initial offset:
-  if (m_primitive_count == 0){
-    m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - input_tp.time_start*16*1e-6;
-  }
-  
-  // Update OpMon Variable(s)
-  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  uint64_t data_time = input_tp.time_start*16*1e-6;                              // Convert 62.5 MHz ticks to ms
-  m_data_vs_system_time.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon*/
-  m_primitive_count++;
   
   return;
 }

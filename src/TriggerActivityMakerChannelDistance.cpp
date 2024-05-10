@@ -27,6 +27,19 @@ void
 TriggerActivityMakerChannelDistance::operator()
 (const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_tas)
 {
+
+  using namespace std::chrono;
+  // If this is the first TP of thm_data_vs_system_time_oute run, calculate the initial offset:
+  if (m_first_tp){
+    m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (input_tp.time_start*(16*1e-6));
+    m_first_tp = false;
+  }
+
+  // Update OpMon Variable(s)
+  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  uint64_t data_time = input_tp.time_start*(16*1e-6);                              // Convert 62.5 MHz ticks to ms
+  m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
+
   // Start a new TA if not already going.
   if (m_current_ta.inputs.empty()) {
     set_new_ta(input_tp);
@@ -39,6 +52,12 @@ TriggerActivityMakerChannelDistance::operator()
     if (m_current_ta.inputs.size() >= m_min_tps) {
       set_ta_attributes();
       output_tas.push_back(m_current_ta);
+
+      // Update OpMon Variable(s)
+      system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+      data_time = m_current_ta.time_start*(16*1e-6);
+      m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
+
     }
     set_new_ta(input_tp);
     return;

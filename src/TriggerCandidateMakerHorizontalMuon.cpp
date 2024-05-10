@@ -15,6 +15,7 @@
 #include <math.h>
 
 using namespace triggeralgs;
+using namespace std::chrono;
 
 using Logging::TLVL_DEBUG_ALL;
 using Logging::TLVL_DEBUG_HIGH;
@@ -29,10 +30,15 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
     activity) };
 
   // Find the offset for the very first data vs system time measure:
-  if (m_activity_count == 0) {
-    using namespace std::chrono;
-    m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - activity.time_start*16*1e-6; 
+  if (m_first_ta == 0) {
+    m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (activity.time_start*(16*1e-6));
+    m_first_ta = false;
   }
+
+  // Update OpMon Variable(s)
+  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  uint64_t data_time = activity.time_start*(16*1e-6);
+  m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset));
 
   // The first time operator is called, reset window object.
   if (m_current_window.is_empty()) {
@@ -42,13 +48,6 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
     // TriggerCandidate tc = construct_tc();
     // output_tc.push_back(tc);
 
-    // using namespace std::chrono;
-
-    // // Update OpMon Variable(s)
-    // uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    // uint64_t data_time = m_current_window.time_start*16*1e-6;                      // Convert 62.5 MHz ticks to ms    
-    // m_data_vs_system_time.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
-    
     // m_current_window.clear();
     // return;
   }
@@ -76,6 +75,12 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
     tc_number++;
     TriggerCandidate tc = construct_tc();
     TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end << " len(tc.inputs) " << tc.inputs.size();
+
+    // Update OpMon Variable(s)
+    system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    data_time = tc.time_start*(16*1e-6);
+    m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset));
+
     for( const auto& ta : tc.inputs ) {
       TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] [TA] ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end << " ta.adc_integral=" << ta.adc_integral;
     }
@@ -91,7 +96,14 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   // make a TC and start a fresh window with the current TA.
   else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
     tc_number++;
-    output_tc.push_back(construct_tc());
+    auto tc = construct_tc();
+    output_tc.push_back(tc)
+	    ;
+    // Update OpMon Variable(s)
+    system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    data_time = tc.time_start*(16*1e-6);
+    m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset));
+
     // m_current_window.reset(activity);
     m_current_window.clear();
   }

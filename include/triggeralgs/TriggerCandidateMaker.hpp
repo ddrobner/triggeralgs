@@ -30,8 +30,10 @@ public:
   virtual void flush(timestamp_t /* until */, std::vector<TriggerCandidate>& /* output_tc */) {}
   virtual void configure(const nlohmann::json&) {}
 
-  std::atomic<uint64_t> m_data_vs_system_time = 0;
+  std::atomic<uint64_t> m_data_vs_system_time_in  = 0;
+  std::atomic<uint64_t> m_data_vs_system_time_out = 0;
   std::atomic<uint64_t> m_initial_offset = 0;  
+  std::atomic<bool>     m_first_ta = true;
 };
 
 } // namespace triggeralgs

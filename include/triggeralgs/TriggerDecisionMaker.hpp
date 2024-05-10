@@ -29,7 +29,8 @@ public:
   virtual void flush(std::vector<TriggerDecision>&) {}
   virtual void configure(const nlohmann::json&) {}
 
-  std::atomic<uint64_t> m_data_vs_system_time = 0; 
+  std::atomic<uint64_t> m_data_vs_system_time_in  = 0; 
+  std::atomic<uint64_t> m_data_vs_system_time_out = 0;
 
 };
 

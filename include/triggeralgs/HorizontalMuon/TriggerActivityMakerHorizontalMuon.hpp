@@ -26,7 +26,6 @@ private:
   uint16_t check_adjacency() const;     // Returns longest string of adjacent collection hits in window
 
   TPWindow m_current_window;              // Holds collection hits only
-  uint64_t m_primitive_count = 0;
   int check_tot() const;
 
   // Configurable parameters.
@@ -52,6 +51,7 @@ private:
   void add_window_to_record(TPWindow window);
   void dump_window_record();
   void dump_tp(TriggerPrimitive const& input_tp);
+  void update_opmon( uint64_t const time_start );
   std::vector<TPWindow> m_window_record;
 };
 } // namespace triggeralgs

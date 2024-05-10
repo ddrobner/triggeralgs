@@ -27,7 +27,6 @@ private:
   TPWindow check_adjacency();
 
   TPWindow m_current_window;
-  uint64_t m_primitive_count = 0;
   
   // Configurable parameters.
   bool m_print_tp_info = false;          // Prints out some information on every TP received
