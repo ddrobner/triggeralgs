@@ -31,13 +31,15 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
 
   // Find the offset for the very first data vs system time measure:
   if (m_first_ta == 0) {
-    m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (activity.time_start*(16*1e-6));
+    if (m_use_latency_offset) {
+      m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (activity.time_start*m_clock_ticks_to_ms);
+    }
     m_first_ta = false;
   }
 
   // Update OpMon Variable(s)
   uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  uint64_t data_time = activity.time_start*(16*1e-6);
+  uint64_t data_time = activity.time_start*m_clock_ticks_to_ms;
   m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset));
 
   // The first time operator is called, reset window object.
@@ -78,7 +80,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
 
     // Update OpMon Variable(s)
     system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    data_time = tc.time_start*(16*1e-6);
+    data_time = tc.time_start*m_clock_ticks_to_ms;
     m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset));
 
     for( const auto& ta : tc.inputs ) {
@@ -101,7 +103,7 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
 	    ;
     // Update OpMon Variable(s)
     system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    data_time = tc.time_start*(16*1e-6);
+    data_time = tc.time_start*m_clock_ticks_to_ms;
     m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset));
 
     // m_current_window.reset(activity);

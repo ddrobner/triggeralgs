@@ -29,13 +29,15 @@ TriggerCandidateMakerChannelAdjacency::operator()(const TriggerActivity& activit
 
   using namespace std::chrono;
   if (m_first_ta) {
-    m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (activity.time_start*(16*1e-6));
+    if (m_use_latency_offset) {
+      m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (activity.time_start*m_clock_ticks_to_ms);
+    }
     m_first_ta = false;
   }
 
   // Update OpMon Variable(s)
   uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  uint64_t data_time = activity.time_start*(16*1e-6);                               // Convert 62.5 MHz ticks to ms
+  uint64_t data_time = activity.time_start*m_clock_ticks_to_ms;
   m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
 
   // The first time operator is called, reset window object.
@@ -69,7 +71,7 @@ TriggerCandidateMakerChannelAdjacency::operator()(const TriggerActivity& activit
 
     // Update OpMon Variable(s)
     system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    data_time = tc.time_start*(16*1e-6);
+    data_time = tc.time_start*m_clock_ticks_to_ms;
     m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset));
 
     for( const auto& ta : tc.inputs ) {
@@ -92,7 +94,7 @@ TriggerCandidateMakerChannelAdjacency::operator()(const TriggerActivity& activit
 
     // Update OpMon Variable(s)
     system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    data_time = tc.time_start*(16*1e-6);
+    data_time = tc.time_start*m_clock_ticks_to_ms;
     m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset));
 
     m_current_window.clear();
