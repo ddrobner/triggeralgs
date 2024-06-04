@@ -12,8 +12,8 @@
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerChannelAdjacencyPlugin"
 
-#include <vector>
 #include <math.h>
+#include <vector>
 
 using namespace triggeralgs;
 
@@ -24,7 +24,7 @@ using Logging::TLVL_VERY_IMPORTANT;
 
 void
 TriggerCandidateMakerChannelAdjacency::operator()(const TriggerActivity& activity,
-                                                std::vector<TriggerCandidate>& output_tc)
+                                                  std::vector<TriggerCandidate>& output_tc)
 {
 
   // The first time operator is called, reset window object.
@@ -41,23 +41,26 @@ TriggerCandidateMakerChannelAdjacency::operator()(const TriggerActivity& activit
   }
   // If it is not, move the window along.
   else {
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:CA] TAWindow is at required length but specified threshold not met, shifting window along.";
+    TLOG_DEBUG(TLVL_DEBUG_ALL)
+      << "[TCM:CA] TAWindow is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
-
 
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the sum of all adc in
   // the existing window is above the specified threshold. If it is, and we are triggering on ADC,
   // make a TA and start a fresh window with the current TP.
   if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:CA] m_current_window.adc_integral " << m_current_window.adc_integral << " - m_adc_threshold " << m_adc_threshold;
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:CA] m_current_window.adc_integral " << m_current_window.adc_integral
+                                  << " - m_adc_threshold " << m_adc_threshold;
     m_tc_number++;
     TriggerCandidate tc = construct_tc();
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:CA] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end << " len(tc.inputs) " << tc.inputs.size();
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:CA] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end
+                                  << " len(tc.inputs) " << tc.inputs.size();
 
-    for( const auto& ta : tc.inputs ) {
-      TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:CA] [TA] ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end << " ta.adc_integral=" << ta.adc_integral;
+    for (const auto& ta : tc.inputs) {
+      TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:CA] [TA] ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end
+                                 << " ta.adc_integral=" << ta.adc_integral;
     }
 
     output_tc.push_back(tc);
@@ -74,11 +77,10 @@ TriggerCandidateMakerChannelAdjacency::operator()(const TriggerActivity& activit
     output_tc.push_back(construct_tc());
     m_current_window.clear();
   }
-  
+
   m_activity_count++;
   return;
 }
-
 
 void
 TriggerCandidateMakerChannelAdjacency::configure(const nlohmann::json& config)
@@ -117,7 +119,7 @@ TriggerCandidateMakerChannelAdjacency::construct_tc() const
   TriggerCandidate tc;
   tc.time_start = m_current_window.time_start - m_readout_window_ticks_before;
   tc.time_end = m_current_window.time_start + m_readout_window_ticks_after;
-  //tc.time_end = latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold;
+  // tc.time_end = latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold;
   tc.time_candidate = m_current_window.time_start;
   tc.detid = latest_ta_in_window.detid;
   tc.type = TriggerCandidate::Type::kChannelAdjacency;

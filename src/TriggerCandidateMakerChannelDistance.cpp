@@ -47,7 +47,8 @@ TriggerCandidateMakerChannelDistance::set_tc_attributes()
 }
 
 void
-TriggerCandidateMakerChannelDistance::operator()(const TriggerActivity& input_ta, std::vector<TriggerCandidate>& output_tcs)
+TriggerCandidateMakerChannelDistance::operator()(const TriggerActivity& input_ta,
+                                                 std::vector<TriggerCandidate>& output_tcs)
 {
 
   // Start a new TC if not already going.

@@ -14,10 +14,10 @@
 #include "triggeralgs/TriggerCandidate.hpp"
 #include "triggeralgs/TriggerDecision.hpp"
 
-#include <nlohmann/json.hpp>
-#include <vector>
 #include <atomic>
 #include <chrono>
+#include <nlohmann/json.hpp>
+#include <vector>
 
 namespace triggeralgs {
 

@@ -15,10 +15,10 @@
 #include "triggeralgs/TriggerCandidate.hpp"
 #include "triggeralgs/Types.hpp"
 
-#include <nlohmann/json.hpp>
-#include <vector>
 #include <atomic>
 #include <chrono>
+#include <nlohmann/json.hpp>
+#include <vector>
 
 namespace triggeralgs {
 

@@ -11,8 +11,8 @@
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerHorizontalMuonPlugin"
 
-#include <vector>
 #include <math.h>
+#include <vector>
 
 using namespace triggeralgs;
 
@@ -48,10 +48,10 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   }
   // If it is not, move the window along.
   else {
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] TAWindow is at required length but specified threshold not met, shifting window along.";
+    TLOG_DEBUG(TLVL_DEBUG_ALL)
+      << "[TCM:HM] TAWindow is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
-
 
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the sum of all adc in
@@ -59,13 +59,16 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   // make a TA and start a fresh window with the current TP.
   if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
     // TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] m_current_window.adc_integral " << m_current_window.adc_integral << " - m_adc_threshold " << m_adc_threshold;
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] m_current_window.adc_integral " << m_current_window.adc_integral
+                                  << " - m_adc_threshold " << m_adc_threshold;
     tc_number++;
     TriggerCandidate tc = construct_tc();
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end << " len(tc.inputs) " << tc.inputs.size();
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end
+                                  << " len(tc.inputs) " << tc.inputs.size();
 
-    for( const auto& ta : tc.inputs ) {
-      TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] [TA] ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end << " ta.adc_integral=" << ta.adc_integral;
+    for (const auto& ta : tc.inputs) {
+      TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] [TA] ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end
+                                 << " ta.adc_integral=" << ta.adc_integral;
     }
 
     output_tc.push_back(tc);
@@ -87,14 +90,13 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
 
   // // If it is not, move the window along.
   // else {
-  //   // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met, shifting window along.";
-  //   m_current_window.move(activity, m_window_length);
+  //   // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met, shifting window
+  //   along."; m_current_window.move(activity, m_window_length);
   // }
 
   m_activity_count++;
   return;
 }
-
 
 void
 TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
@@ -135,7 +137,7 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
   TriggerCandidate tc;
   tc.time_start = m_current_window.time_start - m_readout_window_ticks_before;
   tc.time_end = m_current_window.time_start + m_readout_window_ticks_after;
-  //tc.time_end = latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold;
+  // tc.time_end = latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold;
   tc.time_candidate = m_current_window.time_start;
   tc.detid = latest_ta_in_window.detid;
   tc.type = TriggerCandidate::Type::kHorizontalMuon;

@@ -21,10 +21,9 @@ using Logging::TLVL_IMPORTANT;
 void
 TriggerActivityMakerPrescale::operator()(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_ta)
 {
-  if ((m_primitive_count++) % m_prescale == 0)
-  {
+  if ((m_primitive_count++) % m_prescale == 0) {
 
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:Pr] Emitting prescaled TriggerActivity " << (m_primitive_count-1);
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TAM:Pr] Emitting prescaled TriggerActivity " << (m_primitive_count - 1);
     std::vector<TriggerPrimitive> tp_list;
     tp_list.push_back(input_tp);
 
@@ -43,17 +42,16 @@ TriggerActivityMakerPrescale::operator()(const TriggerPrimitive& input_tp, std::
     ta.algorithm = TriggerActivity::Algorithm::kPrescale;
 
     ta.inputs = tp_list;
-    
+
     output_ta.push_back(ta);
   }
 }
 
 void
-TriggerActivityMakerPrescale::configure(const nlohmann::json &config)
+TriggerActivityMakerPrescale::configure(const nlohmann::json& config)
 {
-  //FIXME use some schema here
-  if (config.is_object() && config.contains("prescale"))
-  {
+  // FIXME use some schema here
+  if (config.is_object() && config.contains("prescale")) {
     m_prescale = config["prescale"];
   }
   TLOG_DEBUG(TLVL_IMPORTANT) << "[TAM:Pr] Using activity prescale " << m_prescale;

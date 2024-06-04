@@ -24,8 +24,8 @@ TriggerActivityMakerChannelDistance::set_new_ta(const TriggerPrimitive& input_tp
 }
 
 void
-TriggerActivityMakerChannelDistance::operator()
-(const TriggerPrimitive& input_tp, std::vector<TriggerActivity>& output_tas)
+TriggerActivityMakerChannelDistance::operator()(const TriggerPrimitive& input_tp,
+                                                std::vector<TriggerActivity>& output_tas)
 {
 
   // Start a new TA if not already going.
@@ -87,7 +87,8 @@ TriggerActivityMakerChannelDistance::set_ta_attributes()
   m_current_ta.adc_peak = 0;
   for (const TriggerPrimitive& tp : m_current_ta.inputs) {
     m_current_ta.adc_integral += tp.adc_integral;
-    if (tp.adc_peak <= m_current_ta.adc_peak) continue;
+    if (tp.adc_peak <= m_current_ta.adc_peak)
+      continue;
     m_current_ta.adc_peak = tp.adc_peak;
     m_current_ta.channel_peak = tp.channel;
     m_current_ta.time_peak = tp.time_peak;
