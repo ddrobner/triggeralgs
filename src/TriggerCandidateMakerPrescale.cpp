@@ -23,20 +23,6 @@ TriggerCandidateMakerPrescale::operator()(const TriggerActivity& activity, std::
 { 
   if ((m_activity_count++) % m_prescale == 0)
   {
-
-    using namespace std::chrono;
-    if (m_first_ta) {
-      if (m_use_latency_offset) {
-        m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (activity.time_start*m_clock_ticks_to_ms);
-      }
-      m_first_ta = false;
-    }
-
-    // Update OpMon Variable(s)
-    uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    uint64_t data_time = activity.time_start*m_clock_ticks_to_ms;            
-    m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset));
-
     TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:Pr] Emitting prescaled TriggerCandidate " << (m_activity_count-1);
 
     std::vector<TriggerActivity::TriggerActivityData> ta_list;
@@ -51,11 +37,6 @@ TriggerCandidateMakerPrescale::operator()(const TriggerActivity& activity, std::
     tc.algorithm = TriggerCandidate::Algorithm::kPrescale;
 
     tc.inputs = ta_list;
-
-    // Update OpMon Variable(s)
-    system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    data_time = tc.time_start*m_clock_ticks_to_ms;
-    m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset));
 
     cand.push_back(tc);
   }

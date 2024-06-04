@@ -51,7 +51,6 @@ private:
   void add_window_to_record(TPWindow window);
   void dump_window_record();
   void dump_tp(TriggerPrimitive const& input_tp);
-  void update_opmon( uint64_t const time_start );
   std::vector<TPWindow> m_window_record;
 };
 } // namespace triggeralgs

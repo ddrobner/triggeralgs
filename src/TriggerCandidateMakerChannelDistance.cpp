@@ -50,19 +50,6 @@ void
 TriggerCandidateMakerChannelDistance::operator()(const TriggerActivity& input_ta, std::vector<TriggerCandidate>& output_tcs)
 {
 
-  using namespace std::chrono;
-  if (m_first_ta) {
-    if (m_use_latency_offset) {
-      m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (input_ta.time_start*m_clock_ticks_to_ms);
-    }
-    m_first_ta = false;
-  }
-
-  // Update OpMon Variable(s)
-  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  uint64_t data_time = input_ta.time_start*m_clock_ticks_to_ms;            
-  m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset));
-
   // Start a new TC if not already going.
   if (m_current_tc.inputs.empty()) {
     set_new_tc(input_ta);
@@ -73,11 +60,6 @@ TriggerCandidateMakerChannelDistance::operator()(const TriggerActivity& input_ta
   if (input_ta.inputs.size() + m_current_tp_count > m_max_tp_count) {
     set_tc_attributes();
     output_tcs.push_back(m_current_tc);
-
-    // Update OpMon Variable(s)
-    system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    data_time = m_current_tc.time_start*m_clock_ticks_to_ms;
-    m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset));
 
     set_new_tc(input_ta);
     return;

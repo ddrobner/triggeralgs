@@ -14,7 +14,6 @@
 #include <math.h>
 
 using namespace triggeralgs;
-using namespace std::chrono;
 
 using Logging::TLVL_DEBUG_LOW;
 
@@ -37,21 +36,6 @@ TriggerActivityMakerChannelAdjacency::operator()(const TriggerPrimitive& input_t
     m_current_window.reset(input_tp);
     return;
   }
-
-  if (m_first_tp){ 
-    using namespace std::chrono;
-  
-    // If this is the first TP of thm_data_vs_system_time_oute run, calculate the initial offset:
-    if (m_use_latency_offset) {
-      m_initial_offset = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) - (input_tp.time_start*m_clock_ticks_to_ms);
-    }
-    m_first_tp = false;
-  }
-
-  // Update OpMon Variable(s)
-  uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  uint64_t data_time = input_tp.time_start*m_clock_ticks_to_ms;
-  m_data_vs_system_time_in.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
 
   // If the difference between the current TP's start time and the start of the window
   // is less than the specified window size, add the TP to the window.
@@ -90,13 +74,7 @@ TriggerActivityMakerChannelAdjacency::operator()(const TriggerPrimitive& input_t
 	ta_found = 1;
 	m_ta_count++;
 	if (m_ta_count % m_prescale == 0){
-	  auto ta = construct_ta(win_adj_max);
-	  output_ta.push_back(ta);
-          // Update OpMon Variable(s)
-          system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-	  data_time = ta.time_start*m_clock_ticks_to_ms;
-          m_data_vs_system_time_out.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
-
+	  output_ta.push_back(construct_ta(win_adj_max));
 	}
       }
       else ta_found = 0;
