@@ -178,8 +178,8 @@ TriggerActivityMakerChannelAdjacency::check_adjacency()
   // Adjcancency Tolerance = Number of times prepared to skip missed hits before resetting
   // the adjacency count (win_adj). This accounts for things like dead channels / missed TPs.
 
-  TPWindow
-    win_adj; // add first tp, and then if tps are on next channels (check code below to understand the definition)
+  // add first tp, and then if tps are on next channels (check code below to understand the definition)
+  TPWindow win_adj;
   TPWindow win_adj_max; // if track length > m_adjacency_threshold, set win_adj_max = win_adj; return win_adj_max;
 
   for (int i = 0; i < chanTPList.size(); ++i) {
