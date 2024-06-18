@@ -90,8 +90,9 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
 
   // // If it is not, move the window along.
   // else {
-  //   // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met, shifting window
-  //   along."; m_current_window.move(activity, m_window_length);
+  //   // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met."
+  //   //                        << "shifting window along.";
+  //   m_current_window.move(activity, m_window_length);
   // }
 
   m_activity_count++;
