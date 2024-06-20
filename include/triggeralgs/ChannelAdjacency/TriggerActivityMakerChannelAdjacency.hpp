@@ -27,16 +27,15 @@ private:
   TPWindow check_adjacency();
 
   TPWindow m_current_window;
-  uint64_t m_primitive_count = 0;
-  
+
   // Configurable parameters.
-  bool m_print_tp_info = false;          // Prints out some information on every TP received
-  uint16_t m_adjacency_threshold = 15;   // Default is 15 wire track for testing
-  uint16_t m_adj_tolerance = 3;          // Adjacency tolerance - default is 3 from coldbox testing.
-  timestamp_t m_window_length = 8000;    // Shouldn't exceed the max drift which is ~9375 62.5 MHz ticks for VDCB
-  uint16_t m_ta_count = 0;                 // Use for prescaling
-  uint16_t m_prescale = 1;               // Prescale value, defult is one, trigger every TA
-  
+  bool m_print_tp_info = false;        // Prints out some information on every TP received
+  uint16_t m_adjacency_threshold = 15; // Default is 15 wire track for testing
+  uint16_t m_adj_tolerance = 3;        // Adjacency tolerance - default is 3 from coldbox testing.
+  timestamp_t m_window_length = 8000;  // Shouldn't exceed the max drift which is ~9375 62.5 MHz ticks for VDCB
+  uint16_t m_ta_count = 0;             // Use for prescaling
+  uint16_t m_prescale = 1;             // Prescale value, defult is one, trigger every TA
+
   // For debugging and performance study purposes.
   void add_window_to_record(TPWindow window);
   std::vector<TPWindow> m_window_record;

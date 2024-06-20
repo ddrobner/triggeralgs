@@ -11,8 +11,8 @@
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerHorizontalMuonPlugin"
 
-#include <vector>
 #include <math.h>
+#include <vector>
 
 using namespace triggeralgs;
 
@@ -28,12 +28,6 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   std::vector<TriggerActivity::TriggerActivityData> ta_list = { static_cast<TriggerActivity::TriggerActivityData>(
     activity) };
 
-  // Find the offset for the very first data vs system time measure:
-  if (m_activity_count == 0) {
-    using namespace std::chrono;
-    m_initial_offset = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() - activity.time_start*16*1e-6; 
-  }
-
   // The first time operator is called, reset window object.
   if (m_current_window.is_empty()) {
     m_current_window.reset(activity);
@@ -42,13 +36,6 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
     // TriggerCandidate tc = construct_tc();
     // output_tc.push_back(tc);
 
-    // using namespace std::chrono;
-
-    // // Update OpMon Variable(s)
-    // uint64_t system_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    // uint64_t data_time = m_current_window.time_start*16*1e-6;                      // Convert 62.5 MHz ticks to ms    
-    // m_data_vs_system_time.store(fabs(system_time - data_time - m_initial_offset)); // Store the difference for OpMon
-    
     // m_current_window.clear();
     // return;
   }
@@ -61,10 +48,10 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   }
   // If it is not, move the window along.
   else {
-    TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] TAWindow is at required length but specified threshold not met, shifting window along.";
+    TLOG_DEBUG(TLVL_DEBUG_ALL)
+      << "[TCM:HM] TAWindow is at required length but specified threshold not met, shifting window along.";
     m_current_window.move(activity, m_window_length);
   }
-
 
   // If the addition of the current TA to the window would make it longer
   // than the specified window length, don't add it but check whether the sum of all adc in
@@ -72,12 +59,16 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   // make a TA and start a fresh window with the current TP.
   if (m_current_window.adc_integral > m_adc_threshold && m_trigger_on_adc) {
     // TLOG_DEBUG(TRACE_NAME) << "ADC integral in window is greater than specified threshold.";
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] m_current_window.adc_integral " << m_current_window.adc_integral << " - m_adc_threshold " << m_adc_threshold;
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] m_current_window.adc_integral " << m_current_window.adc_integral
+                                  << " - m_adc_threshold " << m_adc_threshold;
     tc_number++;
     TriggerCandidate tc = construct_tc();
-    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end << " len(tc.inputs) " << tc.inputs.size();
-    for( const auto& ta : tc.inputs ) {
-      TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] [TA] ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end << " ta.adc_integral=" << ta.adc_integral;
+    TLOG_DEBUG(TLVL_DEBUG_MEDIUM) << "[TCM:HM] tc.time_start=" << tc.time_start << " tc.time_end=" << tc.time_end
+                                  << " len(tc.inputs) " << tc.inputs.size();
+
+    for (const auto& ta : tc.inputs) {
+      TLOG_DEBUG(TLVL_DEBUG_ALL) << "[TCM:HM] [TA] ta.time_start=" << ta.time_start << " ta.time_end=" << ta.time_end
+                                 << " ta.adc_integral=" << ta.adc_integral;
     }
 
     output_tc.push_back(tc);
@@ -92,20 +83,21 @@ TriggerCandidateMakerHorizontalMuon::operator()(const TriggerActivity& activity,
   else if (m_current_window.n_channels_hit() > m_n_channels_threshold && m_trigger_on_n_channels) {
     tc_number++;
     output_tc.push_back(construct_tc());
+
     // m_current_window.reset(activity);
     m_current_window.clear();
   }
 
   // // If it is not, move the window along.
   // else {
-  //   // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met, shifting window along.";
+  //   // TLOG_DEBUG(TRACE_NAME) << "TAWindow is at required length but specified threshold not met."
+  //   //                        << "shifting window along.";
   //   m_current_window.move(activity, m_window_length);
   // }
 
   m_activity_count++;
   return;
 }
-
 
 void
 TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
@@ -146,7 +138,7 @@ TriggerCandidateMakerHorizontalMuon::construct_tc() const
   TriggerCandidate tc;
   tc.time_start = m_current_window.time_start - m_readout_window_ticks_before;
   tc.time_end = m_current_window.time_start + m_readout_window_ticks_after;
-  //tc.time_end = latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold;
+  // tc.time_end = latest_ta_in_window.inputs.back().time_start + latest_ta_in_window.inputs.back().time_over_threshold;
   tc.time_candidate = m_current_window.time_start;
   tc.detid = latest_ta_in_window.detid;
   tc.type = TriggerCandidate::Type::kHorizontalMuon;
