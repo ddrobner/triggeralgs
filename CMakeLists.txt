@@ -39,6 +39,8 @@ find_package(cetbuildtools REQUIRED)
 include(BasicPlugin)
 basic_plugin(triggeralgs module
 	     BASENAME_ONLY
+		 LIBRARIES
+		 OfflineTPCChannelMap_module
 	     SOURCE 
 	     src/TriggerActivityMakerADCSimpleWindow.cpp
 	     src/TriggerActivityMakerChannelDistance.cpp
@@ -48,8 +50,8 @@ basic_plugin(triggeralgs module
 	     src/TriggerCandidateMakerBundleN.cpp
 	     src/TriggerActivityMakerHorizontalMuon.cpp
 	     src/TriggerCandidateMakerHorizontalMuon.cpp
-	     #src/TriggerCandidateMakerPlaneCoincidence.cpp
-	     #src/TriggerActivityMakerPlaneCoincidence.cpp
+	     src/TriggerCandidateMakerPlaneCoincidence.cpp
+	     src/TriggerActivityMakerPlaneCoincidence.cpp
 	     src/TriggerActivityMakerMichelElectron.cpp
 	     src/TriggerCandidateMakerMichelElectron.cpp
 	     src/TriggerActivityMakerPrescale.cpp
