@@ -10,12 +10,12 @@
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGEROBJECTOVERLAY_HPP_
 
 
-#include "trgdataformats/TriggerActivityData.hpp"
-#include "trgdataformats/TriggerObjectOverlay.hpp"
+#include "detdataformats/trigger/TriggerActivityData.hpp"
+#include "detdataformats/trigger/TriggerObjectOverlay.hpp"
 
-#include "triggeralgs/TriggerPrimitive.hpp"
-#include "triggeralgs/TriggerActivity.hpp"
-#include "triggeralgs/TriggerCandidate.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerPrimitive.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerActivity.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidate.hpp"
 
 namespace triggeralgs {
 

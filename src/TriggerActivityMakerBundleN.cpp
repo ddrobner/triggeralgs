@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/BundleN/TriggerActivityMakerBundleN.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/BundleN/TriggerActivityMakerBundleN.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerBundleNPlugin"

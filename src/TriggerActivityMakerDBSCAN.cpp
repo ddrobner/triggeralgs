@@ -6,11 +6,11 @@
  * received with this code.
  */
 
-#include "triggeralgs/dbscan/TriggerActivityMakerDBSCAN.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/dbscan/TriggerActivityMakerDBSCAN.hpp"
 #include "dbscan/Point.hpp"
 
 #include "TRACE/trace.h"
-#include "triggeralgs/Types.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Types.hpp"
 #include <chrono>
 #include <limits>
 #define TRACE_NAME "TriggerActivityMakerDBSCANPlugin"

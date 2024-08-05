@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/PlaneCoincidence/TriggerActivityMakerPlaneCoincidence.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/PlaneCoincidence/TriggerActivityMakerPlaneCoincidence.hpp"
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerPlaneCoincidencePlugin"
 #include <vector>

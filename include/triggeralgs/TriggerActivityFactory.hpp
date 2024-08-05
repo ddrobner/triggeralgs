@@ -8,8 +8,8 @@
 #ifndef TRIGGERALGS_TRIGGER_ACTIVITY_FACTORY_HPP_
 #define TRIGGERALGS_TRIGGER_ACTIVITY_FACTORY_HPP_
 
-#include "triggeralgs/TriggerActivityMaker.hpp"
-#include "triggeralgs/AbstractFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerActivityMaker.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/AbstractFactory.hpp"
 
 #define REGISTER_TRIGGER_ACTIVITY_MAKER(tam_name, tam_class)                                                                                      \
   static struct tam_class##Registrar {                                                                                                            \

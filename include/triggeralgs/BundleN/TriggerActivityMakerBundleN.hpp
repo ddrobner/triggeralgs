@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_BUNDLEN_TRIGGERACTIVITYMAKERBUNDLEN_HPP_
 #define TRIGGERALGS_BUNDLEN_TRIGGERACTIVITYMAKERBUNDLEN_HPP_
 
-#include "triggeralgs/TriggerActivityFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerActivityFactory.hpp"
 
 #include <vector>
 

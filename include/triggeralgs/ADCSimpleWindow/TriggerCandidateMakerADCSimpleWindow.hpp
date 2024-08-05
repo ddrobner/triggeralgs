@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_ADCSIMPLEWINDOW_TRIGGERCANDIDATEMAKERADCSIMPLEWINDOW_HPP_
 #define TRIGGERALGS_ADCSIMPLEWINDOW_TRIGGERCANDIDATEMAKERADCSIMPLEWINDOW_HPP_
 
-#include "triggeralgs/TriggerCandidateFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidateFactory.hpp"
 
 #include <vector>
 

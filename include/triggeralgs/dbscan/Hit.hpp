@@ -1,7 +1,7 @@
 #pragma once
 
-#include "triggeralgs/TriggerActivity.hpp"
-#include "triggeralgs/TriggerPrimitive.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerActivity.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerPrimitive.hpp"
 #include <vector>
 #include <cmath>
 #include <list>

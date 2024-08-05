@@ -9,8 +9,8 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERCANDIDATE_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERCANDIDATE_HPP_
 
-#include "trgdataformats/TriggerActivityData.hpp"
-#include "trgdataformats/TriggerCandidateData.hpp"
+#include "detdataformats/trigger/TriggerActivityData.hpp"
+#include "detdataformats/trigger/TriggerCandidateData.hpp"
 
 #include <vector>
 

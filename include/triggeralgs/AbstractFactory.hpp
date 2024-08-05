@@ -8,7 +8,7 @@
 #ifndef TRIGGERALGS_ABSTRACT_FACTORY_HPP_
 #define TRIGGERALGS_ABSTRACT_FACTORY_HPP_
 
-#include "logging/Logging.hpp"
+//#include "logging/Logging.hpp"
 
 #include <functional>
 #include <memory>
@@ -44,6 +44,6 @@ class AbstractFactory
 
 } /* namespace triggeralgs */
 
-#include "triggeralgs/AbstractFactory.hxx"
+#include "dunetrigger/triggeralgs/include/triggeralgs/AbstractFactory.hxx"
 
 #endif // TRIGGERALGS_ABSTRACT_FACTORY_HPP_

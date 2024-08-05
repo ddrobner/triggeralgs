@@ -8,8 +8,8 @@
 #ifndef TRIGGERALGS_TRIGGER_CANDIDATE_FACTORY_HPP_
 #define TRIGGERALGS_TRIGGER_CANDIDATE_FACTORY_HPP_
 
-#include "triggeralgs/TriggerCandidateMaker.hpp"
-#include "triggeralgs/AbstractFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidateMaker.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/AbstractFactory.hpp"
 
 #define REGISTER_TRIGGER_CANDIDATE_MAKER(tcm_name, tcm_class)                                                                                      \
   static struct tcm_class##Registrar {                                                                                                            \

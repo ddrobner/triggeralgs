@@ -9,8 +9,8 @@
 #ifndef TRIGGERALGS_PLANECOINCIDENCE_TRIGGERCANDIDATEMAKERPLANECOINCIDENCE_HPP_
 #define TRIGGERALGS_PLANECOINCIDENCE_TRIGGERCANDIDATEMAKERPLANECOINCIDENCE_HPP_
 
-#include "triggeralgs/TriggerCandidateFactory.hpp"
-#include "triggeralgs/TAWindow.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidateFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TAWindow.hpp"
 #include <fstream>
 #include <vector>
 

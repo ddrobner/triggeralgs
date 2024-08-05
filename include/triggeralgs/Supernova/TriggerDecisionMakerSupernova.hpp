@@ -9,8 +9,8 @@
 #ifndef TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERDECISIONMAKERSUPERNOVA_HPP_
 #define TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERDECISIONMAKERSUPERNOVA_HPP_
 
-#include "triggeralgs/TriggerDecisionMaker.hpp"
-#include "trgdataformats/Types.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerDecisionMaker.hpp"
+#include "detdataformats/trigger/Types.hpp"
 
 #include <algorithm>
 #include <atomic>

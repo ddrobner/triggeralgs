@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_PRESCALE_TRIGGERACTIVITYMAKERPRESCALE_HPP_
 #define TRIGGERALGS_PRESCALE_TRIGGERACTIVITYMAKERPRESCALE_HPP_
 
-#include "triggeralgs/TriggerActivityFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerActivityFactory.hpp"
 
 #include <vector>
 

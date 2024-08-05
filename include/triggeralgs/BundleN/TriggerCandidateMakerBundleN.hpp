@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_BUNDLEN_TRIGGERCANDIDATEMAKERBUNDLEN_HPP_
 #define TRIGGERALGS_BUNDLEN_TRIGGERCANDIDATEMAKERBUNDLEN_HPP_
 
-#include "triggeralgs/TriggerCandidateFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidateFactory.hpp"
 
 #include <vector>
 

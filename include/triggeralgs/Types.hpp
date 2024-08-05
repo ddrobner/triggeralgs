@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TYPES_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TYPES_HPP_
 
-#include "trgdataformats/Types.hpp"
+#include "detdataformats/trigger/Types.hpp"
 
 namespace triggeralgs {
 

@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/PlaneCoincidence/TriggerCandidateMakerPlaneCoincidence.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/PlaneCoincidence/TriggerCandidateMakerPlaneCoincidence.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerPlaneCoincidencePlugin"
@@ -115,7 +115,7 @@ TriggerCandidateMakerPlaneCoincidence::configure(const nlohmann::json& config)
   }
   if (m_trigger_on_n_channels) {
     TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:PC] Using trigger_on_n_channels is not supported.";
-    throw BadConfiguration(ERS_HERE, TRACE_NAME);
+    //throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
   if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
     TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:PC] Both trigger flags are false. Passing TAs through 1:1.";

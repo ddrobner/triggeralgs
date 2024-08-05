@@ -9,8 +9,8 @@
 #ifndef TRIGGERALGS_CHANNELADJACENCY_TRIGGERACTIVITYMAKERCHANNELADJACENCY_HPP_
 #define TRIGGERALGS_CHANNELADJACENCY_TRIGGERACTIVITYMAKERCHANNELADJACENCY_HPP_
 
-#include "triggeralgs/TPWindow.hpp"
-#include "triggeralgs/TriggerActivityFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TPWindow.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerActivityFactory.hpp"
 #include <fstream>
 #include <vector>
 

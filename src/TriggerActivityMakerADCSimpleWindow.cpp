@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/ADCSimpleWindow/TriggerActivityMakerADCSimpleWindow.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/ADCSimpleWindow/TriggerActivityMakerADCSimpleWindow.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerADCSimpleWindowPlugin"

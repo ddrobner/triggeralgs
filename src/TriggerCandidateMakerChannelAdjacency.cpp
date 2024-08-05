@@ -6,8 +6,8 @@
  * received with this code.
  */
 
-#include "triggeralgs/ChannelAdjacency/TriggerCandidateMakerChannelAdjacency.hpp"
-#include "triggeralgs/Logging.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/ChannelAdjacency/TriggerCandidateMakerChannelAdjacency.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Logging.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerChannelAdjacencyPlugin"
@@ -105,7 +105,7 @@ TriggerCandidateMakerChannelAdjacency::configure(const nlohmann::json& config)
   // Both trigger flags were false. This will never trigger.
   if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
     TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:CA] Not triggering! All trigger flags are false!";
-    throw BadConfiguration(ERS_HERE, TRACE_NAME);
+    //throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
 
   return;

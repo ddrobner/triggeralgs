@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/MichelElectron/TriggerCandidateMakerMichelElectron.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/MichelElectron/TriggerCandidateMakerMichelElectron.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerMichelElectronPlugin"
@@ -121,7 +121,7 @@ TriggerCandidateMakerMichelElectron::configure(const nlohmann::json& config)
   }
   if (m_trigger_on_adc && m_trigger_on_n_channels) {
     TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:ME] Triggering on ADC count and number of channels is not supported.";
-    throw BadConfiguration(ERS_HERE, TRACE_NAME);
+    //throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
   if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
     TLOG_DEBUG(TLVL_DEBUG_LOW) << "[TCM:ME] Both trigger flags are false. Passing TAs through 1:1.";

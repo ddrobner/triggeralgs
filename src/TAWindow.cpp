@@ -1,4 +1,4 @@
-#include "triggeralgs/TAWindow.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TAWindow.hpp"
 
 #include <vector>
 

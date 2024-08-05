@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/MichelElectron/TriggerActivityMakerMichelElectron.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/MichelElectron/TriggerActivityMakerMichelElectron.hpp"
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerMichelElectronPlugin"
 #include <vector>

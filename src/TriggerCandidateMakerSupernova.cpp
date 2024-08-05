@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/Supernova/TriggerCandidateMakerSupernova.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Supernova/TriggerCandidateMakerSupernova.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerSupernovaPlugin"

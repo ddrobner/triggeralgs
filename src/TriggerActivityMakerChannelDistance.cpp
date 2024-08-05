@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/ChannelDistance/TriggerActivityMakerChannelDistance.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/ChannelDistance/TriggerActivityMakerChannelDistance.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerChannelDistancePlugin"

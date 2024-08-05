@@ -9,9 +9,9 @@
 #ifndef TRIGGERALGS_MICHELELECTRON_TRIGGERCANDIDATEMAKERMICHELELECTRON_HPP_
 #define TRIGGERALGS_MICHELELECTRON_TRIGGERCANDIDATEMAKERMICHELELECTRON_HPP_
 
-#include "triggeralgs/TriggerCandidateFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidateFactory.hpp"
 
-//#include "triggeralgs/triggercandidatemakerhorizontalmuon/Nljs.hpp"
+//#include "dunetrigger/triggeralgs/include/triggeralgs/triggercandidatemakerhorizontalmuon/Nljs.hpp"
 
 #include <fstream>
 #include <vector>

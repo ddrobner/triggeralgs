@@ -8,7 +8,7 @@
 #ifndef TRIGGERALGS_ABSTRACT_FACTORY_HXX_
 #define TRIGGERALGS_ABSTRACT_FACTORY_HXX_
 
-#include "triggeralgs/Issues.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Issues.hpp"
 
 namespace triggeralgs {
 
@@ -31,7 +31,7 @@ void AbstractFactory<T>::register_creator(const std::string alg_name, maker_crea
     makers[alg_name] = creator;
     return;
   }
-  throw FactoryOverwrite(ERS_HERE, alg_name);
+  //throw FactoryOverwrite(ERS_HERE, alg_name);
   return;
 }
 
@@ -42,11 +42,11 @@ std::unique_ptr<T> AbstractFactory<T>::build_maker(const std::string& alg_name)
   auto it = makers.find(alg_name);
 
   if (it != makers.end()) {
-    TLOG() << "[AF] Factory building " << alg_name << ".";
+    //TLOG() << "[AF] Factory building " << alg_name << ".";
     return it->second();
   }
 
-  throw FactoryNotFound(ERS_HERE, alg_name);
+  //throw FactoryNotFound(ERS_HERE, alg_name);
   return nullptr;
 }
 

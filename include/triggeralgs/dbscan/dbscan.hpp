@@ -7,8 +7,8 @@
 #include <set>
 #include <list>
 
-#include "triggeralgs/dbscan/Hit.hpp"
-#include "triggeralgs/TriggerPrimitive.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/dbscan/Hit.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerPrimitive.hpp"
 
 namespace triggeralgs {
 namespace dbscan {

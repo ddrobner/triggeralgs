@@ -9,8 +9,8 @@
 #ifndef TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERCANDIDATEMAKERSUPERNOVA_HPP_
 #define TRIGGERALGS_SRC_TRIGGERALGS_SUPERNOVA_TRIGGERCANDIDATEMAKERSUPERNOVA_HPP_
 
-#include "triggeralgs/TriggerCandidateFactory.hpp"
-#include "triggeralgs/Types.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidateFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Types.hpp"
 
 #include <algorithm>
 #include <atomic>

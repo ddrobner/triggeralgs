@@ -1,5 +1,5 @@
 
-#include "triggeralgs/TPWindow.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TPWindow.hpp"
 
 #include <chrono>
 #include <map>

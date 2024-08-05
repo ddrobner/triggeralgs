@@ -8,8 +8,8 @@
 #ifndef TRIGGERALGS_TAWINDOW_HPP_
 #define TRIGGERALGS_TAWINDOW_HPP_
 
-#include "triggeralgs/TriggerActivity.hpp"
-#include "triggeralgs/Types.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerActivity.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Types.hpp"
 
 #include <ostream>
 #include <unordered_map>

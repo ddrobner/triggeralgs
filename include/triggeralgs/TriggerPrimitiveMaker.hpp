@@ -9,9 +9,9 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERPRIMITIVEMAKER_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERPRIMITIVEMAKER_HPP_
 
-#include "triggeralgs/Issues.hpp"
-#include "triggeralgs/Logging.hpp"
-#include "trgdataformats/TriggerPrimitive.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Issues.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Logging.hpp"
+#include "detdataformats/trigger/TriggerPrimitive.hpp"
 
 #include <nlohmann/json.hpp>
 #include <vector>

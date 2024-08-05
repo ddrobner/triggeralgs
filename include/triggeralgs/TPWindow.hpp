@@ -8,8 +8,8 @@
 #ifndef TRIGGERALGS_TPWINDOW_HPP_
 #define TRIGGERALGS_TPWINDOW_HPP_
 
-#include "triggeralgs/TriggerPrimitive.hpp"
-#include "triggeralgs/Types.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerPrimitive.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Types.hpp"
 
 #include <ostream>
 #include <unordered_map>

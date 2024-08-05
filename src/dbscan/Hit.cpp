@@ -1,4 +1,4 @@
-#include "triggeralgs/dbscan/Hit.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/dbscan/Hit.hpp"
 
 #include <algorithm>
 

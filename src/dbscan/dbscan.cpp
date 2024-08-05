@@ -1,5 +1,5 @@
-#include "triggeralgs/dbscan/dbscan.hpp"
-#include "triggeralgs/dbscan/Hit.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/dbscan/dbscan.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/dbscan/Hit.hpp"
 
 #include <cassert>
 #include <limits>

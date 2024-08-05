@@ -9,8 +9,8 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERDECISION_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERDECISION_HPP_
 
-#include "triggeralgs/TriggerCandidate.hpp"
-#include "triggeralgs/Types.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidate.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Types.hpp"
 
 #include <cstdint>
 #include <vector>

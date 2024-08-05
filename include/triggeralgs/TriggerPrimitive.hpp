@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERPRIMITIVE_HPP_
 #define TRIGGERALGS_INCLUDE_TRIGGERALGS_TRIGGERPRIMITIVE_HPP_
 
-#include "trgdataformats/TriggerPrimitive.hpp"
+#include "detdataformats/trigger/TriggerPrimitive.hpp"
 
 namespace triggeralgs {
 // TriggerPrimitive looks a bit difference to TriggerActivity and

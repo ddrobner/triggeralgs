@@ -6,9 +6,9 @@
  * received with this code.
  */
 
-#include "triggeralgs/ChannelAdjacency/TriggerActivityMakerChannelAdjacency.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/ChannelAdjacency/TriggerActivityMakerChannelAdjacency.hpp"
 #include "TRACE/trace.h"
-#include "triggeralgs/Logging.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Logging.hpp"
 #define TRACE_NAME "TriggerActivityMakerChannelAdjacencyPlugin"
 #include <math.h>
 #include <vector>

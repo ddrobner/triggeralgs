@@ -10,8 +10,8 @@
 #define TRIGGERALGS_PLANECOINCIDENCE_TRIGGERACTIVITYMAKERPLANECOINCIDENCE_HPP_
 
 #include "detchannelmaps/TPCChannelMap.hpp"
-#include "triggeralgs/TriggerActivityFactory.hpp"
-#include "triggeralgs/TPWindow.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerActivityFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TPWindow.hpp"
 #include <fstream>
 #include <vector>
 

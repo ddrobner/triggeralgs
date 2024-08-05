@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/HorizontalMuon/TriggerActivityMakerHorizontalMuon.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/HorizontalMuon/TriggerActivityMakerHorizontalMuon.hpp"
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerActivityMakerHorizontalMuonPlugin"
 #include <math.h>

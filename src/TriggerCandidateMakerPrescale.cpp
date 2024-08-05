@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/Prescale/TriggerCandidateMakerPrescale.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Prescale/TriggerCandidateMakerPrescale.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerPrescalePlugin"

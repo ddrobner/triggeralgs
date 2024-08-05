@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/HorizontalMuon/TriggerCandidateMakerHorizontalMuon.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/HorizontalMuon/TriggerCandidateMakerHorizontalMuon.hpp"
 
 #include "TRACE/trace.h"
 #define TRACE_NAME "TriggerCandidateMakerHorizontalMuonPlugin"
@@ -120,11 +120,11 @@ TriggerCandidateMakerHorizontalMuon::configure(const nlohmann::json& config)
   }
   if (m_trigger_on_adc && m_trigger_on_n_channels) {
     TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:HM] Triggering on ADC count and number of channels is not supported.";
-    throw BadConfiguration(ERS_HERE, TRACE_NAME);
+    //throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
   if (!m_trigger_on_adc && !m_trigger_on_n_channels) {
     TLOG_DEBUG(TLVL_VERY_IMPORTANT) << "[TCM:HM] Not triggering! All trigger flags are false!";
-    throw BadConfiguration(ERS_HERE, TRACE_NAME);
+    //throw BadConfiguration(ERS_HERE, TRACE_NAME);
   }
 
   return;

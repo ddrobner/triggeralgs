@@ -9,7 +9,7 @@
 #ifndef TRIGGERALGS_CHANNELDISTANCE_TRIGGERCANDIDATEMAKERCHANNELDISTANCE_HPP_
 #define TRIGGERALGS_CHANNELDISTANCE_TRIGGERCANDIDATEMAKERCHANNELDISTANCE_HPP_
 
-#include "triggeralgs/TriggerCandidateFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidateFactory.hpp"
 #include <algorithm>
 
 namespace triggeralgs {

@@ -6,7 +6,7 @@
  * received with this code.
  */
 
-#include "triggeralgs/Supernova/TriggerDecisionMakerSupernova.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/Supernova/TriggerDecisionMakerSupernova.hpp"
 
 #include <algorithm>
 #include <chrono>

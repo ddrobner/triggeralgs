@@ -9,8 +9,8 @@
 #ifndef TRIGGERALGS_DBSCAN_TRIGGERCANDIDATEMAKERDBSCAN_HPP_
 #define TRIGGERALGS_DBSCAN_TRIGGERCANDIDATEMAKERDBSCAN_HPP_
 
-#include "triggeralgs/TriggerCandidateFactory.hpp"
-#include "triggeralgs/dbscan/dbscan.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/TriggerCandidateFactory.hpp"
+#include "dunetrigger/triggeralgs/include/triggeralgs/dbscan/dbscan.hpp"
 
 #include <memory>
 #include <vector>
