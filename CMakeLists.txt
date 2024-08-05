@@ -34,49 +34,6 @@ find_package(cetlib REQUIRED)
 # plugins. If plugins are needed, they will be provided by the code
 # which uses triggeralgs (eg, for dunedaq plugins, the plugin will be
 # provided by the trigger package)
-#add_library(triggeralgs SHARED 
-#  src/TriggerActivityMakerADCSimpleWindow.cpp
-#  src/TriggerActivityMakerChannelDistance.cpp
-#  src/TriggerCandidateMakerChannelDistance.cpp
-#  src/TriggerCandidateMakerADCSimpleWindow.cpp
-#  src/TriggerActivityMakerBundleN.cpp
-#  src/TriggerCandidateMakerBundleN.cpp
-#  src/TriggerActivityMakerHorizontalMuon.cpp
-#  src/TriggerCandidateMakerHorizontalMuon.cpp
-#  #src/TriggerCandidateMakerPlaneCoincidence.cpp
-#  #src/TriggerActivityMakerPlaneCoincidence.cpp
-#  src/TriggerActivityMakerMichelElectron.cpp
-#  src/TriggerCandidateMakerMichelElectron.cpp
-#  src/TriggerActivityMakerPrescale.cpp
-#  src/TriggerCandidateMakerPrescale.cpp
-#  src/TriggerActivityMakerSupernova.cpp
-#  src/TriggerCandidateMakerSupernova.cpp
-#  src/TriggerDecisionMakerSupernova.cpp
-#  src/TriggerActivityMakerDBSCAN.cpp
-#  src/TriggerCandidateMakerDBSCAN.cpp
-#  src/TriggerActivityMakerChannelAdjacency.cpp
-#  src/TriggerCandidateMakerChannelAdjacency.cpp
-#  src/TAWindow.cpp
-#  src/TPWindow.cpp
-#  src/dbscan/dbscan.cpp
-#  src/dbscan/Hit.cpp
-#  )
-
-#target_include_directories(triggeralgs PUBLIC
-#  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-#  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
-#  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-# )
-
-#target_link_options(triggeralgs PUBLIC --whole-archive)
-
-#target_link_libraries(triggeralgs PUBLIC nlohmann_json::nlohmann_json dunedetdataformats dunedaqdataformats cetlib::cetlib)
-#install(TARGETS triggeralgs EXPORT triggeralgsTargets)
-
-#CONFIGURE_PACKAGE_CONFIG_FILE(cmake/triggeralgsConfig.cmake.in
-#  ${CMAKE_CURRENT_BINARY_DIR}/triggeralgsConfig.cmake
-#  INSTALL_DESTINATION ${product}/${version}
-#  )
 
 find_package(cetbuildtools REQUIRED)
 include(BasicPlugin)
@@ -113,12 +70,3 @@ basic_plugin(triggeralgs module
 
 # TODO PAR 2021-04-15: What is in autogen? Is it actually used?
 add_subdirectory(autogen)
-
-#install(EXPORT triggeralgsTargets DESTINATION ${CMAKE_INSTALL_CMAKEDIR} NAMESPACE triggeralgs::)
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/triggeralgsConfig.cmake
-#        DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/triggeralgsConfig.cmake
-#        DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
-#install(DIRECTORY include/${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h??")
-#install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${product}/${version} FILES_MATCHING PATTERN "*.h??")
-#install(DIRECTORY ${CMAKE_CODEGEN_BINARY_DIR}/include/${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h??")
