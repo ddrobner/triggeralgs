@@ -18,6 +18,10 @@ namespace triggeralgs {
 
 struct TriggerActivity : public dunedaq::trgdataformats::TriggerActivityData
 {
+  // I'd like to avoid touching this... but it's silly not being able to get a
+  // TriggerActivity with blank inputs from a TriggerActivityData
+  TriggerActivity() = default;
+  TriggerActivity(dunedaq::trgdataformats::TriggerActivityData ta) : TriggerActivityData(ta){}
   std::vector<TriggerPrimitive> inputs;
 };
 
